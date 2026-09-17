@@ -1,0 +1,59 @@
+<script setup>
+import { ref } from "vue";
+import {
+  W95Button,
+  W95Tooltip,
+  W95Checkbox,
+  W95Radio,
+  W95RadioGroup,
+} from "vue-win95";
+
+const pb = ref("smooth");
+</script>
+
+# Button
+
+命令按钮，还原 Win95 凸起 / 凹陷边框与默认按钮加粗描边。
+
+<div class="demo">
+  <div class="demo-label">STATES</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <W95Button>Normal</W95Button>
+    <W95Button default>Default</W95Button>
+    <W95Button disabled>Disabled</W95Button>
+    <W95Tooltip content="This is the default action">
+      <W95Button default>Hover me</W95Button>
+    </W95Tooltip>
+  </div>
+</div>
+
+## API
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `type` | `button\|submit\|reset` | `button` | 原生 type |
+| `default` | `boolean` | `false` | 默认按钮描边 |
+| `disabled` | `boolean` | `false` | 禁用 |
+| `block` | `boolean` | `false` | 块级宽度 |
+
+## 无障碍
+
+- 使用语义化 `<button>`
+- 焦点环为 Win95 点状虚线（`.w95-focus`）
+
+## 相关控件
+
+<div class="demo">
+  <div class="demo-label">CHECKBOX / RADIO</div>
+  <W95Checkbox :model-value="true" label="I am checked" />
+  <div style="height:6px"></div>
+  <W95RadioGroup v-model="pb" legend="Peanut butter">
+    <W95Radio value="smooth" label="Should be smooth" />
+    <W95Radio value="crunchy" label="Crunchy is good" />
+  </W95RadioGroup>
+</div>
+
+<style>
+.demo { background:#008080;padding:12px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:6px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:11px; }
+</style>

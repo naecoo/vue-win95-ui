@@ -1,0 +1,60 @@
+<script setup>
+import { ref } from "vue";
+import {
+  W95Input,
+  W95Select,
+  W95Slider,
+  W95SpinButton,
+  W95Switch,
+  W95ComboBox,
+  W95FieldRow,
+} from "vue-win95";
+
+const name = ref("World");
+const rating = ref("3");
+const volume = ref(5);
+const copies = ref(2);
+const sound = ref(true);
+const driver = ref(null);
+const options = [
+  { value: 1, label: "MySQL ODBC 3.51 Driver" },
+  { value: 2, label: "SQL Server" },
+  { value: 3, label: "Access Driver" },
+];
+const ratings = [
+  { value: "5", label: "5 - Incredible!" },
+  { value: "4", label: "4 - Great!" },
+  { value: "3", label: "3 - Pretty good" },
+];
+</script>
+
+# Form Controls
+
+文本框、下拉、滑杆、数字框等表单原语，全部基于语义 HTML + ARIA。
+
+<div class="demo">
+  <div class="demo-label">LIVE FORM</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <W95Input v-model="name" label="Your name" />
+    <W95Select v-model="rating" :options="ratings" label="Rating" />
+    <W95Slider v-model="volume" :min="1" :max="11" label="Volume:" />
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <W95SpinButton v-model="copies" :min="0" :max="10" label="Copies" />
+      <W95Switch v-model="sound" label="Sound" />
+    </div>
+    <W95ComboBox v-model="driver" :options="options" label="Driver" />
+  </div>
+</div>
+
+**状态**：name=`{{ name }}` · rating=`{{ rating }}` · volume=`{{ volume }}` · copies=`{{ copies }}` · sound=`{{ sound }}` · driver=`{{ driver }}`
+
+## 设计说明
+
+- 输入框使用 Win95 **field border**（双层 inset 阴影）
+- 禁用态底色变为 `surface`，文字带高光 shadow
+- Select / ComboBox 保持可访问名称（label 关联）
+
+<style>
+.demo { background:#008080;padding:12px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:6px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:11px; }
+</style>

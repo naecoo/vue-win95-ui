@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("../../vue-win95/src/fonts/ms_sans_serif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("../../vue-win95/src/fonts/ms_sans_serif_bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --w95-surface: #c0c0c0;
+  --w95-button-highlight: #ffffff;
+  --w95-button-face: #dfdfdf;
+  --w95-button-shadow: #808080;
+  --w95-window-frame: #0a0a0a;
+  --w95-dialog-blue: #000080;
+  --w95-dialog-blue-light: #1084d0;
+  --w95-text: #222222;
+  --w95-link: #0000ff;
+  --w95-desktop: #008080;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  color: var(--w95-text);
+  -webkit-font-smoothing: none;
+  background: var(--w95-desktop);
+}
+
+@layer components {
+  .w95-check::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 1px;
+    width: 7px;
+    height: 7px;
+    border-left: 2px solid var(--w95-text);
+    border-bottom: 2px solid var(--w95-text);
+    transform: rotate(-45deg);
+  }
+
+  .w95-radio-dot::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin: -2px 0 0 -2px;
+    background: var(--w95-text);
+    border-radius: 50%;
+  }
+
+  .w95-title-glyph-min::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 4px;
+    width: 6px;
+    height: 2px;
+    background: var(--w95-text);
+  }
+
+  .w95-title-glyph-max::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--w95-text);
+    border-top-width: 2px;
+    box-sizing: border-box;
+  }
+
+  .w95-title-glyph-close::before,
+  .w95-title-glyph-close::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 1px;
+    height: 9px;
+    background: var(--w95-text);
+  }
+
+  .w95-title-glyph-close::before {
+    transform: rotate(45deg);
+  }
+
+  .w95-title-glyph-close::after {
+    transform: rotate(-45deg);
+  }
+
+  .w95-focus:focus {
+    outline: 1px dotted var(--w95-text);
+    outline-offset: -4px;
+  }
+
+  .w95-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    width: 100%;
+    height: 21px;
+  }
+  .w95-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--w95-button-shadow);
+    box-shadow: inset 1px 1px var(--w95-window-frame),
+      inset -1px -1px var(--w95-button-highlight);
+  }
+  .w95-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 11px;
+    height: 21px;
+    margin-top: -8px;
+    background: var(--w95-surface);
+    box-shadow: inset -1px -1px var(--w95-window-frame),
+      inset 1px 1px var(--w95-button-highlight),
+      inset -2px -2px var(--w95-button-shadow),
+      inset 2px 2px var(--w95-button-face);
+  }
+}
+
+/* Markdown body inside Help windows */
+.w95-md {
+  font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--w95-text);
+  -webkit-font-smoothing: none;
+}
+
+.w95-md h1,
+.w95-md h2,
+.w95-md h3 {
+  font-weight: bold;
+  margin: 0.6em 0 0.35em;
+  font-size: 14px;
+}
+
+.w95-md h2 {
+  border-bottom: 1px dotted var(--w95-button-shadow);
+  padding-bottom: 2px;
+  font-size: 13px;
+}
+
+.w95-md p {
+  margin: 0.4em 0;
+}
+
+.w95-md code {
+  background: var(--w95-button-highlight);
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  padding: 0 4px;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+}
+
+.w95-md pre {
+  background: var(--w95-button-highlight);
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  padding: 8px;
+  overflow: auto;
+  margin: 0.5em 0;
+}
+
+.w95-md pre code {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.w95-md a {
+  color: var(--w95-link);
+}
+
+.w95-md ul {
+  margin: 0.35em 0;
+  padding-left: 1.4em;
+}
+
+.w95-md .demo {
+  background: var(--w95-desktop);
+  padding: 12px;
+  margin: 0.6em 0;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+
+.w95-md .demo-label {
+  color: var(--w95-button-highlight);
+  font-weight: bold;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* Desktop icon glyphs */
+.w95-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  background: var(--w95-surface);
+  box-shadow: inset -1px -1px var(--w95-window-frame),
+    inset 1px 1px var(--w95-button-highlight),
+    inset -2px -2px var(--w95-button-shadow),
+    inset 2px 2px var(--w95-button-face);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  position: relative;
+}
+
+.w95-icon-computer::after {
+  content: "";
+  width: 18px;
+  height: 12px;
+  background: var(--w95-dialog-blue);
+  box-shadow: 0 2px 0 var(--w95-button-shadow);
+}
+
+.w95-icon-help::after {
+  content: "?";
+  font-weight: bold;
+  font-size: 18px;
+  color: var(--w95-dialog-blue);
+}
+
+.w95-icon-folder {
+  background: linear-gradient(180deg, #ffff99 0 40%, #e6c200 40%);
+  width: 28px;
+  height: 22px;
+  margin-top: 6px;
+}
+
+/* CRT-ish scanlines (subtle, optional special sauce) */
+.w95-scanlines::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.035) 2px,
+    rgba(0, 0, 0, 0.035) 3px
+  );
+  z-index: 9999;
+}
+
+/* Start menu */
+.w95-start-panel {
+  width: 220px;
+  background: var(--w95-surface);
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf,
+    inset -2px -2px #808080, inset 2px 2px #ffffff;
+  padding: 3px;
+  display: flex;
+}
+
+.w95-start-banner {
+  width: 28px;
+  background: linear-gradient(180deg, #000080, #1084d0);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  padding: 8px 4px;
+  letter-spacing: 2px;
+  font-size: 12px;
+}

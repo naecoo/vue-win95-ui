@@ -6,6 +6,8 @@
   "packageManager": "pnpm@9.6.0",
   "scripts": {
     "dev": "pnpm --filter playground dev",
+    "docs": "pnpm --filter docs-site dev",
+    "docs:build": "pnpm --filter docs-site build",
     "build": "pnpm --filter vue-win95 build",
     "test": "pnpm --filter vue-win95 test",
     "typecheck": "pnpm --filter vue-win95 typecheck",

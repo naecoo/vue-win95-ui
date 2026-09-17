@@ -33,11 +33,24 @@ When consuming from source / monorepo, point Tailwind at the package and use `@w
 }
 ```
 
+## Docs site (Win95 desktop)
+
+```bash
+pnpm docs        # http://localhost:5174
+pnpm docs:build
+```
+
+`packages/docs-site` 是 **Win95 桌面壳文档站**：
+- 桌面图标 + Start 菜单 + 任务栏 + 可拖拽窗口
+- 文档页为 `.mdx`（Markdown + Vue），**内嵌真实的 vue-win95 组件演示**
+- 扫描线 CRT 氛围、像素字体、双层 inset 边框
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
 | `pnpm dev` | playground |
+| `pnpm docs` | Win95 MDX 文档站 |
 | `pnpm story` | Storybook |
 | `pnpm test` | Vitest + axe |
 | `pnpm build` | library build |
