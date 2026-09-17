@@ -22,7 +22,7 @@ const isActive = computed(() => ctx?.value.active === props.value);
 
 const classes = computed(() =>
   cn(
-    "relative z-[2] box-border",
+    "w95-tabpanel relative z-[2] box-border",
     "p-w95",
     "bg-w95-surface font-w95 text-w95 text-w95-text",
     "[box-shadow:inset_-1px_-1px_#0a0a0a,inset_1px_1px_#dfdfdf,inset_-2px_-2px_#808080,inset_2px_2px_#ffffff]",

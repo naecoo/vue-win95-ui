@@ -44,6 +44,17 @@ body {
 }
 
 @layer components {
+  .w95-root {
+    font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
+    font-size: 11px;
+  }
+
+  .w95-focus:focus,
+  .w95-focus:focus-visible {
+    outline: 1px dotted var(--w95-text);
+    outline-offset: -4px;
+  }
+
   .w95-check::after {
     content: "";
     position: absolute;

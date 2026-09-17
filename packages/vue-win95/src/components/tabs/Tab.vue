@@ -33,9 +33,9 @@ const classes = computed(() =>
     "cursor-default select-none",
     "[box-shadow:inset_-1px_0_#0a0a0a,inset_1px_1px_#c0c0c0,inset_-2px_0_#808080,inset_2px_2px_#ffffff]",
     isSelected.value
-      ? "z-[8] pt-[7px] pb-[9px] -mt-[2px] ml-0"
+      ? "w95-tab-selected z-[8] pt-[7px] pb-[7px] -mt-[2px] ml-0 -mb-[2px]"
       : "mt-0",
-    "focus:outline focus:outline-1 focus:outline-dotted focus:outline-w95-text",
+    "w95-focus",
     props.disabled && "text-w95-shadow cursor-not-allowed",
     props.class
   )

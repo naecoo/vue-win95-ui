@@ -25,6 +25,11 @@ import { W95ComboBox } from "./combobox";
 import { W95Table } from "./table";
 import { W95SpinButton } from "./spin-button";
 import { W95DatePicker } from "./date-picker";
+import { W95Accordion, W95AccordionItem } from "./accordion";
+import { W95Breadcrumb } from "./breadcrumb";
+import { W95Pagination } from "./pagination";
+import { W95Switch } from "./switch";
+import { W95Avatar } from "./avatar";
 
 export * from "./button";
 export * from "./input";
@@ -51,6 +56,11 @@ export * from "./combobox";
 export * from "./table";
 export * from "./spin-button";
 export * from "./date-picker";
+export * from "./accordion";
+export * from "./breadcrumb";
+export * from "./pagination";
+export * from "./switch";
+export * from "./avatar";
 
 const components = [
   W95Button,
@@ -86,6 +96,12 @@ const components = [
   W95Table,
   W95SpinButton,
   W95DatePicker,
+  W95Accordion,
+  W95AccordionItem,
+  W95Breadcrumb,
+  W95Pagination,
+  W95Switch,
+  W95Avatar,
 ];
 
 const install: Plugin = {

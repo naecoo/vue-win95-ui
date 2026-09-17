@@ -33,7 +33,10 @@ const classes = computed(() =>
 </script>
 
 <template>
-  <ul role="tree" :class="classes" class="[&>li]:list-none [&_ul]:ml-4 [&_ul]:pl-4 [&_ul]:border-l [&_ul]:border-dotted [&_ul]:border-w95-shadow [&_ul]:list-none">
+  <ul
+    role="tree"
+    :class="cn(classes, 'w95-tree [&>li]:list-none')"
+  >
     <slot />
   </ul>
 </template>

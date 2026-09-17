@@ -31,7 +31,7 @@ const classes = computed(() =>
     // raised → sunken on active
     props.default ? "shadow-w95-default-btn" : "shadow-w95-raised",
     "active:shadow-w95-sunken active:pt-0.5 active:pl-[14px] active:pr-2.5 active:pb-0",
-    "focus:outline focus:outline-1 focus:outline-dotted focus:outline-black focus:outline-offset-[-4px]",
+    "w95-focus",
     "disabled:text-w95-shadow disabled:cursor-not-allowed",
     // Win95 text-shadow trick: color transparent + text-shadow paints the glyph
     "text-transparent [text-shadow:0_0_var(--w95-text)]",

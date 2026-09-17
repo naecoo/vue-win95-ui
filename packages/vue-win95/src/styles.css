@@ -43,6 +43,18 @@
     color: var(--w95-text);
     -webkit-font-smoothing: none;
   }
+
+  /* Unified Win95 focus ring (dotted inset) */
+  .w95-focus:focus,
+  .w95-focus:focus-visible {
+    outline: 1px dotted var(--w95-text);
+    outline-offset: -4px;
+  }
+
+  .w95-focus-link:focus,
+  .w95-focus-link:focus-visible {
+    outline: 1px dotted var(--w95-link);
+  }
 }
 
 @layer components {
@@ -68,6 +80,49 @@
     margin: -2px 0 0 -2px;
     background: var(--w95-text);
     border-radius: 50%;
+  }
+
+  /* Tree dotted guides (98.css style) */
+  .w95-tree ul[role="group"] {
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 1px dotted var(--w95-button-shadow);
+  }
+
+  .w95-tree ul[role="group"] > li {
+    position: relative;
+  }
+
+  .w95-tree ul[role="group"] > li::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -16px;
+    top: 7px;
+    width: 12px;
+    border-bottom: 1px dotted var(--w95-button-shadow);
+  }
+
+  .w95-tree ul[role="group"] > li:last-child::after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -20px;
+    top: 8px;
+    bottom: 0;
+    width: 8px;
+    background: var(--w95-button-highlight);
+  }
+
+  /* Tabs: selected tab covers panel top border */
+  .w95-tab--selected {
+    padding-bottom: 7px !important;
+    margin-bottom: -2px !important;
+    z-index: 8;
+  }
+
+  .w95-tabpanel {
+    margin-top: 0;
   }
 
   .w95-title-glyph-min::after {
