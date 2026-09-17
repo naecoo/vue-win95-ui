@@ -25,6 +25,13 @@ import {
   W95Tree,
   W95TreeItem,
   W95Splitter,
+  W95Tooltip,
+  W95Toast,
+  W95Dropdown,
+  W95ComboBox,
+  W95Table,
+  W95SpinButton,
+  W95DatePicker,
 } from "vue-win95";
 
 const name = ref("World");
@@ -37,6 +44,37 @@ const volume = ref(5);
 const progress = ref(40);
 const tab = ref("desktop");
 const treeSel = ref("css");
+const ddOpen = ref(false);
+const driver = ref<number | null>(null);
+const copies = ref(2);
+const date = ref("2024-06-15");
+const selectedRow = ref<string | number | null>(null);
+const toasts = ref<{ id: number; title: string; message: string }[]>([]);
+
+const driverOptions = [
+  { value: 1, label: "MySQL ODBC 3.51 Driver" },
+  { value: 2, label: "SQL Server" },
+  { value: 3, label: "Access Driver" },
+];
+
+const tableColumns = [
+  { key: "name", label: "Name", width: 150 },
+  { key: "version", label: "Version", width: 70 },
+  { key: "company", label: "Company" },
+];
+const tableRows = [
+  { id: 1, name: "MySQL ODBC 3.51", version: "3.51.11", company: "MySQL AB" },
+  { id: 2, name: "SQL Server", version: "3.70.06", company: "Microsoft" },
+  { id: 3, name: "Access Driver", version: "4.00", company: "Microsoft" },
+];
+
+function showToast() {
+  const id = Date.now();
+  toasts.value = [
+    ...toasts.value,
+    { id, title: "System", message: `Copies=${copies.value} on ${date.value}` },
+  ];
+}
 
 const ratingOptions = [
   { value: "5", label: "5 - Incredible!" },
@@ -140,6 +178,41 @@ const ratingOptions = [
         </div>
       </div>
     </W95Window>
+
+    <W95Window title="Overlays & Data" :width="460">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <W95Dropdown v-model="ddOpen" label="File">
+          <W95MenuItem>New</W95MenuItem>
+          <W95MenuItem>Open…</W95MenuItem>
+          <W95MenuItem>Save</W95MenuItem>
+          <W95MenuItem disabled>Print</W95MenuItem>
+        </W95Dropdown>
+        <W95Tooltip content="Shows a system toast">
+          <W95Button @click="showToast">Toast</W95Button>
+        </W95Tooltip>
+      </div>
+
+      <div class="flex flex-col gap-2 mb-3">
+        <W95ComboBox v-model="driver" :options="driverOptions" label="Driver" />
+        <div class="flex flex-wrap gap-4">
+          <W95SpinButton v-model="copies" :min="0" :max="10" label="Copies" />
+          <W95DatePicker v-model="date" label="Date" />
+        </div>
+      </div>
+
+      <W95Table
+        v-model:selected-key="selectedRow"
+        :columns="tableColumns"
+        :rows="tableRows"
+        :height="90"
+        class="mb-2"
+      />
+      <p class="font-w95 text-w95">
+        driver={{ driver }} · copies={{ copies }} · date={{ date }} · row={{ selectedRow }}
+      </p>
+    </W95Window>
+
+    <W95Toast v-model="toasts" />
 
     <W95Dialog v-model="dialogOpen" title="Confirm" @confirm="dialogOpen = false">
       <p>Are you sure you want to cancel?</p>
