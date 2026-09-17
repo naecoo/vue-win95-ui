@@ -11,6 +11,11 @@ import { W95GroupBox } from "./group-box";
 import { W95FieldRow } from "./field-row";
 import { W95StatusBar, W95StatusBarField } from "./status-bar";
 import { W95Divider } from "./divider";
+import { W95Tabs, W95TabList, W95Tab, W95TabPanel } from "./tabs";
+import { W95MenuBar, W95MenuItem, W95MenuList } from "./menu";
+import { W95Toolbar } from "./toolbar";
+import { W95Tree, W95TreeItem } from "./tree";
+import { W95Splitter } from "./splitter";
 import { W95Window } from "./window";
 import { W95Dialog } from "./dialog";
 
@@ -25,6 +30,11 @@ export * from "./group-box";
 export * from "./field-row";
 export * from "./status-bar";
 export * from "./divider";
+export * from "./tabs";
+export * from "./menu";
+export * from "./toolbar";
+export * from "./tree";
+export * from "./splitter";
 export * from "./window";
 export * from "./dialog";
 
@@ -42,6 +52,17 @@ const components = [
   W95StatusBar,
   W95StatusBarField,
   W95Divider,
+  W95Tabs,
+  W95TabList,
+  W95Tab,
+  W95TabPanel,
+  W95MenuBar,
+  W95MenuItem,
+  W95MenuList,
+  W95Toolbar,
+  W95Tree,
+  W95TreeItem,
+  W95Splitter,
   W95Window,
   W95Dialog,
 ];
