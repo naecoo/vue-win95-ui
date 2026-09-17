@@ -18,6 +18,13 @@ import { W95Tree, W95TreeItem } from "./tree";
 import { W95Splitter } from "./splitter";
 import { W95Window } from "./window";
 import { W95Dialog } from "./dialog";
+import { W95Tooltip } from "./tooltip";
+import { W95Toast } from "./toast";
+import { W95Dropdown } from "./dropdown";
+import { W95ComboBox } from "./combobox";
+import { W95Table } from "./table";
+import { W95SpinButton } from "./spin-button";
+import { W95DatePicker } from "./date-picker";
 
 export * from "./button";
 export * from "./input";
@@ -37,6 +44,13 @@ export * from "./tree";
 export * from "./splitter";
 export * from "./window";
 export * from "./dialog";
+export * from "./tooltip";
+export * from "./toast";
+export * from "./dropdown";
+export * from "./combobox";
+export * from "./table";
+export * from "./spin-button";
+export * from "./date-picker";
 
 const components = [
   W95Button,
@@ -65,6 +79,13 @@ const components = [
   W95Splitter,
   W95Window,
   W95Dialog,
+  W95Tooltip,
+  W95Toast,
+  W95Dropdown,
+  W95ComboBox,
+  W95Table,
+  W95SpinButton,
+  W95DatePicker,
 ];
 
 const install: Plugin = {
