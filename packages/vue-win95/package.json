@@ -1,11 +1,22 @@
 {
   "name": "vue-win95",
-  "version": "0.1.0",
-  "description": "Windows 95 style Vue 3 component library (Tailwind / shadcn pattern)",
+  "version": "0.2.0",
+  "description": "Windows 95 style Vue 3 component library (Tailwind / shadcn pattern) with accessibility",
   "type": "module",
   "license": "MIT",
+  "keywords": [
+    "vue",
+    "vue3",
+    "component-library",
+    "windows-95",
+    "win95",
+    "retro",
+    "tailwindcss",
+    "a11y",
+    "accessibility"
+  ],
   "sideEffects": ["**/*.css"],
-  "files": ["dist"],
+  "files": ["dist", "CHANGELOG.md", "README.md"],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,7 +34,8 @@
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "story:dev": "storybook dev -p 6006",
-    "story:build": "storybook build"
+    "story:build": "storybook build",
+    "prepublishOnly": "pnpm test && pnpm build"
   },
   "peerDependencies": {
     "vue": "^3.4.0"

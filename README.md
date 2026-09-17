@@ -1,46 +1,45 @@
 # vue-win95
 
-Windows 95 style Vue 3 component library with Tailwind CSS (shadcn pattern) and first-class accessibility.
+Windows 95 style Vue 3 component library.
 
-## Stack
+- **Stack**: Vue 3 · TypeScript · Tailwind CSS (shadcn pattern)
+- **A11y**: WAI-ARIA APG patterns, semantic HTML, focus management
+- **Theme**: CSS custom properties + shared Tailwind preset
 
-- Vue 3 + TypeScript
-- Tailwind CSS + CSS custom properties (shadcn-style theming)
-- Storybook for docs / visual QA
-- Vitest + vitest-axe for unit & a11y tests
-- pnpm monorepo
-
-## Packages
-
-- `packages/vue-win95` — the component library
-- `playground` — local demo app
-
-## Getting Started
+## Quick start
 
 ```bash
-pnpm install
-pnpm dev          # playground
-pnpm story        # Storybook
-pnpm test         # unit + a11y tests
-pnpm build        # library build
+pnpm add vue-win95
 ```
 
-## Components (Phase 1)
+```ts
+import { createApp } from "vue";
+import App from "./App.vue";
+// pick a theme CSS that includes tokens + Tailwind-generated utilities
+import "vue-win95/styles.css";
 
-- Button
-- Input
-- Checkbox
-- Window
-- Dialog
+const app = createApp(App);
+```
+
+When consuming from source / monorepo, point Tailwind at the package and use `@win95/tailwind-preset`.
 
 ## Theming
-
-Override CSS variables on `:root`:
 
 ```css
 :root {
   --w95-surface: #c0c0c0;
   --w95-dialog-blue: #000080;
-  /* ... */
+  --w95-text: #222222;
 }
 ```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | playground |
+| `pnpm story` | Storybook |
+| `pnpm test` | Vitest + axe |
+| `pnpm build` | library build |
+
+See [docs/components.md](./docs/components.md) for the component catalog.
