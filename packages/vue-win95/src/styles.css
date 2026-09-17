@@ -1,10 +1,25 @@
 /**
- * Win95 CSS custom properties (shadcn-style theme tokens)
- * Override these on :root / a wrapper to theme the library.
+ * Win95 CSS custom properties + pixel fonts
  */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("./fonts/ms_sans_serif.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url("./fonts/ms_sans_serif_bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   :root {
@@ -31,7 +46,6 @@
 }
 
 @layer components {
-  /* checkmark glyph used by Checkbox */
   .w95-check::after {
     content: "";
     position: absolute;
@@ -42,6 +56,18 @@
     border-left: 2px solid var(--w95-text);
     border-bottom: 2px solid var(--w95-text);
     transform: rotate(-45deg);
+  }
+
+  .w95-radio-dot::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin: -2px 0 0 -2px;
+    background: var(--w95-text);
+    border-radius: 50%;
   }
 
   .w95-title-glyph-min::after {
@@ -83,5 +109,63 @@
 
   .w95-title-glyph-close::after {
     transform: rotate(-45deg);
+  }
+
+  /* Slider track (webkit) */
+  .w95-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    width: 100%;
+    height: 21px;
+    cursor: default;
+  }
+
+  .w95-slider:focus {
+    outline: none;
+  }
+
+  .w95-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--w95-button-shadow);
+    box-shadow: inset 1px 1px var(--w95-window-frame),
+      inset -1px -1px var(--w95-button-highlight);
+  }
+
+  .w95-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 11px;
+    height: 21px;
+    margin-top: -8px;
+    background: var(--w95-surface);
+    box-shadow: inset -1px -1px var(--w95-window-frame),
+      inset 1px 1px var(--w95-button-highlight),
+      inset -2px -2px var(--w95-button-shadow),
+      inset 2px 2px var(--w95-button-face);
+  }
+
+  .w95-slider::-moz-range-track {
+    height: 4px;
+    background: var(--w95-button-shadow);
+    box-shadow: inset 1px 1px var(--w95-window-frame),
+      inset -1px -1px var(--w95-button-highlight);
+  }
+
+  .w95-slider::-moz-range-thumb {
+    width: 11px;
+    height: 21px;
+    border: 0;
+    border-radius: 0;
+    background: var(--w95-surface);
+    box-shadow: inset -1px -1px var(--w95-window-frame),
+      inset 1px 1px var(--w95-button-highlight),
+      inset -2px -2px var(--w95-button-shadow),
+      inset 2px 2px var(--w95-button-face);
+  }
+
+  .w95-slider:disabled::-webkit-slider-thumb {
+    background: var(--w95-surface);
+    opacity: 0.7;
   }
 }

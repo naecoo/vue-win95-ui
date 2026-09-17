@@ -38,6 +38,7 @@
     "@storybook/vue3-vite": "^8.4.7",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
+    "@win95/tailwind-preset": "workspace:*",
     "autoprefixer": "^10.4.20",
     "happy-dom": "^15.11.7",
     "postcss": "^8.4.49",

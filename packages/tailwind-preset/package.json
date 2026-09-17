@@ -1,0 +1,15 @@
+{
+  "name": "@win95/tailwind-preset",
+  "version": "0.1.0",
+  "description": "Shared Tailwind preset for vue-win95 design tokens",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": ["src"],
+  "peerDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}
