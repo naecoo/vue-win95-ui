@@ -1,0 +1,19 @@
+{
+  "name": "win95-ui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@9.6.0",
+  "scripts": {
+    "dev": "pnpm --filter playground dev",
+    "build": "pnpm --filter vue-win95 build",
+    "test": "pnpm --filter vue-win95 test",
+    "typecheck": "pnpm --filter vue-win95 typecheck",
+    "story": "pnpm --filter vue-win95 story:dev",
+    "story:build": "pnpm --filter vue-win95 story:build"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vue": "^3.5.13"
+  }
+}
