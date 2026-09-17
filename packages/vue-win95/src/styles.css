@@ -1,0 +1,87 @@
+/**
+ * Win95 CSS custom properties (shadcn-style theme tokens)
+ * Override these on :root / a wrapper to theme the library.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --w95-surface: #c0c0c0;
+    --w95-button-highlight: #ffffff;
+    --w95-button-face: #dfdfdf;
+    --w95-button-shadow: #808080;
+    --w95-window-frame: #0a0a0a;
+    --w95-dialog-blue: #000080;
+    --w95-dialog-blue-light: #1084d0;
+    --w95-dialog-gray: #808080;
+    --w95-dialog-gray-light: #b5b5b5;
+    --w95-text: #222222;
+    --w95-link: #0000ff;
+    --w95-desktop: #008080;
+  }
+
+  .w95-root {
+    font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
+    font-size: 11px;
+    color: var(--w95-text);
+    -webkit-font-smoothing: none;
+  }
+}
+
+@layer components {
+  /* checkmark glyph used by Checkbox */
+  .w95-check::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 1px;
+    width: 7px;
+    height: 7px;
+    border-left: 2px solid var(--w95-text);
+    border-bottom: 2px solid var(--w95-text);
+    transform: rotate(-45deg);
+  }
+
+  .w95-title-glyph-min::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 4px;
+    width: 6px;
+    height: 2px;
+    background: var(--w95-text);
+  }
+
+  .w95-title-glyph-max::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--w95-text);
+    border-top-width: 2px;
+    box-sizing: border-box;
+  }
+
+  .w95-title-glyph-close::before,
+  .w95-title-glyph-close::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 1px;
+    height: 9px;
+    background: var(--w95-text);
+  }
+
+  .w95-title-glyph-close::before {
+    transform: rotate(45deg);
+  }
+
+  .w95-title-glyph-close::after {
+    transform: rotate(-45deg);
+  }
+}
