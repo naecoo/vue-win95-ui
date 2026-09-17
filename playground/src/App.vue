@@ -11,11 +11,20 @@ import {
   W95ProgressBar,
   W95GroupBox,
   W95FieldRow,
-  W95StatusBar,
   W95StatusBarField,
   W95Divider,
   W95Window,
   W95Dialog,
+  W95Tabs,
+  W95TabList,
+  W95Tab,
+  W95TabPanel,
+  W95MenuBar,
+  W95MenuItem,
+  W95Toolbar,
+  W95Tree,
+  W95TreeItem,
+  W95Splitter,
 } from "vue-win95";
 
 const name = ref("World");
@@ -26,6 +35,8 @@ const pb = ref("smooth");
 const rating = ref("3");
 const volume = ref(5);
 const progress = ref(40);
+const tab = ref("desktop");
+const treeSel = ref("css");
 
 const ratingOptions = [
   { value: "5", label: "5 - Incredible!" },
@@ -87,6 +98,46 @@ const ratingOptions = [
       <div class="flex items-center gap-3">
         <span>PB: {{ pb }} · Rate: {{ rating }} · Vol: {{ volume }}</span>
         <W95Button @click="progress = (progress + 20) % 120">+20%</W95Button>
+      </div>
+    </W95Window>
+
+    <W95Window title="Navigation" :width="440">
+      <W95MenuBar class="mb-2 -mt-1 -mx-1">
+        <W95MenuItem>File</W95MenuItem>
+        <W95MenuItem>Edit</W95MenuItem>
+        <W95MenuItem>View</W95MenuItem>
+        <W95MenuItem disabled>Help</W95MenuItem>
+      </W95MenuBar>
+      <W95Toolbar class="mb-2 -mx-1">
+        <W95Button>New</W95Button>
+        <W95Button>Open</W95Button>
+        <W95Button>Save</W95Button>
+      </W95Toolbar>
+
+      <W95Tabs v-model="tab" class="mb-2">
+        <W95TabList>
+          <W95Tab value="desktop">Desktop</W95Tab>
+          <W95Tab value="computer">My computer</W95Tab>
+          <W95Tab value="panel">Control panel</W95Tab>
+        </W95TabList>
+        <W95TabPanel value="desktop">Desktop background settings.</W95TabPanel>
+        <W95TabPanel value="computer">Drives and devices.</W95TabPanel>
+        <W95TabPanel value="panel">System configuration.</W95TabPanel>
+      </W95Tabs>
+
+      <div class="flex gap-2">
+        <W95Tree v-model="treeSel" class="w-[180px]">
+          <W95TreeItem value="toc" label="Table of Contents" />
+          <W95TreeItem value="css" label="CSS" has-children>
+            <W95TreeItem value="selectors" label="Selectors" />
+            <W95TreeItem value="specificity" label="Specificity" />
+          </W95TreeItem>
+          <W95TreeItem value="js" label="JavaScript" />
+        </W95Tree>
+        <W95Splitter vertical :min="160" :max="280" />
+        <div class="flex-1 bg-w95-highlight shadow-w95-field p-2 font-w95 text-w95">
+          Selected: {{ treeSel }}
+        </div>
       </div>
     </W95Window>
 
