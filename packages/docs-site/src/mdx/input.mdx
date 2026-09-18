@@ -53,8 +53,8 @@ Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / Progress
 |------|------|---------|------|
 | `modelValue` | `string` | — | 值（v-model） |
 | `type` | `text\|password\|email\|number\|search\|tel\|url` | `text` | 输入类型 |
-| `label` | `string` | `""` | 左侧标签 |
-| `placeholder` | `string` | `""` | 占位符 |
+| `label` | `string` | 空 | 左侧标签 |
+| `placeholder` | `string` | 空 | 占位符 |
 | `disabled` / `readonly` | `boolean` | `false` | 状态 |
 | `id` | `string` | 自动 | 供 label 关联 |
 
@@ -75,9 +75,9 @@ Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / Progress
 
 | Prop | Type | Default | 说明 |
 |------|------|---------|------|
-| `modelValue` | `string \| number` | `""` | 选中值（v-model） |
+| `modelValue` | `string \| number` | 空 | 选中值（v-model） |
 | `options` | `{ value, label, disabled? }[]` | `[]` | 选项列表 |
-| `label` | `string` | `""` | 标签 |
+| `label` | `string` | 空 | 标签 |
 | `disabled` | `boolean` | `false` | 禁用 |
 
 | Event | Payload |
@@ -105,7 +105,7 @@ Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / Progress
 |------|------|---------|------|
 | `modelValue` | `number` | `0` | 当前值（v-model） |
 | `min` / `max` / `step` | `number` | `0`/`100`/`1` | 范围与步长 |
-| `label` | `string` | `""` | 标签 |
+| `label` | `string` | 空 | 标签 |
 | `disabled` | `boolean` | `false` | 禁用 |
 
 原生 `input[type=range]` 皮肤化，键盘 ←→ 可用。
@@ -126,7 +126,7 @@ Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / Progress
 |------|------|---------|------|
 | `modelValue` | `number` | `0` | 数值（v-model） |
 | `min` / `max` / `step` | `number` | `0`/`99`/`1` | 钳制范围 |
-| `label` | `string` | `""` | 可访问名称 |
+| `label` | `string` | 空 | 可访问名称 |
 | `disabled` | `boolean` | `false` | 禁用 |
 
 `role="spinbutton"`，支持 ↑↓ 与 ▲▼ 按钮。
@@ -147,7 +147,7 @@ Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / Progress
 |------|------|---------|------|
 | `modelValue` | `string \| number \| null` | `null` | 选中值（v-model） |
 | `options` | `{ value, label, disabled? }[]` | `[]` | 选项 |
-| `label` | `string` | `""` | 标签 |
+| `label` | `string` | 空 | 标签 |
 | `disabled` | `boolean` | `false` | 禁用 |
 
 键盘：↑↓ Home End Enter Esc；`combobox` + `listbox` + `option`。
@@ -184,7 +184,7 @@ Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / Progress
 
 | Prop | Type | Default | 说明 |
 |------|------|---------|------|
-| `legend` | `string` | `""` | 边框图例 |
+| `legend` | `string` | 空 | 边框图例 |
 
 ### API — `W95ProgressBar`
 

@@ -72,7 +72,7 @@ const sound = ref(false);
 | Prop | Type | Default | 说明 |
 |------|------|---------|------|
 | `modelValue` | `boolean` | `false` | 选中态（v-model） |
-| `label` | `string` | `""` | 标签文本 |
+| `label` | `string` | 空 | 标签文本 |
 | `disabled` | `boolean` | `false` | 禁用 |
 | `id` | `string` | 自动 | 关联 label |
 | `name` / `value` | — | — | 原生表单字段 |
@@ -101,7 +101,7 @@ const sound = ref(false);
 | Prop | Type | Default | 说明 |
 |------|------|---------|------|
 | `modelValue` | `string \| number \| boolean` | — | 选中值（v-model） |
-| `legend` | `string` | `""` | fieldset 图例 |
+| `legend` | `string` | 空 | fieldset 图例 |
 | `name` | `string` | 自动 | 原生 name |
 | `disabled` | `boolean` | `false` | 整组禁用 |
 
@@ -134,7 +134,7 @@ Group 内 Radio 通过 provide/inject 自动同步；无障碍角色为 `radiogr
 | Prop | Type | Default | 说明 |
 |------|------|---------|------|
 | `modelValue` | `boolean` | `false` | 开关态（v-model） |
-| `label` | `string` | `""` | 标签 |
+| `label` | `string` | 空 | 标签 |
 | `disabled` | `boolean` | `false` | 禁用 |
 
 角色：`role="switch"` + `aria-checked`。
@@ -157,7 +157,7 @@ Group 内 Radio 通过 provide/inject 自动同步；无障碍角色为 `radiogr
 | Prop | Type | Default | 说明 |
 |------|------|---------|------|
 | `src` | `string` | — | 图片地址 |
-| `alt` | `string` | `""` | 图片 alt / title |
+| `alt` | `string` | 空 | 图片 alt / title |
 | `initials` | `string` | `"?"` | 无图时首字母 |
 | `size` | `sm \| md \| lg` | `md` | 尺寸 |
 

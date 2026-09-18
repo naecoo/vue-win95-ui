@@ -20,9 +20,10 @@ import {
 const tab = ref("desktop");
 const tree = ref("css");
 const page = ref(2);
+function noop() {}
 const crumbs = [
-  { label: "Desktop", click: () => {} },
-  { label: "My Computer", click: () => {} },
+  { label: "Desktop", click: noop },
+  { label: "My Computer", click: noop },
   { label: "C:" },
 ];
 </script>
@@ -68,7 +69,7 @@ Tabs · Menu · Toolbar · Tree · Splitter · Breadcrumb · Pagination
     <W95MenuBar>
       <W95MenuItem>File</W95MenuItem>
       <W95MenuItem>Edit</W95MenuItem>
-      <W95MenuItem @click="() => {}">View</W95MenuItem>
+      <W95MenuItem @click="noop">View</W95MenuItem>
       <W95MenuItem disabled>Help</W95MenuItem>
     </W95MenuBar>
     <div style="height:6px"></div>
