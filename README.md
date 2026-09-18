@@ -30,7 +30,7 @@ import { W95Button, W95Window } from "vue-win95";
 import "vue-win95/styles.css";
 ```
 
-See docs site **Install** page for Tailwind preset usage.
+See docs site **安装 Install** for Tailwind preset usage.
 
 ## Theming
 
@@ -49,10 +49,16 @@ pnpm docs        # http://localhost:5174
 pnpm docs:build
 ```
 
-`packages/docs-site` 是 **Win95 桌面壳文档站**：
-- 桌面图标 + Start 菜单 + 任务栏 + 可拖拽窗口
-- 文档页为 `.mdx`（Markdown + Vue），**内嵌真实的 vue-win95 组件演示**
-- 扫描线 CRT 氛围、像素字体、双层 inset 边框
+| 页面 | 内容 |
+|------|------|
+| Welcome | 组件库内容与技术栈 |
+| Install | 全局 / 按需 / Tailwind preset |
+| Button · Form · Window · Navigation | 组件说明 + live demo |
+| Overlays · Data · Misc | 其余组件分类 |
+| Gallery | 综合演示 |
+| Changelog & Sponsor | 版本历史与链接 |
+
+特色：桌面图标、Start 菜单、任务栏、可拖拽窗口；`.mdx` 文档内嵌真实组件。
 
 ## Scripts
 
@@ -64,4 +70,5 @@ pnpm docs:build
 | `pnpm test` | Vitest + axe |
 | `pnpm build` | library build |
 
-See [docs/components.md](./docs/components.md) for the component catalog.
+- Component catalog: [docs/components.md](./docs/components.md)
+- Changelog: [packages/vue-win95/CHANGELOG.md](./packages/vue-win95/CHANGELOG.md)

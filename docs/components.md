@@ -3,6 +3,25 @@
 All components ship keyboard support and ARIA following W3C APG where applicable.
 Class prefix: `w95-*`. Theme tokens: CSS variables `--w95-*`.
 
+Interactive docs: `pnpm docs` (Win95 desktop MDX site) or `pnpm story`.
+
+## Install
+
+```bash
+pnpm add vue-win95
+```
+
+```ts
+// global
+import Win95 from "vue-win95";
+import "vue-win95/styles.css";
+app.use(Win95);
+
+// on-demand
+import { W95Button } from "vue-win95";
+import "vue-win95/styles.css";
+```
+
 ## Foundations
 
 | Component | Import | Notes |
