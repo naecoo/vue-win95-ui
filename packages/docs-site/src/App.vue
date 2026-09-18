@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 type PageId =
   | "welcome"
@@ -74,7 +74,9 @@ const resolved = new Map<PageId, unknown>();
 
 async function loadMod(id: PageId) {
   if (!resolved.has(id)) {
-    resolved.set(id, await pages[id]!.mod());
+    const mod = (await pages[id]!.mod()) as { default?: unknown };
+    // vite-plugin-md exports a Vue component on `default`
+    resolved.set(id, mod.default ?? mod);
   }
   return resolved.get(id);
 }
@@ -96,7 +98,13 @@ function openPage(id: PageId) {
     z: ++zTop.value,
     minimized: false,
   });
-  void loadMod(id);
+  void ensurePage(id);
+}
+
+async function ensurePage(id: PageId) {
+  const comp = await loadMod(id);
+  // replace whole object so nested key is reactive
+  modCache.value = { ...modCache.value, [id]: comp };
 }
 
 function focus(w: WinState) {
@@ -116,11 +124,13 @@ function restoreFromTaskbar(w: WinState) {
   focus(w);
 }
 
-/* drag */
+/* drag — only from title text / empty bar area, never from control buttons */
 let drag: { w: WinState; ox: number; oy: number } | null = null;
 
 function onTitleDown(e: PointerEvent, w: WinState) {
   focus(w);
+  const target = e.target as HTMLElement;
+  if (target.closest("button")) return; // let close/minimize receive click
   drag = { w, ox: e.clientX - w.x, oy: e.clientY - w.y };
   (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 }
@@ -138,13 +148,11 @@ function onTitleUp() {
 const pageIds = Object.keys(pages) as PageId[];
 const modCache = ref<Record<string, unknown>>({});
 
-// eagerly resolve opened pages into cache for template
-import { watch } from "vue";
 watch(
   () => windows.value.map((w) => w.id).join(","),
   async () => {
     for (const w of windows.value) {
-      modCache.value[w.id] = await loadMod(w.id);
+      await ensurePage(w.id);
     }
   },
   { immediate: true }
@@ -157,10 +165,20 @@ function iconClass(kind: string) {
       ? "w95-icon w95-icon-computer"
       : "w95-icon w95-icon-help";
 }
+
+function onDesktopClick(e: MouseEvent) {
+  const t = e.target as HTMLElement;
+  if (!t.closest(".w95-start-panel") && !t.closest("[data-start-btn]")) {
+    startOpen.value = false;
+  }
+}
 </script>
 
 <template>
-  <div class="w95-scanlines relative w-full h-full overflow-hidden bg-w95-desktop select-none">
+  <div
+    class="w95-scanlines relative w-full h-full overflow-hidden bg-w95-desktop select-none"
+    @pointerdown="onDesktopClick"
+  >
     <!-- Desktop icons -->
     <div class="absolute top-3 left-3 flex flex-col gap-4">
       <button
@@ -207,12 +225,14 @@ function iconClass(kind: string) {
               type="button"
               class="w-4 h-[14px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised w95-title-glyph-min relative cursor-default"
               aria-label="Minimize"
+              @pointerdown.stop
               @click.stop="minimize(w)"
             />
             <button
               type="button"
               class="w-4 h-[14px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised w95-title-glyph-close relative cursor-default ml-0.5"
               aria-label="Close"
+              @pointerdown.stop
               @click.stop="close(w)"
             />
           </div>
@@ -225,7 +245,8 @@ function iconClass(kind: string) {
               inset -2px -2px #808080, inset 2px 2px #ffffff;
           "
         >
-          <component :is="modCache[w.id]" v-if="modCache[w.id]" />
+          <component :is="modCache[w.id]" v-if="modCache[w.id]" :key="w.id" />
+          <p v-else class="font-w95 text-w95 m-0">Loading…</p>
         </div>
 
         <div class="flex gap-px mx-px mb-px">
@@ -272,8 +293,10 @@ function iconClass(kind: string) {
     >
       <button
         type="button"
+        data-start-btn
         class="min-w-w95-btn h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised font-bold cursor-default active:shadow-w95-sunken"
         :aria-expanded="startOpen"
+        @pointerdown.stop
         @click="startOpen = !startOpen"
       >
         <span class="mr-1">🪟</span> Start

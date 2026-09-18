@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useFocusTrap } from "../../composables/useFocusTrap";
 import { useId } from "../../composables/useId";
 import W95Window from "../window/Window.vue";
@@ -64,6 +64,13 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
+function onDocKeydown(e: KeyboardEvent) {
+  if (e.key === "Escape" && props.modelValue) close();
+}
+
+onMounted(() => document.addEventListener("keydown", onDocKeydown));
+onBeforeUnmount(() => document.removeEventListener("keydown", onDocKeydown));
+
 watch(
   () => props.modelValue,
   async (val) => {
@@ -82,7 +89,7 @@ watch(
     <Transition name="w95-dialog">
       <div
         v-if="modelValue"
-        class="fixed inset-0 z-[1000] flex justify-center items-start pt-[15vh] bg-transparent"
+        class="fixed inset-0 z-[3000] flex justify-center items-start pt-[15vh] bg-black/20"
         role="presentation"
         @click.self="onOverlayClick"
         @keydown="onKeydown"
@@ -114,8 +121,8 @@ watch(
             </div>
             <div class="flex justify-center gap-w95-sm">
               <slot name="footer">
-                <W95Button default @click="onConfirm">OK</W95Button>
-                <W95Button @click="onCancel">Cancel</W95Button>
+                <W95Button default @pointerdown.stop @click="onConfirm">OK</W95Button>
+                <W95Button @pointerdown.stop @click="onCancel">Cancel</W95Button>
               </slot>
             </div>
           </W95Window>
