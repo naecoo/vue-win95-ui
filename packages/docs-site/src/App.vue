@@ -8,6 +8,9 @@ type PageId =
   | "input"
   | "window"
   | "navigation"
+  | "overlays"
+  | "data"
+  | "misc"
   | "gallery"
   | "changelog";
 
@@ -35,12 +38,12 @@ const pages: Record<
     mod: () => import("./mdx/install.mdx"),
   },
   button: {
-    title: "Button 文档",
+    title: "Button / Controls",
     icon: "folder",
     mod: () => import("./mdx/button.mdx"),
   },
   input: {
-    title: "Input / Form 文档",
+    title: "Input / Form",
     icon: "folder",
     mod: () => import("./mdx/input.mdx"),
   },
@@ -50,9 +53,24 @@ const pages: Record<
     mod: () => import("./mdx/window.mdx"),
   },
   navigation: {
-    title: "Navigation 组件",
+    title: "Navigation",
     icon: "folder",
     mod: () => import("./mdx/navigation.mdx"),
+  },
+  overlays: {
+    title: "Overlays 浮层",
+    icon: "folder",
+    mod: () => import("./mdx/overlays.mdx"),
+  },
+  data: {
+    title: "Data 数据",
+    icon: "folder",
+    mod: () => import("./mdx/data.mdx"),
+  },
+  misc: {
+    title: "Misc 其它",
+    icon: "folder",
+    mod: () => import("./mdx/misc.mdx"),
   },
   gallery: {
     title: "Component Gallery",
@@ -178,6 +196,17 @@ function iconClass(kind: string) {
       : "w95-icon w95-icon-help";
 }
 
+/** Desktop: show a curated subset; Start menu lists all */
+const desktopIds = computed<PageId[]>(() => [
+  "welcome",
+  "install",
+  "button",
+  "window",
+  "navigation",
+  "gallery",
+  "changelog",
+]);
+
 function onDesktopClick(e: MouseEvent) {
   const t = e.target as HTMLElement;
   if (!t.closest(".w95-start-panel") && !t.closest("[data-start-btn]")) {
@@ -191,10 +220,10 @@ function onDesktopClick(e: MouseEvent) {
     class="w95-scanlines relative w-full h-full overflow-hidden bg-w95-desktop select-none"
     @pointerdown="onDesktopClick"
   >
-    <!-- Desktop icons -->
+    <!-- Desktop icons (curated) -->
     <div class="absolute top-3 left-3 flex flex-col gap-4">
       <button
-        v-for="id in pageIds"
+        v-for="id in desktopIds"
         :key="id"
         type="button"
         class="flex flex-col items-center gap-1 w-[76px] bg-transparent border-0 cursor-default p-1 focus:outline-none"
@@ -204,7 +233,7 @@ function onDesktopClick(e: MouseEvent) {
         <span :class="iconClass(pages[id]!.icon)" />
         <span
           class="text-white text-center px-1 leading-tight"
-          style="text-shadow: 1px 1px 0 #000"
+          style="text-shadow: 1px 1px 0 #000;font-size:12px"
         >
           {{ pages[id]!.title }}
         </span>
@@ -283,11 +312,12 @@ function onDesktopClick(e: MouseEvent) {
     >
       <div class="w95-start-panel">
         <div class="w95-start-banner">vue-win95</div>
-        <ul class="flex-1 list-none m-0 p-1 font-w95 text-w95">
+        <ul class="flex-1 list-none m-0 p-1 font-w95 text-w95 max-h-[50vh] overflow-auto">
           <li
             v-for="id in pageIds"
             :key="id"
-            class="px-2 py-1 cursor-default hover:bg-w95-blue hover:text-w95-highlight flex items-center gap-2"
+            class="px-2 py-1.5 cursor-default hover:bg-w95-blue hover:text-w95-highlight flex items-center gap-2"
+            style="font-size:13px"
             @click="openPage(id)"
           >
             <span class="w-4 text-center" aria-hidden="true">

@@ -1,0 +1,84 @@
+<script setup>
+import { ref } from "vue";
+import {
+  W95Button,
+  W95Tooltip,
+  W95Toast,
+  W95Dropdown,
+  W95MenuItem,
+  W95ComboBox,
+} from "vue-win95";
+
+const ddOpen = ref(false);
+const driver = ref(null);
+const toasts = ref([
+  { id: 1, title: "Notepad", message: "Document saved.", duration: 0 },
+]);
+const options = [
+  { value: 1, label: "MySQL ODBC 3.51 Driver" },
+  { value: 2, label: "SQL Server" },
+  { value: 3, label: "Access Driver" },
+];
+
+let n = 1;
+function pushToast() {
+  toasts.value = [
+    ...toasts.value,
+    { id: ++n, title: "System", message: "Hello from Windows 95." },
+  ];
+}
+</script>
+
+# Overlays 浮层
+
+Tooltip / Toast / Dropdown / ComboBox —— 弹出与反馈类组件。
+
+## Tooltip
+
+悬停或聚焦后延迟显示，`role="tooltip"`。
+
+<div class="demo">
+  <div class="demo-label">TOOLTIP</div>
+  <W95Tooltip content="Performs the default action" placement="top">
+    <W95Button default>Hover me</W95Button>
+  </W95Tooltip>
+</div>
+
+## Dropdown
+
+`aria-haspopup="menu"`，支持方向键与 Esc，关闭后焦点回到触发按钮。
+
+<div class="demo">
+  <div class="demo-label">DROPDOWN</div>
+  <W95Dropdown v-model="ddOpen" label="File">
+    <W95MenuItem>New</W95MenuItem>
+    <W95MenuItem>Open…</W95MenuItem>
+    <W95MenuItem>Save</W95MenuItem>
+    <W95MenuItem disabled>Print</W95MenuItem>
+  </W95Dropdown>
+</div>
+
+## ComboBox
+
+APG Combobox：输入过滤 + listbox + 键盘选择。
+
+<div class="demo">
+  <div class="demo-label">COMBOBOX</div>
+  <W95ComboBox v-model="driver" :options="options" label="Driver" />
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">Value: {{ driver }}</p>
+</div>
+
+## Toast
+
+右上角通知，支持自动关闭与手动关闭，`aria-live="polite"`。
+
+<div class="demo">
+  <div class="demo-label">TOAST</div>
+  <W95Button @click="pushToast">Show toast</W95Button>
+  <W95Toast v-model="toasts" />
+</div>
+
+<style>
+.demo { background:#008080;padding:14px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+</style>
