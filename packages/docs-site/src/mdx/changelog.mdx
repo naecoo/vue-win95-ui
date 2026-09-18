@@ -1,0 +1,69 @@
+<script setup>
+import { W95Window, W95Button } from "vue-win95";
+</script>
+
+# Changelog
+
+本项目遵循 Keep a Changelog 风格，版本号遵循 SemVer。
+
+## 0.2.0 — 2026-09-17
+
+### Added
+- **基础**：Button, Input, Checkbox, Radio/RadioGroup, Select, Slider, ProgressBar, GroupBox, FieldRow, Divider, StatusBar
+- **容器**：Window, Dialog（焦点陷阱）, Tabs, Menu/MenuBar, Toolbar, Tree, Splitter, Accordion
+- **浮层**：Tooltip, Toast, Dropdown, ComboBox
+- **数据**：Table, SpinButton, DatePicker, Breadcrumb, Pagination, Switch, Avatar
+- **工程**：`@win95/tailwind-preset`、内置 Pixelated MS Sans Serif、`cn()` 工具
+- **Composables**：`useId`、`useFocusTrap`、`useRovingFocus`
+- **文档**：Win95 桌面 MDX 文档站、Storybook
+- **质量**：104+ Vitest / vitest-axe 用例
+
+### Theme
+- CSS 变量 `--w95-*`
+- Tailwind 工具类 `w95-*`
+- 统一 `.w95-focus` 点状焦点环
+
+### Docs
+- 修复 MDX 内容加载与窗口/对话框关闭
+- 更大可读字号、安装指南、Changelog 与赞助信息
+
+## 0.1.0
+
+- pnpm monorepo 脚手架
+- Button / Input / Checkbox / Window / Dialog
+- Tailwind + shadcn 模式、a11y 测试基线
+
+---
+
+## Sponsor & Links
+
+感谢使用 **vue-win95**！
+
+| 资源 | 说明 |
+|------|------|
+| 仓库 | GitHub · `win95-ui` |
+| 文档站 | 本桌面应用（`pnpm docs`） |
+| Storybook | `pnpm story` 组件画廊 |
+| Playground | `pnpm dev` 本地演示 |
+| Changelog | `packages/vue-win95/CHANGELOG.md` |
+| 问题反馈 | GitHub Issues |
+| 赞助 | GitHub Sponsors（若已配置）；也欢迎 Star、PR、技术分享 |
+
+<div class="demo">
+  <div class="demo-label">SPONSOR · LINKS</div>
+  <W95Window title="Support vue-win95" :width="440">
+    <p style="font-size:14px;margin:0 0 12px">
+      如果 vue-win95 对你有帮助，欢迎 Star、提交 PR，或考虑赞助维护工作。
+    </p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <W95Button default>★ Star on GitHub</W95Button>
+      <W95Button>Report Issue</W95Button>
+      <W95Button>Sponsor</W95Button>
+    </div>
+  </W95Window>
+</div>
+
+<style>
+.demo { background:#008080;padding:14px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+</style>

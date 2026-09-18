@@ -3,11 +3,13 @@ import { computed, ref, watch } from "vue";
 
 type PageId =
   | "welcome"
+  | "install"
   | "button"
   | "input"
   | "window"
   | "navigation"
-  | "gallery";
+  | "gallery"
+  | "changelog";
 
 interface WinState {
   id: PageId;
@@ -26,6 +28,11 @@ const pages: Record<
     title: "Welcome to vue-win95",
     icon: "help",
     mod: () => import("./mdx/welcome.mdx"),
+  },
+  install: {
+    title: "安装 Install",
+    icon: "folder",
+    mod: () => import("./mdx/install.mdx"),
   },
   button: {
     title: "Button 文档",
@@ -51,6 +58,11 @@ const pages: Record<
     title: "Component Gallery",
     icon: "computer",
     mod: () => import("./mdx/gallery.mdx"),
+  },
+  changelog: {
+    title: "Changelog & Sponsor",
+    icon: "help",
+    mod: () => import("./mdx/changelog.mdx"),
   },
 };
 
@@ -209,7 +221,7 @@ function onDesktopClick(e: MouseEvent) {
       @pointerdown="focus(w)"
     >
       <div
-        class="bg-w95-surface shadow-w95-window p-[3px] w-[640px] max-w-[calc(100vw-24px)] font-w95 text-w95"
+        class="bg-w95-surface shadow-w95-window p-[3px] w-[720px] max-w-[calc(100vw-24px)] font-w95 text-w95"
       >
         <div
           class="bg-gradient-to-r from-w95-blue to-w95-blue-light flex items-center justify-between px-[3px] py-[2px] cursor-move touch-none"
@@ -239,7 +251,7 @@ function onDesktopClick(e: MouseEvent) {
         </div>
 
         <div
-          class="m-2 p-2 max-h-[60vh] overflow-auto bg-w95-surface"
+          class="m-2 p-3 max-h-[62vh] overflow-auto bg-w95-surface docs-body"
           style="
             box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf,
               inset -2px -2px #808080, inset 2px 2px #ffffff;

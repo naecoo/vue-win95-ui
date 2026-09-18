@@ -1,0 +1,128 @@
+<script setup>
+import { W95Window, W95Button } from "vue-win95";
+</script>
+
+# 安装 Install
+
+## 要求
+
+- Node.js 18+
+- Vue `^3.4.0`（peer dependency）
+
+## 包管理器
+
+```bash
+# pnpm（推荐）
+pnpm add vue-win95
+
+# npm
+npm install vue-win95
+
+# yarn
+yarn add vue-win95
+```
+
+## 全局安装（整库引入）
+
+适合快速上手、原型或不介意包体积的项目。
+
+```ts
+// main.ts
+import { createApp } from "vue";
+import App from "./App.vue";
+// 1. 引入样式（含 tokens、字体、组件工具类）
+import "vue-win95/styles.css";
+// 2. 全局注册全部组件
+import Win95 from "vue-win95";
+
+const app = createApp(App);
+app.use(Win95);
+app.mount("#app");
+```
+
+模板中直接使用：
+
+```vue
+<template>
+  <W95Window title="Hello" :width="320">
+    <W95Button default>OK</W95Button>
+  </W95Window>
+</template>
+```
+
+## 按需引入（推荐）
+
+只打包用到的组件，体积更小。
+
+### 1. 安装自动导入插件（可选）
+
+```bash
+pnpm add -D unplugin-vue-components
+```
+
+```ts
+// vite.config.ts
+import Components from "unplugin-vue-components/vite";
+
+export default {
+  plugins: [
+    Components({
+      // 根据需要配置 resolver；也可手动 import
+    }),
+  ],
+};
+```
+
+### 2. 手动按需 import（零配置）
+
+```vue
+<script setup lang="ts">
+import { W95Button, W95Input, W95Window } from "vue-win95";
+import "vue-win95/styles.css";
+</script>
+
+<template>
+  <W95Window title="Form" :width="300">
+    <W95Input label="Name" />
+    <W95Button default>Submit</W95Button>
+  </W95Window>
+</template>
+```
+
+样式只需引入一次 `vue-win95/styles.css`（已含字体与 tokens）。
+
+## Tailwind 工程内使用（高级）
+
+在 monorepo / 已有 Tailwind 项目中，可复用官方 preset，避免重复 token：
+
+```ts
+// tailwind.config.ts
+import preset from "@win95/tailwind-preset";
+
+export default {
+  presets: [preset],
+  content: [
+    "./index.html",
+    "./src/**/*.{vue,ts}",
+    // 扫描库源码以便生成 w95-* 工具类
+    "./node_modules/vue-win95/dist/**/*.{js,mjs}",
+  ],
+};
+```
+
+并保证全局 CSS 中有 `--w95-*` 变量（`styles.css` 已提供）。
+
+## 安装后自检
+
+<div class="demo">
+  <div class="demo-label">SMOKE TEST</div>
+  <W95Window title="Install Check" :width="300">
+    <p style="font-size:13px;margin:0 0 8px">若能看到 Win95 窗口与按钮，说明安装成功。</p>
+    <W95Button default>It works!</W95Button>
+  </W95Window>
+</div>
+
+<style>
+.demo { background:#008080;padding:12px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:6px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+</style>

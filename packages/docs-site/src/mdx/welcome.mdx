@@ -1,47 +1,50 @@
 <script setup>
-import { W95Window, W95Button } from "vue-win95";
+import { W95Window, W95Button, W95Avatar } from "vue-win95";
 </script>
 
-# Welcome to **vue-win95**
+# vue-win95
 
-这是一个用 **本组件库自己搭建** 的 Windows 95 风格文档站。
-
-- 文档源文件：`MDX / Markdown + Vue 组件`
-- 页面外壳：桌面、窗口、任务栏、Start 菜单
-- 演示区：直接渲染 `vue-win95` 真实组件
+**Windows 95 风格** 的 Vue 3 组件库。开箱即用的复古桌面 UI，同时保证现代无障碍实践。
 
 <div class="demo">
-  <div class="demo-label">LIVE DEMO</div>
-  <W95Window title="My First VB4 Program" :width="280">
-    <p style="margin:0 0 8px">Hello, documentation!</p>
+  <div class="demo-label">LIVE PREVIEW</div>
+  <W95Window title="vue-win95" :width="360">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+      <W95Avatar initials="W9" size="lg" />
+      <div>
+        <div style="font-weight:bold;font-size:14px">Hello, Windows 95!</div>
+        <div style="opacity:0.85">Vue 3 · TypeScript · Tailwind</div>
+      </div>
+    </div>
     <W95Button default>OK</W95Button>
   </W95Window>
 </div>
 
-## 如何浏览
+## 组件库内容
 
-1. 在桌面 **单击 / 双击** 图标打开窗口
-2. 或点击左下角 **Start** 从菜单打开
-3. 任务栏可最小化 / 恢复窗口
+约 **35 个** 组件，覆盖桌面应用常见界面：
 
-## 技术要点
+| 分类 | 组件 |
+|------|------|
+| 基础 | Button, Input, Checkbox, Radio, Select, Slider, Switch, Avatar |
+| 容器 | Window, Dialog, GroupBox, Accordion, StatusBar, Divider |
+| 导航 | Tabs, MenuBar, Toolbar, Tree, Breadcrumb, Pagination, Splitter |
+| 浮层 | Tooltip, Toast, Dropdown, ComboBox |
+| 数据 | Table, SpinButton, DatePicker, ProgressBar |
 
-- Vue 3 + TypeScript
-- Tailwind shadcn 模式 + `--w95-*` tokens
-- WAI-ARIA APG 键盘与无障碍
-- 像素字体 Pixelated MS Sans Serif（内置）
+另提供无障碍 composables：`useId` / `useFocusTrap` / `useRovingFocus`。
 
-<style>
-.demo {
-  background: #008080;
-  padding: 12px;
-  margin: 8px 0;
-}
-.demo-label {
-  color: #fff;
-  font-weight: bold;
-  margin-bottom: 6px;
-  font-family: "Pixelated MS Sans Serif", sans-serif;
-  font-size: 11px;
-}
-</style>
+## 技术栈
+
+- **Vue 3** + Composition API + `<script setup>`
+- **TypeScript** 严格类型，完整 props / emits 推导
+- **Tailwind CSS**（shadcn 模式）：`cn()` + design tokens
+- **主题**：CSS 变量 `--w95-*`，可整体换肤
+- **无障碍**：对齐 W3C APG，语义化 HTML + 键盘操作
+- **视觉**：双层 inset 边框、像素字体、标题栏渐变
+
+## 链接
+
+- 安装说明 → Start 菜单 **Install**
+- 更新日志 → **Changelog**
+- 源码与赞助见 Changelog 页底部

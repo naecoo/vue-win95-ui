@@ -16,7 +16,7 @@ const props = withDefaults(
   {
     title: "Dialog",
     showClose: true,
-    width: 320,
+    width: 480,
     closeOnOverlay: true,
   }
 );

@@ -6,22 +6,31 @@ Windows 95 style Vue 3 component library.
 - **A11y**: WAI-ARIA APG patterns, semantic HTML, focus management
 - **Theme**: CSS custom properties + shared Tailwind preset
 
-## Quick start
+## Install
 
 ```bash
 pnpm add vue-win95
+# or: npm i vue-win95
 ```
+
+### Global
 
 ```ts
 import { createApp } from "vue";
-import App from "./App.vue";
-// pick a theme CSS that includes tokens + Tailwind-generated utilities
+import Win95 from "vue-win95";
 import "vue-win95/styles.css";
 
-const app = createApp(App);
+createApp(App).use(Win95).mount("#app");
 ```
 
-When consuming from source / monorepo, point Tailwind at the package and use `@win95/tailwind-preset`.
+### On-demand
+
+```ts
+import { W95Button, W95Window } from "vue-win95";
+import "vue-win95/styles.css";
+```
+
+See docs site **Install** page for Tailwind preset usage.
 
 ## Theming
 

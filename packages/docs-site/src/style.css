@@ -144,70 +144,107 @@ body {
   }
 }
 
-/* Markdown body inside Help windows */
+/* Markdown body inside Help windows — larger for readability */
 .w95-md {
   font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.55;
   color: var(--w95-text);
   -webkit-font-smoothing: none;
+}
+
+.docs-body {
+  font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .w95-md h1,
 .w95-md h2,
 .w95-md h3 {
   font-weight: bold;
-  margin: 0.6em 0 0.35em;
-  font-size: 14px;
+  margin: 0.7em 0 0.4em;
+  font-size: 18px;
 }
 
 .w95-md h2 {
   border-bottom: 1px dotted var(--w95-button-shadow);
-  padding-bottom: 2px;
-  font-size: 13px;
+  padding-bottom: 3px;
+  font-size: 16px;
 }
 
-.w95-md p {
-  margin: 0.4em 0;
+.w95-md h3 {
+  font-size: 15px;
+}
+
+.w95-md p,
+.w95-md li {
+  margin: 0.45em 0;
+  font-size: 14px;
 }
 
 .w95-md code {
   background: var(--w95-button-highlight);
   box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
     inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
-  padding: 0 4px;
+  padding: 1px 5px;
   font-family: "Courier New", monospace;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .w95-md pre {
   background: var(--w95-button-highlight);
   box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
     inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
-  padding: 8px;
+  padding: 12px;
   overflow: auto;
-  margin: 0.5em 0;
+  margin: 0.6em 0;
 }
 
 .w95-md pre code {
   background: transparent;
   box-shadow: none;
   padding: 0;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .w95-md a {
   color: var(--w95-link);
+  font-size: inherit;
 }
 
-.w95-md ul {
-  margin: 0.35em 0;
-  padding-left: 1.4em;
+.w95-md ul,
+.w95-md ol {
+  margin: 0.4em 0;
+  padding-left: 1.5em;
+}
+
+.w95-md table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 13px;
+  background: var(--w95-button-highlight);
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
+    inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+
+.w95-md th,
+.w95-md td {
+  border: 1px solid var(--w95-button-shadow);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.w95-md th {
+  background: var(--w95-surface);
+  font-weight: bold;
 }
 
 .w95-md .demo {
   background: var(--w95-desktop);
-  padding: 12px;
-  margin: 0.6em 0;
+  padding: 14px;
+  margin: 0.7em 0;
   box-shadow: inset -1px -1px #fff, inset 1px 1px #808080,
     inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
 }
@@ -215,8 +252,23 @@ body {
 .w95-md .demo-label {
   color: var(--w95-button-highlight);
   font-weight: bold;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   letter-spacing: 0.5px;
+  font-size: 12px;
+}
+
+/* Force larger text inside library dialogs when opened on docs site */
+body .w95-dialog-overlay .w95-window__body,
+body [role="alertdialog"] p,
+body [role="alertdialog"] div {
+  font-size: 14px !important;
+  line-height: 1.5;
+}
+
+body [role="alertdialog"] button {
+  min-width: 88px !important;
+  min-height: 28px !important;
+  font-size: 13px !important;
 }
 
 /* Desktop icon glyphs */

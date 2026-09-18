@@ -6,10 +6,24 @@ Windows 95 style Vue 3 component library — TypeScript + Tailwind (shadcn patte
 pnpm add vue-win95
 ```
 
+### Global install
+
 ```ts
+import { createApp } from "vue";
+import Win95 from "vue-win95";
+import "vue-win95/styles.css";
+
+createApp(App).use(Win95).mount("#app");
+```
+
+### On-demand import
+
+```ts
+import { W95Button, W95Dialog } from "vue-win95";
 import "vue-win95/styles.css";
 ```
 
 - Theme via `--w95-*` CSS variables
-- Full component catalog: see `docs/components.md`
+- Component catalog: `docs/components.md`
 - Changelog: `CHANGELOG.md`
+- Sponsor / links: see Changelog in the docs site
