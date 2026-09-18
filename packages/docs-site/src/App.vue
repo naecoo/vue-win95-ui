@@ -38,17 +38,17 @@ const pages: Record<
     mod: () => import("./mdx/install.mdx"),
   },
   button: {
-    title: "Button / Controls",
+    title: "Button & Controls",
     icon: "folder",
     mod: () => import("./mdx/button.mdx"),
   },
   input: {
-    title: "Input / Form",
+    title: "Form 表单",
     icon: "folder",
     mod: () => import("./mdx/input.mdx"),
   },
   window: {
-    title: "Window & Dialog",
+    title: "Window / Dialog",
     icon: "folder",
     mod: () => import("./mdx/window.mdx"),
   },

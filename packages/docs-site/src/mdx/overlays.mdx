@@ -10,7 +10,7 @@ import {
 } from "vue-win95";
 
 const ddOpen = ref(false);
-const driver = ref(null);
+const driver = ref(2);
 const toasts = ref([
   { id: 1, title: "Notepad", message: "Document saved.", duration: 0 },
 ]);
@@ -24,29 +24,40 @@ let n = 1;
 function pushToast() {
   toasts.value = [
     ...toasts.value,
-    { id: ++n, title: "System", message: "Hello from Windows 95." },
+    { id: ++n, title: "System", message: `Hello #${n} from Windows 95.` },
   ];
 }
 </script>
 
 # Overlays 浮层
 
-Tooltip / Toast / Dropdown / ComboBox —— 弹出与反馈类组件。
+Tooltip · Dropdown · ComboBox · Toast
 
 ## Tooltip
 
-悬停或聚焦后延迟显示，`role="tooltip"`。
-
 <div class="demo">
   <div class="demo-label">TOOLTIP</div>
-  <W95Tooltip content="Performs the default action" placement="top">
-    <W95Button default>Hover me</W95Button>
-  </W95Tooltip>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;padding:20px 0">
+    <W95Tooltip content="On top" placement="top"><W95Button>Top</W95Button></W95Tooltip>
+    <W95Tooltip content="On bottom" placement="bottom"><W95Button>Bottom</W95Button></W95Tooltip>
+    <W95Tooltip content="On left" placement="left"><W95Button>Left</W95Button></W95Tooltip>
+    <W95Tooltip content="On right" placement="right"><W95Button>Right</W95Button></W95Tooltip>
+  </div>
 </div>
 
-## Dropdown
+### API — `W95Tooltip`
 
-`aria-haspopup="menu"`，支持方向键与 Esc，关闭后焦点回到触发按钮。
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `content` | `string` | `""` | 提示文案 |
+| `placement` | `top\|bottom\|left\|right` | `top` | 相对位置 |
+| `openDelay` | `number` | `200` | 悬停延迟 ms |
+
+Slot：default 为触发元素。焦点进入也会显示。
+
+---
+
+## Dropdown
 
 <div class="demo">
   <div class="demo-label">DROPDOWN</div>
@@ -56,29 +67,76 @@ Tooltip / Toast / Dropdown / ComboBox —— 弹出与反馈类组件。
     <W95MenuItem>Save</W95MenuItem>
     <W95MenuItem disabled>Print</W95MenuItem>
   </W95Dropdown>
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">open = {{ ddOpen }} · Esc / 外部点击可关闭</p>
 </div>
 
-## ComboBox
+### API — `W95Dropdown`
 
-APG Combobox：输入过滤 + listbox + 键盘选择。
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `boolean` | `false` | 菜单是否打开（v-model） |
+| `label` | `string` | `"Menu"` | 触发按钮文案 |
+
+| Slot | 说明 |
+|------|------|
+| default | 菜单项（建议 `W95MenuItem`） |
+
+触发器：`aria-haspopup=menu`、`aria-expanded`；菜单内 ↑↓ / Home / End / Esc。
+
+---
+
+## ComboBox
 
 <div class="demo">
   <div class="demo-label">COMBOBOX</div>
   <W95ComboBox v-model="driver" :options="options" label="Driver" />
-  <p style="color:#fff;font-size:13px;margin:8px 0 0">Value: {{ driver }}</p>
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">driver = {{ driver }} · 输入可过滤</p>
 </div>
 
-## Toast
+### API — `W95ComboBox`
 
-右上角通知，支持自动关闭与手动关闭，`aria-live="polite"`。
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `string\|number\|null` | `null` | 选中值（v-model） |
+| `options` | `{value,label,disabled?}[]` | `[]` | 选项 |
+| `label` | `string` | `""` | 标签 |
+| `disabled` | `boolean` | `false` | 禁用 |
+
+| Event | Payload |
+|-------|---------|
+| `update:modelValue` | 选中值 |
+| `change` | 选中值 |
+
+---
+
+## Toast
 
 <div class="demo">
   <div class="demo-label">TOAST</div>
   <W95Button @click="pushToast">Show toast</W95Button>
-  <W95Toast v-model="toasts" />
+  <W95Button style="margin-left:8px" @click="toasts = []">Clear all</W95Button>
+  <W95Toast v-model="toasts" :duration="4000" />
 </div>
+
+### API — `W95Toast`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `W95ToastItem[]` | `[]` | 通知列表（v-model） |
+| `duration` | `number` | `3000` | 自动关闭 ms；`0` 表示不自动关 |
+
+```ts
+interface W95ToastItem {
+  id: string | number;
+  title?: string;
+  message: string;
+  duration?: number; // 覆盖全局 duration
+}
+```
+
+Teleport 到 `body`，`aria-live="polite"`，可手动关闭。
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
-.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
 </style>

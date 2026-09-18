@@ -7,74 +7,192 @@ import {
   W95TabPanel,
   W95MenuBar,
   W95MenuItem,
+  W95MenuList,
   W95Toolbar,
   W95Button,
   W95Tree,
   W95TreeItem,
+  W95Splitter,
   W95Breadcrumb,
   W95Pagination,
 } from "vue-win95";
 
 const tab = ref("desktop");
 const tree = ref("css");
-const page = ref(1);
+const page = ref(2);
 const crumbs = [
-  { label: "Desktop" },
-  { label: "My Computer" },
+  { label: "Desktop", click: () => {} },
+  { label: "My Computer", click: () => {} },
   { label: "C:" },
 ];
 </script>
 
-# Navigation
+# Navigation 导航
 
-Tabs / Menu / Toolbar / Tree / Breadcrumb / Pagination —— 键盘与 ARIA 对齐 W3C APG。
+Tabs · Menu · Toolbar · Tree · Splitter · Breadcrumb · Pagination
 
-<div class="demo">
-  <div class="demo-label">MENUBAR + TOOLBAR</div>
-  <div style="background:#c0c0c0;padding:2px">
-    <W95MenuBar>
-      <W95MenuItem>File</W95MenuItem>
-      <W95MenuItem>Edit</W95MenuItem>
-      <W95MenuItem disabled>Help</W95MenuItem>
-    </W95MenuBar>
-    <W95Toolbar style="margin-top:2px">
-      <W95Button>New</W95Button>
-      <W95Button>Open</W95Button>
-      <W95Button>Save</W95Button>
-    </W95Toolbar>
-  </div>
-</div>
+## Tabs
 
 <div class="demo">
-  <div class="demo-label">TABS + TREE + PAGINATION</div>
-  <W95Tabs v-model="tab" style="background:#c0c0c0;padding:4px">
+  <div class="demo-label">TABS</div>
+  <W95Tabs v-model="tab" style="background:#c0c0c0;padding:6px;max-width:420px">
     <W95TabList>
       <W95Tab value="desktop">Desktop</W95Tab>
       <W95Tab value="computer">My Computer</W95Tab>
+      <W95Tab value="panel">Control panel</W95Tab>
+      <W95Tab value="x" disabled>Disabled</W95Tab>
     </W95TabList>
-    <W95TabPanel value="desktop">
-      <W95Breadcrumb :items="crumbs" />
-      <div style="height:8px"></div>
-      <W95Tree v-model="tree">
-        <W95TreeItem value="css" label="CSS" has-children>
-          <W95TreeItem value="selectors" label="Selectors" />
-          <W95TreeItem value="specificity" label="Specificity" />
-        </W95TreeItem>
-        <W95TreeItem value="js" label="JavaScript" />
-      </W95Tree>
-    </W95TabPanel>
-    <W95TabPanel value="computer">
-      <p>Drives and devices. Tree selection: <strong>{{ tree }}</strong></p>
-      <W95Pagination v-model="page" :total="40" :page-size="10" />
-    </W95TabPanel>
+    <W95TabPanel value="desktop">Desktop background settings.</W95TabPanel>
+    <W95TabPanel value="computer">Drives and devices.</W95TabPanel>
+    <W95TabPanel value="panel">System configuration.</W95TabPanel>
+    <W95TabPanel value="x">Hidden</W95TabPanel>
   </W95Tabs>
 </div>
 
-## 键盘
+### API
 
-- **Tabs**：← → Home End
-- **MenuBar / Toolbar**：方向键 roving tabindex
-- **Tree**：点击选中，展开按钮可键盘操作
+| 组件 | Prop | 说明 |
+|------|------|------|
+| `W95Tabs` | `modelValue?: string\|number` | 当前 tab（v-model） |
+| `W95TabList` | — | `role=tablist`，方向键切换 |
+| `W95Tab` | `value` 必填；`disabled?: boolean` | `role=tab` / `aria-selected` |
+| `W95TabPanel` | `value` 必填 | `role=tabpanel`，仅显示匹配项 |
+
+---
+
+## MenuBar / MenuItem / MenuList
+
+<div class="demo">
+  <div class="demo-label">MENU</div>
+  <div style="background:#c0c0c0;padding:4px;max-width:360px">
+    <W95MenuBar>
+      <W95MenuItem>File</W95MenuItem>
+      <W95MenuItem>Edit</W95MenuItem>
+      <W95MenuItem @click="() => {}">View</W95MenuItem>
+      <W95MenuItem disabled>Help</W95MenuItem>
+    </W95MenuBar>
+    <div style="height:6px"></div>
+    <W95MenuList>
+      <W95MenuItem>New</W95MenuItem>
+      <W95MenuItem>Open…</W95MenuItem>
+      <W95MenuItem disabled>Print</W95MenuItem>
+    </W95MenuList>
+  </div>
+</div>
+
+### API
+
+| 组件 | Prop / Event | 说明 |
+|------|--------------|------|
+| `W95MenuBar` | — | `role=menubar` |
+| `W95MenuList` | — | `role=menu` 弹出列表 |
+| `W95MenuItem` | `disabled?`; `click` | `role=menuitem`；hover 高亮蓝底 |
+
+---
+
+## Toolbar
+
+<div class="demo">
+  <div class="demo-label">TOOLBAR</div>
+  <W95Toolbar style="max-width:360px">
+    <W95Button>New</W95Button>
+    <W95Button>Open</W95Button>
+    <W95Button>Save</W95Button>
+    <W95Button disabled>Print</W95Button>
+  </W95Toolbar>
+</div>
+
+### API — `W95Toolbar`
+
+| Prop | 说明 |
+|------|------|
+| `class` | 追加样式 |
+
+`role="toolbar"`，内部按钮支持方向键 roving tabindex。
+
+---
+
+## Tree
+
+<div class="demo">
+  <div class="demo-label">TREE</div>
+  <W95Tree v-model="tree" style="max-width:280px">
+    <W95TreeItem value="toc" label="Table of Contents" />
+    <W95TreeItem value="css" label="CSS" has-children>
+      <W95TreeItem value="selectors" label="Selectors" />
+      <W95TreeItem value="specificity" label="Specificity" />
+      <W95TreeItem value="properties" label="Properties" />
+    </W95TreeItem>
+    <W95TreeItem value="js" label="JavaScript" has-children>
+      <W95TreeItem value="avoid" label="Avoid at all costs" />
+    </W95TreeItem>
+  </W95Tree>
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">selected = {{ tree }}</p>
+</div>
+
+### API
+
+| 组件 | Prop | 说明 |
+|------|------|------|
+| `W95Tree` | `modelValue?: string\|number\|null` | 选中节点（v-model） |
+| `W95TreeItem` | `value` 必填；`label?`; `hasChildren?`; `disabled?` | 可展开项渲染 slot 子节点 |
+
+`role=tree` / `treeitem`，`aria-expanded` / `aria-selected`。
+
+---
+
+## Splitter
+
+<div class="demo">
+  <div class="demo-label">SPLITTER</div>
+  <div style="display:flex;height:140px;width:400px;max-width:100%;background:#c0c0c0;padding:3px;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #dfdfdf">
+    <div style="width:120px;background:#fff;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080;padding:6px;font-size:13px">Sidebar</div>
+    <W95Splitter vertical :min="80" :max="260" />
+    <div style="flex:1;background:#fff;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080;padding:6px;font-size:13px;margin-left:2px">Content</div>
+  </div>
+</div>
+
+### API — `W95Splitter`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `vertical` | `boolean` | `false` | 垂直分隔（左右拖） |
+| `min` / `max` | `number` | `80`/`600` | 尺寸范围 |
+
+| Event | Payload |
+|-------|---------|
+| `resize` | `number`（新尺寸） |
+
+`role=separator`，支持方向键调整。
+
+---
+
+## Breadcrumb / Pagination
+
+<div class="demo">
+  <div class="demo-label">BREADCRUMB + PAGINATION</div>
+  <W95Breadcrumb :items="crumbs" separator="›" />
+  <div style="height:10px"></div>
+  <W95Pagination v-model="page" :total="40" :page-size="10" />
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">page = {{ page }}</p>
+</div>
+
+### API — `W95Breadcrumb`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `items` | `{ label, href?, click? }[]` | `[]` | 面包屑 |
+| `separator` | `string` | `">"` | 分隔符 |
+
+最后一项为当前页（`aria-current="page"`）。
+
+### API — `W95Pagination`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `number` | `1` | 当前页（v-model） |
+| `total` | `number` | `0` | 总条数 |
+| `pageSize` | `number` | `10` | 每页条数 |
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }

@@ -5,54 +5,197 @@ import {
   W95Select,
   W95Slider,
   W95SpinButton,
-  W95Switch,
   W95ComboBox,
   W95FieldRow,
+  W95GroupBox,
+  W95ProgressBar,
 } from "vue-win95";
 
 const name = ref("World");
 const rating = ref("3");
 const volume = ref(5);
 const copies = ref(2);
-const sound = ref(true);
 const driver = ref(null);
-const options = [
-  { value: 1, label: "MySQL ODBC 3.51 Driver" },
-  { value: 2, label: "SQL Server" },
-  { value: 3, label: "Access Driver" },
-];
+const progress = ref(40);
+
 const ratings = [
   { value: "5", label: "5 - Incredible!" },
   { value: "4", label: "4 - Great!" },
   { value: "3", label: "3 - Pretty good" },
+  { value: "2", label: "2 - Not so great" },
+];
+const drivers = [
+  { value: 1, label: "MySQL ODBC 3.51 Driver" },
+  { value: 2, label: "SQL Server" },
+  { value: 3, label: "Access Driver" },
 ];
 </script>
 
-# Form Controls
+# Form 表单控件
 
-文本框、下拉、滑杆、数字框等表单原语，全部基于语义 HTML + ARIA。
+Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / ProgressBar。
+
+## Input
 
 <div class="demo">
-  <div class="demo-label">LIVE FORM</div>
+  <div class="demo-label">INPUT</div>
   <div style="display:flex;flex-direction:column;gap:8px">
     <W95Input v-model="name" label="Your name" />
-    <W95Select v-model="rating" :options="ratings" label="Rating" />
-    <W95Slider v-model="volume" :min="1" :max="11" label="Volume:" />
-    <div style="display:flex;gap:16px;flex-wrap:wrap">
-      <W95SpinButton v-model="copies" :min="0" :max="10" label="Copies" />
-      <W95Switch v-model="sound" label="Sound" />
-    </div>
-    <W95ComboBox v-model="driver" :options="options" label="Driver" />
+    <W95Input label="Password" type="password" placeholder="••••" />
+    <W95Input label="Readonly" model-value="Cannot edit" readonly />
+    <W95Input label="Disabled" model-value="Off" disabled />
   </div>
 </div>
 
-**状态**：name=`{{ name }}` · rating=`{{ rating }}` · volume=`{{ volume }}` · copies=`{{ copies }}` · sound=`{{ sound }}` · driver=`{{ driver }}`
+### API — `W95Input`
 
-## 设计说明
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `string` | — | 值（v-model） |
+| `type` | `text\|password\|email\|number\|search\|tel\|url` | `text` | 输入类型 |
+| `label` | `string` | `""` | 左侧标签 |
+| `placeholder` | `string` | `""` | 占位符 |
+| `disabled` / `readonly` | `boolean` | `false` | 状态 |
+| `id` | `string` | 自动 | 供 label 关联 |
 
-- 输入框使用 Win95 **field border**（双层 inset 阴影）
-- 禁用态底色变为 `surface`，文字带高光 shadow
-- Select / ComboBox 保持可访问名称（label 关联）
+| Event | Payload |
+|-------|---------|
+| `update:modelValue` | `string` |
+
+---
+
+## Select
+
+<div class="demo">
+  <div class="demo-label">SELECT</div>
+  <W95Select v-model="rating" :options="ratings" label="Rating" />
+</div>
+
+### API — `W95Select`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `string \| number` | `""` | 选中值（v-model） |
+| `options` | `{ value, label, disabled? }[]` | `[]` | 选项列表 |
+| `label` | `string` | `""` | 标签 |
+| `disabled` | `boolean` | `false` | 禁用 |
+
+| Event | Payload |
+|-------|---------|
+| `update:modelValue` | `string \| number` |
+| `change` | 同上 |
+
+也可用默认 slot 放 `<option>`。
+
+---
+
+## Slider
+
+<div class="demo">
+  <div class="demo-label">SLIDER</div>
+  <div style="max-width:320px">
+    <W95Slider v-model="volume" :min="1" :max="11" label="Volume:" />
+  </div>
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">volume = {{ volume }}</p>
+</div>
+
+### API — `W95Slider`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `number` | `0` | 当前值（v-model） |
+| `min` / `max` / `step` | `number` | `0`/`100`/`1` | 范围与步长 |
+| `label` | `string` | `""` | 标签 |
+| `disabled` | `boolean` | `false` | 禁用 |
+
+原生 `input[type=range]` 皮肤化，键盘 ←→ 可用。
+
+---
+
+## SpinButton
+
+<div class="demo">
+  <div class="demo-label">SPIN BUTTON</div>
+  <W95SpinButton v-model="copies" :min="0" :max="10" :step="1" label="Copies" />
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">copies = {{ copies }}</p>
+</div>
+
+### API — `W95SpinButton`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `number` | `0` | 数值（v-model） |
+| `min` / `max` / `step` | `number` | `0`/`99`/`1` | 钳制范围 |
+| `label` | `string` | `""` | 可访问名称 |
+| `disabled` | `boolean` | `false` | 禁用 |
+
+`role="spinbutton"`，支持 ↑↓ 与 ▲▼ 按钮。
+
+---
+
+## ComboBox
+
+<div class="demo">
+  <div class="demo-label">COMBOBOX</div>
+  <W95ComboBox v-model="driver" :options="drivers" label="Driver" />
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">driver = {{ driver }}</p>
+</div>
+
+### API — `W95ComboBox`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `string \| number \| null` | `null` | 选中值（v-model） |
+| `options` | `{ value, label, disabled? }[]` | `[]` | 选项 |
+| `label` | `string` | `""` | 标签 |
+| `disabled` | `boolean` | `false` | 禁用 |
+
+键盘：↑↓ Home End Enter Esc；`combobox` + `listbox` + `option`。
+
+---
+
+## FieldRow / GroupBox
+
+<div class="demo">
+  <div class="demo-label">LAYOUT PRIMITIVES</div>
+  <W95GroupBox legend="Options" style="background:#c0c0c0;padding:12px">
+    <W95FieldRow>
+      <W95Input label="Inline" model-value="row" />
+    </W95FieldRow>
+    <W95FieldRow stacked style="margin-top:8px">
+      <span style="font-size:13px">Stacked label</span>
+      <W95Input model-value="under label" />
+    </W95FieldRow>
+    <W95Divider style="margin:10px 0" />
+    <W95FieldRow>
+      <span style="width:70px;font-size:13px">Progress</span>
+      <W95ProgressBar :value="progress" class="flex-1" label="Install" />
+    </W95FieldRow>
+  </W95GroupBox>
+</div>
+
+### API — `W95FieldRow`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `stacked` | `boolean` | `false` | 标签在上（纵向） |
+
+### API — `W95GroupBox`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `legend` | `string` | `""` | 边框图例 |
+
+### API — `W95ProgressBar`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `value` | `number` | `0` | 当前进度 |
+| `max` | `number` | `100` | 最大值 |
+| `segmented` | `boolean` | `false` | 分段条样式 |
+| `label` | `string` | `"Progress"` | `aria-label` |
+
+`role="progressbar"` + `aria-valuenow/min/max`。
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }

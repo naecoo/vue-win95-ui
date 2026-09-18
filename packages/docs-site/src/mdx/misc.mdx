@@ -10,6 +10,9 @@ import {
   W95GroupBox,
   W95Checkbox,
   W95Divider,
+  W95FieldRow,
+  W95StatusBar,
+  W95StatusBarField,
 } from "vue-win95";
 
 const open = ref("a");
@@ -19,63 +22,76 @@ const remember = ref(false);
 const crumbs = [
   { label: "Desktop" },
   { label: "My Computer" },
-  { label: "C:" },
+  { label: "Control Panel" },
 ];
 </script>
 
 # Misc 其它组件
 
-Accordion、Breadcrumb、Pagination、Switch、Avatar 与表单辅助件。
+Accordion · Breadcrumb · Pagination · Switch · Avatar · GroupBox · FieldRow · StatusBar
 
-## Accordion
+> 完整 API 也可在分类页查看：Accordion/Window 在 **Window & Dialog**；Breadcrumb/Pagination 在 **Navigation**；Switch/Avatar/Divider 在 **Button & Controls**。本页为速查与组合演示。
 
-折叠面板，`aria-expanded` + region。
-
-<div class="demo">
-  <div class="demo-label">ACCORDION</div>
-  <W95Accordion v-model="open">
-    <W95AccordionItem value="a" title="General">System settings.</W95AccordionItem>
-    <W95AccordionItem value="b" title="Appearance">Theme &amp; display.</W95AccordionItem>
-    <W95AccordionItem value="c" title="Advanced">Power user options.</W95AccordionItem>
-  </W95Accordion>
-</div>
-
-## Breadcrumb
-
-`nav` + 列表，当前页 `aria-current="page"`。
+## 组合演示
 
 <div class="demo">
-  <div class="demo-label">BREADCRUMB</div>
-  <W95Breadcrumb :items="crumbs" />
-</div>
-
-## Pagination / Switch / Avatar
-
-<div class="demo">
-  <div class="demo-label">MIXED</div>
-  <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
-    <W95Pagination v-model="page" :total="40" :page-size="10" />
-    <W95Switch v-model="sound" label="Sound" />
-    <div style="display:flex;gap:8px;align-items:center">
-      <W95Avatar initials="W9" size="sm" />
-      <W95Avatar initials="W9" size="md" />
-      <W95Avatar initials="W9" size="lg" />
+  <div class="demo-label">COMPOSITION</div>
+  <W95GroupBox legend="Control Panel" style="background:#c0c0c0;padding:12px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <W95Avatar initials="CP" size="lg" />
+      <div style="flex:1">
+        <div style="font-weight:bold;font-size:14px;margin-bottom:4px">System</div>
+        <W95Switch v-model="sound" label="System sounds" />
+      </div>
     </div>
-  </div>
-</div>
 
-## GroupBox / Checkbox / Divider
+    <W95FieldRow>
+      <W95Checkbox v-model="remember" label="Remember these settings" />
+    </W95FieldRow>
 
-<div class="demo">
-  <div class="demo-label">GROUPBOX</div>
-  <W95GroupBox legend="Options" style="background:#c0c0c0;padding:10px">
-    <W95Checkbox v-model="remember" label="Remember me" />
-    <W95Divider style="margin:8px 0" />
-    <p style="margin:0;font-size:13px">page = {{ page }} · sound = {{ sound }}</p>
+    <W95Divider style="margin:10px 0" />
+
+    <W95Breadcrumb :items="crumbs" />
+    <div style="height:8px"></div>
+    <W95Pagination v-model="page" :total="30" :page-size="10" />
+
+    <W95Divider style="margin:10px 0" />
+
+    <W95Accordion v-model="open">
+      <W95AccordionItem value="a" title="General">
+        Date format, sounds, accessibility options.
+      </W95AccordionItem>
+      <W95AccordionItem value="b" title="Display">
+        Resolution, color depth, wallpaper.
+      </W95AccordionItem>
+      <W95AccordionItem value="c" title="Network">
+        Dial-up and LAN settings.
+      </W95AccordionItem>
+    </W95Accordion>
   </W95GroupBox>
+
+  <div style="height:8px"></div>
+  <W95StatusBar>
+    <W95StatusBarField>page={{ page }}</W95StatusBarField>
+    <W95StatusBarField>sound={{ sound }}</W95StatusBarField>
+    <W95StatusBarField>open={{ open }}</W95StatusBarField>
+  </W95StatusBar>
 </div>
+
+## 速查 API
+
+| 组件 | 关键 Props | 无障碍 |
+|------|-----------|--------|
+| `W95Accordion` / `Item` | `modelValue`; `value`,`title` | `aria-expanded`, region |
+| `W95Breadcrumb` | `items[]`, `separator` | nav + `aria-current` |
+| `W95Pagination` | `modelValue`,`total`,`pageSize` | nav + `aria-current` |
+| `W95Switch` | `modelValue`,`label`,`disabled` | `role=switch` |
+| `W95Avatar` | `src`,`alt`,`initials`,`size` | title/alt |
+| `W95GroupBox` | `legend` | fieldset + legend |
+| `W95FieldRow` | `stacked` | 布局 |
+| `W95StatusBar(Field)` | `grow` | `role=status` |
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
-.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
 </style>

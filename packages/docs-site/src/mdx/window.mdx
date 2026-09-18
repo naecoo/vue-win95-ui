@@ -1,45 +1,146 @@
 <script setup>
 import { ref } from "vue";
-import { W95Window, W95Dialog, W95Button } from "vue-win95";
+import {
+  W95Window,
+  W95Dialog,
+  W95Button,
+  W95StatusBar,
+  W95StatusBarField,
+  W95Accordion,
+  W95AccordionItem,
+} from "vue-win95";
 
 const open = ref(false);
+const acc = ref("a");
 </script>
 
-# Window & Dialog
+# Window / Dialog / Accordion
 
-窗口是 Win95 的灵魂：标题栏渐变、控制按钮像素图标、状态栏。
+## Window
+
+标题栏渐变 + 控制按钮 + 可选状态栏。
 
 <div class="demo">
-  <div class="demo-label">WINDOW</div>
-  <W95Window title="Task Manager" :width="380">
-    <p style="margin:0 0 10px;font-size:14px">Processes are running smoothly.</p>
+  <div class="demo-label">WINDOW + STATUS BAR</div>
+  <W95Window title="Task Manager" :width="400" show-minimize show-maximize @close="() => {}">
+    <p style="font-size:14px;margin:0 0 10px">Processes are running smoothly.</p>
     <W95Button @click="open = true">Open Dialog</W95Button>
     <template #status>
-      <p class="m-0 px-1 py-0.5 flex-1 shadow-w95-status" style="margin:0">CPU: 14%</p>
-      <p class="m-0 px-1 py-0.5 flex-1 shadow-w95-status" style="margin:0">Ready</p>
+      <W95StatusBarField>Press F1 for help</W95StatusBarField>
+      <W95StatusBarField>CPU: 14%</W95StatusBarField>
     </template>
   </W95Window>
 </div>
 
+### API — `W95Window`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `title` | `string` | `""` | 标题栏文字 |
+| `active` | `boolean` | `true` | true=蓝渐变，false=灰渐变 |
+| `showMinimize` | `boolean` | `true` | 显示最小化 |
+| `showMaximize` | `boolean` | `true` | 显示最大化 |
+| `showClose` | `boolean` | `true` | 显示关闭 |
+| `width` | `number \| string` | — | 窗口宽度 |
+
+| Event | 说明 |
+|-------|------|
+| `minimize` / `maximize` / `close` | 标题栏按钮 |
+
+| Slot | 说明 |
+|------|------|
+| default | 窗体内容 |
+| `status` | 底部状态栏 |
+
+### API — `W95StatusBar` / `W95StatusBarField`
+
+| 组件 | Prop | 说明 |
+|------|------|------|
+| `W95StatusBar` | — | 状态栏容器 `role=status` |
+| `W95StatusBarField` | `grow?: boolean`（默认 true） | 单个状态格 |
+
+---
+
+## Dialog
+
+模态框：焦点陷阱、Esc、OK/Cancel。
+
 <div class="demo">
-  <div class="demo-label">DIALOG (click button above)</div>
-  <W95Dialog v-model="open" title="Confirm" :width="520" @confirm="open = false">
-    <p style="font-size:14px;margin:0 0 4px">Delete this file?</p>
+  <div class="demo-label">DIALOG</div>
+  <W95Button @click="open = true">Open Dialog</W95Button>
+  <W95Dialog
+    v-model="open"
+    title="Confirm"
+    :width="520"
+    @confirm="open = false"
+    @cancel="open = false"
+  >
+    <p style="font-size:14px;margin:0">Are you sure you want to continue?</p>
   </W95Dialog>
-  <p style="color:#fff;margin:8px 0 0;font-size:13px">Dialog 使用 focus trap + Esc 关闭 + <code>role="alertdialog"</code>。</p>
+  <p style="color:#fff;font-size:13px;margin:8px 0 0">
+    Esc / OK / Cancel / 标题栏 Close 均可关闭。
+  </p>
 </div>
 
-## 无障碍
+### API — `W95Dialog`
 
-| 模式 | 实现 |
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `boolean` | — | 是否打开（v-model）**必填** |
+| `title` | `string` | `"Dialog"` | 标题 |
+| `width` | `number \| string` | `480` | 宽度 |
+| `showClose` | `boolean` | `true` | 标题栏关闭按钮 |
+| `closeOnOverlay` | `boolean` | `true` | 点击遮罩关闭 |
+
+| Event | 说明 |
+|-------|------|
+| `update:modelValue` | `boolean` |
+| `confirm` / `cancel` / `close` | 确认 / 取消 / 关闭 |
+
+| Slot | 说明 |
 |------|------|
-| 焦点陷阱 | `useFocusTrap`（Tab 循环 + 恢复焦点） |
-| 模态 | `aria-modal="true"` |
-| 关闭 | Esc / 标题栏 Close / OK / Cancel |
-| 名称 | `aria-labelledby` 指向标题 |
+| default | 正文 |
+| `footer` | 自定义底部按钮 |
+
+无障碍：`role="alertdialog"`、`aria-modal`、文档级 Esc。
+
+---
+
+## Accordion
+
+<div class="demo">
+  <div class="demo-label">ACCORDION</div>
+  <W95Accordion v-model="acc" style="max-width:360px">
+    <W95AccordionItem value="a" title="General">System settings.</W95AccordionItem>
+    <W95AccordionItem value="b" title="Appearance">Theme options.</W95AccordionItem>
+    <W95AccordionItem value="c" title="Advanced">
+      Power user options.
+      <template #title>Advanced (custom)</template>
+    </W95AccordionItem>
+  </W95Accordion>
+</div>
+
+### API — `W95Accordion`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `modelValue` | `string \| number \| null` | `null` | 打开项 id（v-model）；再点同一项可关闭 |
+
+### API — `W95AccordionItem`
+
+| Prop | Type | Default | 说明 |
+|------|------|---------|------|
+| `value` | `string \| number` | — | **必填**，项 id |
+| `title` | `string` | `""` | 标题文案 |
+
+| Slot | 说明 |
+|------|------|
+| default | 展开内容 |
+| `title` | 自定义标题 |
+
+`aria-expanded` + `role="region"`。
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
 .demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
-.demo code { color:#fff; background:rgba(0,0,0,0.25); padding:0 4px; }
 </style>
