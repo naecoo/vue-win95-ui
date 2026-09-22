@@ -25,13 +25,16 @@
 
 ## P0 — 发布与质量门禁
 
-- [ ] **确认 npm 包名**是否被占用（`vue-win95` 或改为 scope `@you/vue-win95`）
-- [ ] **LICENSE** 文件（MIT）写入仓库与 `packages/vue-win95`
-- [ ] **GitHub 仓库信息**：`repository` / `bugs` / `homepage` 写入 package.json
-- [ ] **CI**：GitHub Actions — install → typecheck → test → build（docs + lib）
-- [ ] **发布流程**：`pnpm publish --access public`（tag `v0.2.0`）；或先发 `0.2.0-beta`
-- [ ] **CHANGELOG** 与 git tag 对齐
-- [ ] **README** 徽章：npm version / CI / license
+- [x] **LICENSE**（MIT）已写入仓库与 `packages/vue-win95`
+- [x] **CI**：`.github/workflows/ci.yml` — typecheck → test → build lib/docs/playground → npm pack
+- [x] **发布检查脚本**：`pnpm release:check` / `scripts/prepublish-check.mjs`
+- [x] **发布文档**：`docs/PUBLISH.md`（逐步命令）
+- [x] `files` 含 LICENSE；`publishConfig.access=public`；`prepublishOnly` 挂检查
+- [ ] **确认 npm 包名**是否被占用（`vue-win95` 或 scope `@you/vue-win95`）← 需登录网络
+- [ ] **GitHub 远程仓库** + `repository` / `bugs` / `homepage` 写入 package.json
+- [ ] **手动 publish**（按 `docs/PUBLISH.md`，需人工确认；当前 `release:check` 因缺 repository 会 FAIL）
+- [ ] **CHANGELOG** 与 git tag 对齐（publish 时打 `v0.2.0`）
+- [ ] **README** 徽章：npm version / CI / license（依赖远程仓库地址）
 
 ---
 
