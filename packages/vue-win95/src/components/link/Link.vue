@@ -17,6 +17,7 @@ const classes = computed(() =>
   cn(
     "font-w95 text-w95 w95-focus-link",
     "cursor-default select-none",
+    "transition-colors duration-75",
     props.disabled
       ? "text-w95-shadow pointer-events-none [text-shadow:1px_1px_0_#fff] no-underline"
       : "text-w95-link underline-offset-2 hover:underline",

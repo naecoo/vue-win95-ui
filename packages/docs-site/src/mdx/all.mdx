@@ -1,0 +1,222 @@
+<script setup>
+import {
+  W95Button,
+  W95Input,
+  W95Checkbox,
+  W95Radio,
+  W95RadioGroup,
+  W95Switch,
+  W95Select,
+  W95Slider,
+  W95SpinButton,
+  W95Avatar,
+  W95Icon,
+  W95Link,
+  W95Skeleton,
+  W95Divider,
+  W95GroupBox,
+  W95FieldRow,
+  W95ProgressBar,
+  W95Window,
+  W95Dialog,
+  W95Accordion,
+  W95AccordionItem,
+  W95StatusBar,
+  W95StatusBarField,
+  W95Tabs,
+  W95TabList,
+  W95Tab,
+  W95TabPanel,
+  W95MenuBar,
+  W95MenuItem,
+  W95MenuList,
+  W95MenuSubmenu,
+  W95Toolbar,
+  W95Tree,
+  W95TreeItem,
+  W95Splitter,
+  W95Breadcrumb,
+  W95Pagination,
+  W95Tooltip,
+  W95Toast,
+  W95Dropdown,
+  W95ComboBox,
+  W95Popover,
+  W95Notification,
+  W95Table,
+  W95DatePicker,
+  W95Upload,
+  W95ResizablePanel,
+  W95Alert,
+  W95Confirm,
+} from "vue-win95";
+import { ref } from "vue";
+
+const sel = ref("a");
+const pb = ref("x");
+const on = ref(true);
+const num = ref(2);
+const range = ref(5);
+const combo = ref(null);
+const toast = ref([]);
+const pop = ref(false);
+const dd = ref(false);
+const page = ref(1);
+const tree = ref("a");
+const open = ref(false);
+const notif = ref([
+  { id: 1, title: "Info", message: "All components listed below.", type: "info", duration: 0 },
+]);
+const files = ref([]);
+const date = ref("2024-06-15");
+const rows = [{ id: 1, name: "Row A" }];
+const columns = [{ key: "name", label: "Name", sortable: true }];
+const comboOpts = [{ value: 1, label: "One" }, { value: 2, label: "Two" }];
+</script>
+
+# All Components 全组件索引
+
+一页览尽 **vue-win95** 导出组件（均为真实组件渲染）。
+
+## 1. Button
+
+<W95Button default>Default</W95Button> · API：`type` `default` `disabled` `block` · event `click`
+
+## 2. Input
+
+<W95Input label="Name" model-value="Win95" /> · `modelValue` `type` `label` `placeholder` `disabled` `readonly`
+
+## 3. Checkbox / Radio / Switch
+
+<W95Checkbox :model-value="true" label="Checked" />
+<br/>
+<W95RadioGroup v-model="pb" legend="Group">
+  <W95Radio value="x" label="X" />
+  <W95Radio value="y" label="Y" />
+</W95RadioGroup>
+<W95Switch v-model="on" label="Switch" />
+
+## 4. Select / Slider / SpinButton / ComboBox
+
+<W95Select :options="[{value:1,label:'One'},{value:2,label:'Two'}]" label="Sel" />
+<W95Slider v-model="range" :min="1" :max="11" label="Vol" />
+<W95SpinButton v-model="num" :min="0" :max="10" label="N" />
+<W95ComboBox v-model="combo" :options="comboOpts" label="Combo" />
+
+## 5. Avatar / Icon / Link / Skeleton / Divider
+
+<W95Avatar initials="W9" /> <W95Icon name="folder" label="Folder" /> <W95Link href="#">Link</W95Link>
+<W95Divider style="margin:8px 0" />
+<W95Skeleton :lines="1" />
+
+## 6. GroupBox / FieldRow / ProgressBar / StatusBar
+
+<W95GroupBox legend="Box" style="background:#c0c0c0;padding:8px">
+  <W95FieldRow><W95ProgressBar :value="45" label="Load" /></W95FieldRow>
+</W95GroupBox>
+<W95StatusBar><W95StatusBarField>Ready</W95StatusBarField><W95StatusBarField>v0.2.1</W95StatusBarField></W95StatusBar>
+
+## 7. Window / Dialog / Accordion / ResizablePanel
+
+<W95Window title="Win" :width="240"><p style="margin:0;font-size:13px">Body</p></W95Window>
+<W95Accordion :model-value="'a'" style="margin-top:8px">
+  <W95AccordionItem value="a" title="Section">Content</W95AccordionItem>
+</W95Accordion>
+<W95Button style="margin-top:8px" @click="open = true">Dialog</W95Button>
+<W95Dialog v-model="open" title="Hi" :size="'sm'"><p>Hi</p></W95Dialog>
+<W95ResizablePanel :width="200" :min-width="120" :max-width="320" style="margin-top:8px">
+  <div class="bg-w95-surface p-2" style="font-size:12px;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #dfdfdf">resize edge</div>
+</W95ResizablePanel>
+
+## 8. Tabs / Menu / Toolbar / Tree / Splitter / Breadcrumb / Pagination
+
+<W95Tabs model-value="a" style="background:#c0c0c0;padding:4px">
+  <W95TabList><W95Tab value="a">A</W95Tab><W95Tab value="b">B</W95Tab></W95TabList>
+  <W95TabPanel value="a">Panel A</W95TabPanel>
+  <W95TabPanel value="b">Panel B</W95TabPanel>
+</W95Tabs>
+<W95MenuBar style="margin-top:6px">
+  <W95MenuItem>File</W95MenuItem>
+  <W95MenuSubmenu label="Export"><W95MenuItem>CSV</W95MenuItem></W95MenuSubmenu>
+</W95MenuBar>
+<W95Toolbar style="margin-top:4px"><W95Button>New</W95Button><W95Button>Open</W95Button></W95Toolbar>
+<W95Tree v-model="tree" style="margin-top:6px;max-width:200px">
+  <W95TreeItem value="a" label="A" has-children><W95TreeItem value="a1" label="A1" /></W95TreeItem>
+  <W95TreeItem value="b" label="B" />
+</W95Tree>
+<W95Breadcrumb :items="[{label:'Home'},{label:'Here'}]" style="margin-top:6px" />
+<W95Pagination v-model="page" :total="30" :page-size="10" />
+
+## 9. Tooltip / Toast / Dropdown / Popover / Notification
+
+<W95Tooltip content="tip"><W95Button>Hover</W95Button></W95Tooltip>
+<W95Dropdown v-model="dd" label="Menu" style="margin-left:8px">
+  <W95MenuItem>One</W95MenuItem>
+</W95Dropdown>
+<W95Popover v-model="pop" title="Pop" :width="180" style="margin-left:8px">
+  <template #trigger><W95Button @click="pop=!pop">Pop</W95Button></template>
+  Body
+</W95Popover>
+<W95Button style="margin-left:8px" @click="toast=[...toast,{id:Date.now(),message:'Hello'}]">Toast</W95Button>
+<W95Toast v-model="toast" />
+<W95Notification v-model="notif" position="bottom-right" />
+
+## 10. Table / DatePicker / Upload / MessageBox
+
+<W95Table :columns="columns" :rows="rows" :height="60" style="max-width:240px" />
+<W95DatePicker v-model="date" label="Date" style="margin-top:8px" />
+<W95Upload v-model="files" label="Files…" style="margin-top:8px" />
+<W95Button style="margin-top:8px" @click="W95Alert('Alert message','Alert')">Alert</W95Button>
+<W95Button style="margin-left:8px" @click="W95Confirm('Sure?')">Confirm</W95Button>
+
+## API 速查
+
+| 导出 | 类型 | 关键 Props |
+|------|------|-----------|
+| W95Button | 组件 | type, default, disabled, block |
+| W95Input | 组件 | modelValue, type, label, disabled, readonly |
+| W95Checkbox | 组件 | modelValue, label, disabled |
+| W95Radio / W95RadioGroup | 组件 | value, modelValue, legend, name |
+| W95Switch | 组件 | modelValue, label, disabled |
+| W95Select | 组件 | modelValue, options, label |
+| W95Slider | 组件 | modelValue, min, max, step, label |
+| W95SpinButton | 组件 | modelValue, min, max, step |
+| W95ComboBox | 组件 | modelValue, options, loading, search 事件 |
+| W95Avatar | 组件 | src, initials, size |
+| W95Icon | 组件 | name, size, label |
+| W95Link | 组件 | href, disabled |
+| W95Skeleton | 组件 | lines, width, height |
+| W95Divider | 组件 | vertical |
+| W95GroupBox | 组件 | legend |
+| W95FieldRow | 组件 | stacked |
+| W95ProgressBar | 组件 | value, max, segmented, label |
+| W95Window | 组件 | title, active, show*, width |
+| W95ResizablePanel | 组件 | width, minWidth, maxWidth |
+| W95Dialog | 组件 | modelValue, size, width, closeOnOverlay |
+| W95Accordion / Item | 组件 | modelValue, value, title |
+| W95StatusBar / Field | 组件 | grow |
+| W95Tabs / TabList / Tab / TabPanel | 组件 | modelValue, value, disabled, multirow |
+| W95MenuBar / MenuItem / MenuList / MenuSubmenu | 组件 | disabled, label |
+| W95Toolbar | 组件 | — |
+| W95Tree / TreeItem | 组件 | modelValue, value, hasChildren |
+| W95Splitter | 组件 | vertical, min, max |
+| W95Breadcrumb | 组件 | items, separator |
+| W95Pagination | 组件 | modelValue, total, pageSize |
+| W95Tooltip | 组件 | content, placement, openDelay |
+| W95Toast | 组件 | modelValue, duration |
+| W95Dropdown | 组件 | modelValue, label |
+| W95Popover | 组件 | modelValue, title, width |
+| W95Notification | 组件 | modelValue, type, position |
+| W95ContextMenu / Area | 组件 | modelValue, x, y, items |
+| W95Table | 组件 | columns, rows, multiple, sortBy |
+| W95DatePicker | 组件 | modelValue, min, max |
+| W95Upload | 组件 | modelValue, multiple, accept |
+| W95Alert / W95Confirm / W95ShowMessageBox | 函数 | Promise API |
+| useNotifier / notify | 函数 | 通知 store |
+| useId / useFocusTrap / useRovingFocus / useZIndex / useResize | 函数 | composables |
+| cn | 函数 | clsx + tailwind-merge |
+
+<style>
+.demo { background:#008080;padding:14px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+</style>

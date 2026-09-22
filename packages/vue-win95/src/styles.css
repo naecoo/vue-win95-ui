@@ -1,5 +1,5 @@
 /**
- * Win95 CSS custom properties + pixel fonts
+ * Shared Win95 visual polish — subtle modernization without losing authenticity.
  */
 @tailwind base;
 @tailwind components;
@@ -35,6 +35,8 @@
     --w95-text: #222222;
     --w95-link: #0000ff;
     --w95-desktop: #008080;
+    --w95-radius: 0px;
+    --w95-motion: 60ms linear;
   }
 
   .w95-root {
@@ -44,7 +46,7 @@
     -webkit-font-smoothing: none;
   }
 
-  /* Unified Win95 focus ring (dotted inset) */
+  /* Unified Win95 focus ring (dotted inset) — slightly clearer */
   .w95-focus:focus,
   .w95-focus:focus-visible {
     outline: 1px dotted var(--w95-text);
@@ -54,6 +56,11 @@
   .w95-focus-link:focus,
   .w95-focus-link:focus-visible {
     outline: 1px dotted var(--w95-link);
+  }
+
+  /* subtle press motion for interactive chrome */
+  .w95-btn-motion {
+    transition: box-shadow var(--w95-motion), padding var(--w95-motion);
   }
 }
 
@@ -114,7 +121,6 @@
     background: var(--w95-button-highlight);
   }
 
-  /* Tabs: selected tab covers panel top border */
   .w95-tab--selected {
     padding-bottom: 7px !important;
     margin-bottom: -2px !important;
@@ -166,7 +172,6 @@
     transform: rotate(-45deg);
   }
 
-  /* Slider track (webkit) */
   .w95-slider {
     -webkit-appearance: none;
     appearance: none;
@@ -203,8 +208,6 @@
   .w95-slider::-moz-range-track {
     height: 4px;
     background: var(--w95-button-shadow);
-    box-shadow: inset 1px 1px var(--w95-window-frame),
-      inset -1px -1px var(--w95-button-highlight);
   }
 
   .w95-slider::-moz-range-thumb {

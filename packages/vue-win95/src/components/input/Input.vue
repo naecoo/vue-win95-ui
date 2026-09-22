@@ -36,7 +36,8 @@ const inputClasses = computed(() =>
     "box-border border-0 rounded-none",
     "font-w95 text-w95 h-w95-input min-w-[120px] px-1 py-[3px]",
     "shadow-w95-field bg-w95-highlight text-w95-text",
-    "focus:outline-none",
+    "transition-[box-shadow] duration-75",
+    "focus:outline-none focus:shadow-w95-field-focus",
     "disabled:bg-w95-surface disabled:text-w95-shadow",
     "read-only:bg-w95-surface read-only:text-w95-shadow",
     props.class

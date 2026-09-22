@@ -217,7 +217,7 @@ const wrapClasses = computed(() =>
           :class="
             isRowSelected(row) || index === focusIndex
               ? 'bg-w95-blue text-w95-highlight'
-              : 'hover:bg-w95-blue/10'
+              : 'hover:bg-w95-blue/10 transition-colors duration-75'
           "
           @click="onSelect(row, $event)"
         >

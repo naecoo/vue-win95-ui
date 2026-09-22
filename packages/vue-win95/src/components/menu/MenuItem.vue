@@ -17,6 +17,7 @@ const classes = computed(() =>
     "list-none m-0 px-2 py-0.5 border-0 rounded-none",
     "bg-transparent font-w95 text-w95 text-w95-text",
     "cursor-default select-none",
+    "transition-colors duration-75",
     "hover:bg-w95-blue hover:text-w95-highlight",
     "focus:outline-none focus:bg-w95-blue focus:text-w95-highlight",
     props.disabled &&

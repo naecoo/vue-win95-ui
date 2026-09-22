@@ -22,6 +22,10 @@
 ### Housekeeping
 - LICENSE / CI / prepublish-check / docs/PUBLISH.md
 - repository 元数据 → github.com/naecoo/vue-win95-ui
+- Storybook `Complete/All Components` gallery
+- Coverage tests for remaining components (139 total)
+- Style polish: 60ms motion, hover press, field focus ring, switch slide
+- Docs: `all.mdx` full component index with live demos + API table
 
 ## 0.2.0 — 2026-09-17
 

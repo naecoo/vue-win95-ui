@@ -28,6 +28,7 @@ const trackCls = computed(() =>
     "relative inline-flex items-center",
     "w-[40px] h-[20px] box-border rounded-none",
     "shadow-w95-field cursor-default select-none",
+    "transition-colors duration-75",
     props.modelValue ? "bg-w95-blue" : "bg-w95-surface",
     props.disabled && "opacity-60 cursor-not-allowed",
     props.class
@@ -38,6 +39,7 @@ const thumbCls = computed(() =>
   cn(
     "absolute top-[2px] w-[16px] h-[16px]",
     "bg-w95-surface shadow-w95-raised",
+    "transition-[left,right] duration-75",
     props.modelValue ? "right-[2px]" : "left-[2px]"
   )
 );

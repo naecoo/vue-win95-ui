@@ -47,13 +47,15 @@ const titleBarClasses = computed(() =>
 const btnBase =
   "relative box-border border-0 rounded-none cursor-default select-none " +
   "w-4 h-4 min-w-0 min-h-0 p-0 " +
-  "bg-w95-surface shadow-w95-raised " +
+  "bg-w95-surface shadow-w95-raised w95-btn-motion " +
+  "hover:shadow-w95-sunken " +
   "active:shadow-w95-sunken active:pt-px active:pl-px " +
   "focus:outline-none";
 
 const rootClasses = computed(() =>
   cn(
     "font-w95 text-w95 box-border p-[3px] bg-w95-surface shadow-w95-window",
+    "transition-shadow duration-75",
     props.class
   )
 );

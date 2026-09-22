@@ -19,7 +19,7 @@ const blockStyle = computed(() => ({
 
 const bar = cn(
   "bg-w95-surface shadow-w95-field my-1",
-  "animate-pulse"
+  "animate-pulse motion-reduce:animate-none"
 );
 </script>
 

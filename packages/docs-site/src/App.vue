@@ -12,6 +12,7 @@ type PageId =
   | "data"
   | "misc"
   | "gallery"
+  | "all"
   | "theme"
   | "changelog";
 
@@ -77,6 +78,11 @@ const pages: Record<
     title: "Component Gallery",
     icon: "computer",
     mod: () => import("./mdx/gallery.mdx"),
+  },
+  all: {
+    title: "All Components 全组件",
+    icon: "computer",
+    mod: () => import("./mdx/all.mdx"),
   },
   theme: {
     title: "Theme Editor",
@@ -222,6 +228,7 @@ const desktopIds = computed<PageId[]>(() => [
   "window",
   "navigation",
   "gallery",
+  "all",
   "theme",
   "changelog",
 ]);
