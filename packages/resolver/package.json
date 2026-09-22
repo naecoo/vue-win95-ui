@@ -10,7 +10,11 @@
   },
   "files": ["src"],
   "peerDependencies": {
-    "unplugin-vue-components": ">=0.20.0",
-    "vue-win95": ">=0.2.0"
+    "unplugin-vue-components": ">=0.20.0"
+  },
+  "peerDependenciesMeta": {
+    "unplugin-vue-components": {
+      "optional": true
+    }
   }
 }
