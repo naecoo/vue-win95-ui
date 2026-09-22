@@ -37,4 +37,5 @@ jobs:
         run: pnpm --filter playground build
 
       - name: npm pack dry-run
-        run: npm pack --dry-run --workspace vue-win95
+        run: npm pack --dry-run
+        working-directory: packages/vue-win95
