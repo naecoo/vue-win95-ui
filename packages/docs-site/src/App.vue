@@ -4,7 +4,6 @@ import { computed, h, onMounted, ref, watch } from "vue";
 type PageId =
   | "welcome"
   | "install"
-  | "button"
   | "input"
   | "window"
   | "navigation"
@@ -38,11 +37,6 @@ const pages: Record<
     title: "安装 Install",
     icon: "folder",
     mod: () => import("./mdx/install.mdx"),
-  },
-  button: {
-    title: "基础控件 Controls",
-    icon: "folder",
-    mod: () => import("./mdx/button.mdx"),
   },
   input: {
     title: "Form 表单",
@@ -259,7 +253,7 @@ function iconClass(kind: string) {
 const desktopIds = computed<PageId[]>(() => [
   "welcome",
   "install",
-  "button",
+  "input",
   "window",
   "navigation",
   "gallery",
