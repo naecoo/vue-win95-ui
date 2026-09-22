@@ -1,15 +1,21 @@
 <script setup>
-import { ref } from "vue";
+import { isZh } from "../i18n";
 import {
+  W95Button,
   W95Input,
+  W95Checkbox,
+  W95Radio,
+  W95RadioGroup,
   W95Select,
   W95Slider,
   W95SpinButton,
   W95ComboBox,
   W95FieldRow,
   W95GroupBox,
+  W95Divider,
   W95ProgressBar,
 } from "vue-win95";
+import { ref } from "vue";
 
 const name = ref("World");
 const rating = ref("3");
@@ -22,182 +28,79 @@ const ratings = [
   { value: "5", label: "5 - Incredible!" },
   { value: "4", label: "4 - Great!" },
   { value: "3", label: "3 - Pretty good" },
-  { value: "2", label: "2 - Not so great" },
 ];
 const drivers = [
   { value: 1, label: "MySQL ODBC 3.51 Driver" },
   { value: 2, label: "SQL Server" },
-  { value: 3, label: "Access Driver" },
 ];
 </script>
 
+<div v-if="isZh">
+
 # Form 表单控件
 
-Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / ProgressBar。
+Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / ProgressBar。全部基于语义 HTML + ARIA。
 
-## Input
+</div>
+<div v-else>
+
+# Form controls
+
+Input / Select / Slider / SpinButton / ComboBox / FieldRow / GroupBox / ProgressBar. Semantic HTML + ARIA.
+
+</div>
 
 <div class="demo">
-  <div class="demo-label">INPUT</div>
+  <div class="demo-label">LIVE FORM</div>
   <div style="display:flex;flex-direction:column;gap:8px">
-    <W95Input v-model="name" label="Your name" />
-    <W95Input label="Password" type="password" placeholder="••••" />
-    <W95Input label="Readonly" model-value="Cannot edit" readonly />
-    <W95Input label="Disabled" model-value="Off" disabled />
+    <W95Input v-model="name" :label="isZh ? '姓名' : 'Your name'" />
+    <W95Select v-model="rating" :options="ratings" :label="isZh ? '评分' : 'Rating'" />
+    <W95Slider v-model="volume" :min="1" :max="11" :label="isZh ? '音量：' : 'Volume:'" />
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <W95SpinButton v-model="copies" :min="0" :max="10" :label="isZh ? '份数' : 'Copies'" />
+    </div>
+    <W95ComboBox v-model="driver" :options="drivers" :label="isZh ? '驱动' : 'Driver'" />
   </div>
 </div>
 
-### API — `W95Input`
+<div v-if="isZh">
 
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `modelValue` | `string` | — | 值（v-model） |
-| `type` | `text\|password\|email\|number\|search\|tel\|url` | `text` | 输入类型 |
-| `label` | `string` | 空 | 左侧标签 |
-| `placeholder` | `string` | 空 | 占位符 |
-| `disabled` / `readonly` | `boolean` | `false` | 状态 |
-| `id` | `string` | 自动 | 供 label 关联 |
+**状态**：name=`{{ name }}` · rating=`{{ rating }}` · volume=`{{ volume }}` · copies=`{{ copies }}`
 
-| Event | Payload |
-|-------|---------|
-| `update:modelValue` | `string` |
+## API 摘要
 
----
+| 组件 | 关键 Props |
+|------|-----------|
+| `W95Input` | `modelValue` `type` `label` `disabled` `readonly` |
+| `W95Select` | `modelValue` `options` `label` |
+| `W95Slider` | `modelValue` `min` `max` `step` |
+| `W95SpinButton` | `modelValue` `min` `max` `step` |
+| `W95ComboBox` | `modelValue` `options` `loading` `@search` |
+| `W95ProgressBar` | `value` `max` `segmented` `label` |
 
-## Select
+完整列表见 **All Components**。
 
-<div class="demo">
-  <div class="demo-label">SELECT</div>
-  <W95Select v-model="rating" :options="ratings" label="Rating" />
 </div>
+<div v-else>
 
-### API — `W95Select`
+**State**：name=`{{ name }}` · rating=`{{ rating }}` · volume=`{{ volume }}` · copies=`{{ copies }}`
 
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `modelValue` | `string \| number` | 空 | 选中值（v-model） |
-| `options` | `{ value, label, disabled? }[]` | `[]` | 选项列表 |
-| `label` | `string` | 空 | 标签 |
-| `disabled` | `boolean` | `false` | 禁用 |
+## API summary
 
-| Event | Payload |
-|-------|---------|
-| `update:modelValue` | `string \| number` |
-| `change` | 同上 |
+| Component | Key props |
+|------|-----------|
+| `W95Input` | `modelValue` `type` `label` `disabled` `readonly` |
+| `W95Select` | `modelValue` `options` `label` |
+| `W95Slider` | `modelValue` `min` `max` `step` |
+| `W95SpinButton` | `modelValue` `min` `max` `step` |
+| `W95ComboBox` | `modelValue` `options` `loading` `@search` |
+| `W95ProgressBar` | `value` `max` `segmented` `label` |
 
-也可用默认 slot 放 `<option>`。
+See **All Components** for the full catalog.
 
----
-
-## Slider
-
-<div class="demo">
-  <div class="demo-label">SLIDER</div>
-  <div style="max-width:320px">
-    <W95Slider v-model="volume" :min="1" :max="11" label="Volume:" />
-  </div>
-  <p style="color:#fff;font-size:13px;margin:8px 0 0">volume = {{ volume }}</p>
 </div>
-
-### API — `W95Slider`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `modelValue` | `number` | `0` | 当前值（v-model） |
-| `min` / `max` / `step` | `number` | `0`/`100`/`1` | 范围与步长 |
-| `label` | `string` | 空 | 标签 |
-| `disabled` | `boolean` | `false` | 禁用 |
-
-原生 `input[type=range]` 皮肤化，键盘 ←→ 可用。
-
----
-
-## SpinButton
-
-<div class="demo">
-  <div class="demo-label">SPIN BUTTON</div>
-  <W95SpinButton v-model="copies" :min="0" :max="10" :step="1" label="Copies" />
-  <p style="color:#fff;font-size:13px;margin:8px 0 0">copies = {{ copies }}</p>
-</div>
-
-### API — `W95SpinButton`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `modelValue` | `number` | `0` | 数值（v-model） |
-| `min` / `max` / `step` | `number` | `0`/`99`/`1` | 钳制范围 |
-| `label` | `string` | 空 | 可访问名称 |
-| `disabled` | `boolean` | `false` | 禁用 |
-
-`role="spinbutton"`，支持 ↑↓ 与 ▲▼ 按钮。
-
----
-
-## ComboBox
-
-<div class="demo">
-  <div class="demo-label">COMBOBOX</div>
-  <W95ComboBox v-model="driver" :options="drivers" label="Driver" />
-  <p style="color:#fff;font-size:13px;margin:8px 0 0">driver = {{ driver }}</p>
-</div>
-
-### API — `W95ComboBox`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `modelValue` | `string \| number \| null` | `null` | 选中值（v-model） |
-| `options` | `{ value, label, disabled? }[]` | `[]` | 选项 |
-| `label` | `string` | 空 | 标签 |
-| `disabled` | `boolean` | `false` | 禁用 |
-
-键盘：↑↓ Home End Enter Esc；`combobox` + `listbox` + `option`。
-
----
-
-## FieldRow / GroupBox
-
-<div class="demo">
-  <div class="demo-label">LAYOUT PRIMITIVES</div>
-  <W95GroupBox legend="Options" style="background:#c0c0c0;padding:12px">
-    <W95FieldRow>
-      <W95Input label="Inline" model-value="row" />
-    </W95FieldRow>
-    <W95FieldRow stacked style="margin-top:8px">
-      <span style="font-size:13px">Stacked label</span>
-      <W95Input model-value="under label" />
-    </W95FieldRow>
-    <W95Divider style="margin:10px 0" />
-    <W95FieldRow>
-      <span style="width:70px;font-size:13px">Progress</span>
-      <W95ProgressBar :value="progress" class="flex-1" label="Install" />
-    </W95FieldRow>
-  </W95GroupBox>
-</div>
-
-### API — `W95FieldRow`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `stacked` | `boolean` | `false` | 标签在上（纵向） |
-
-### API — `W95GroupBox`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `legend` | `string` | 空 | 边框图例 |
-
-### API — `W95ProgressBar`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `value` | `number` | `0` | 当前进度 |
-| `max` | `number` | `100` | 最大值 |
-| `segmented` | `boolean` | `false` | 分段条样式 |
-| `label` | `string` | `"Progress"` | `aria-label` |
-
-`role="progressbar"` + `aria-valuenow/min/max`。
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
-.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
 </style>

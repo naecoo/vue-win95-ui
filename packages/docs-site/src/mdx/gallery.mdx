@@ -1,77 +1,26 @@
 <script setup>
-import { ref } from "vue";
-import {
-  W95Window,
-  W95Button,
-  W95ProgressBar,
-  W95Table,
-  W95Avatar,
-  W95Accordion,
-  W95AccordionItem,
-  W95Divider,
-  W95GroupBox,
-} from "vue-win95";
-
-const progress = ref(45);
-const selected = ref(null);
-const open = ref("a");
-const columns = [
-  { key: "name", label: "Name", width: 140 },
-  { key: "version", label: "Version", width: 70 },
-  { key: "company", label: "Company" },
-];
-const rows = [
-  { id: 1, name: "MySQL ODBC 3.51", version: "3.51.11", company: "MySQL AB" },
-  { id: 2, name: "SQL Server", version: "3.70.06", company: "Microsoft" },
-];
+import { isZh } from "../i18n";
 </script>
+
+<div v-if="isZh">
 
 # Component Gallery
 
-综合预览。**完整 Props / Events API** 见分类文档：
+综合预览入口。完整 API 与全部导出见 **All Components 全组件**。
 
-- Button & Controls → Button / Checkbox / Radio / Switch / Avatar / Divider
-- Form → Input / Select / Slider / SpinButton / ComboBox / GroupBox / ProgressBar
-- Window / Dialog → Window / Dialog / Accordion / StatusBar
-- Navigation → Tabs / Menu / Toolbar / Tree / Splitter / Breadcrumb / Pagination
-- Overlays → Tooltip / Dropdown / ComboBox / Toast
-- Data → Table / SpinButton / DatePicker / ProgressBar
-- Misc → 组合示例与 API 速查
+- Form / Window / Navigation / Overlays / Data / Misc — 分类说明
+- All Components — 每个导出的 live demo + API 表
 
-<div class="demo">
-  <div class="demo-label">GALLERY</div>
-  <W95Window title="Control Panel" :width="400">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <W95Avatar initials="W9" size="lg" />
-      <div style="flex:1">
-        <div style="margin-bottom:4px">Installation</div>
-        <W95ProgressBar :value="progress" label="Install progress" />
-      </div>
-      <W95Button @click="progress = (progress + 15) % 120">+15%</W95Button>
-    </div>
-
-    <W95GroupBox legend="Details" style="margin-bottom:8px">
-      <W95Table
-        v-model:selected-key="selected"
-        :columns="columns"
-        :rows="rows"
-        :height="70"
-      />
-      <p style="margin:6px 0 0">Selected row: {{ selected }}</p>
-    </W95GroupBox>
-
-    <W95Divider style="margin:8px 0" />
-
-    <W95Accordion v-model="open">
-      <W95AccordionItem value="a" title="General">System settings panel.</W95AccordionItem>
-      <W95AccordionItem value="b" title="Appearance">Theme &amp; display.</W95AccordionItem>
-    </W95Accordion>
-  </W95Window>
 </div>
+<div v-else>
 
-更多组件可在 Storybook（`pnpm story`）中浏览。
+# Component Gallery
+
+Browse by category, or open **All Components** for every export with live demos and API tables.
+
+</div>
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
-.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
 </style>

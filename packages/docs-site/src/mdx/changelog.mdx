@@ -1,63 +1,52 @@
 <script setup>
+import { isZh } from "../i18n";
 import { W95Window, W95Button } from "vue-win95";
 </script>
 
-# Changelog
+<div v-if="isZh">
 
-本项目遵循 Keep a Changelog 风格，版本号遵循 SemVer。
+# Changelog & Sponsor
 
-## 0.2.0 — 2026-09-17
+版本历史与链接。完整 changelog 见仓库 `packages/vue-win95/CHANGELOG.md`。
 
-### Added
-- **基础**：Button, Input, Checkbox, Radio/RadioGroup, Select, Slider, ProgressBar, GroupBox, FieldRow, Divider, StatusBar
-- **容器**：Window, Dialog（焦点陷阱）, Tabs, Menu/MenuBar, Toolbar, Tree, Splitter, Accordion
-- **浮层**：Tooltip, Toast, Dropdown, ComboBox
-- **数据**：Table, SpinButton, DatePicker, Breadcrumb, Pagination, Switch, Avatar
-- **工程**：`@win95/tailwind-preset`、内置 Pixelated MS Sans Serif、`cn()` 工具
-- **Composables**：`useId`、`useFocusTrap`、`useRovingFocus`
-- **文档**：Win95 桌面 MDX 文档站、Storybook
-- **质量**：104+ Vitest / vitest-axe 用例
+## 0.2.1
+Icon/Link/Skeleton/Popover/Upload/MessageBox/Notification/ContextMenu、排序/多选 Table、日期键盘、Theme Editor、i18n。
 
-### Theme
-- CSS 变量 `--w95-*`
-- Tailwind 工具类 `w95-*`
-- 统一 `.w95-focus` 点状焦点环
+## 0.2.0
+组件库主体、Tailwind tokens、Win95 文档站。
 
-### Docs
-- 修复 MDX 内容加载与窗口/对话框关闭
-- 更大可读字号、安装指南、Changelog 与赞助信息
+</div>
+<div v-else>
 
-## 0.1.0
+# Changelog & Sponsor
 
-- pnpm monorepo 脚手架
-- Button / Input / Checkbox / Window / Dialog
-- Tailwind + shadcn 模式、a11y 测试基线
+Release notes and links. Full log: `packages/vue-win95/CHANGELOG.md` in the repo.
 
----
+## 0.2.1
+Icon/Link/Skeleton/Popover/Upload/MessageBox/Notification/ContextMenu, table sort/multi-select, date keyboard, Theme Editor, i18n.
 
-## Sponsor & Links
+## 0.2.0
+Core library, Tailwind tokens, Win95 docs site.
 
-感谢使用 **vue-win95**！
+</div>
 
-| 资源 | 说明 |
-|------|------|
-| 仓库 | GitHub · `win95-ui` |
-| 文档站 | 本桌面应用（`pnpm docs`） |
-| Storybook | `pnpm story` 组件画廊 |
-| Playground | `pnpm dev` 本地演示 |
-| Changelog | `packages/vue-win95/CHANGELOG.md` |
-| 问题反馈 | GitHub Issues |
-| 赞助 | GitHub Sponsors（若已配置）；也欢迎 Star、PR、技术分享 |
+## Links
+
+| | |
+|--|--|
+| GitHub | https://github.com/naecoo/vue-win95-ui |
+| Docs | https://naecoo.github.io/vue-win95-ui/ |
+| Issues | GitHub Issues |
+| Sponsor | Star / PR / GitHub Sponsors |
 
 <div class="demo">
-  <div class="demo-label">SPONSOR · LINKS</div>
-  <W95Window title="Support vue-win95" :width="440">
+  <div class="demo-label">SPONSOR</div>
+  <W95Window title="Support vue-win95" :width="420">
     <p style="font-size:14px;margin:0 0 12px">
-      如果 vue-win95 对你有帮助，欢迎 Star、提交 PR，或考虑赞助维护工作。
+      {{ isZh ? "欢迎 Star、PR 或赞助。" : "Star, contribute, or sponsor if this helps you." }}
     </p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <W95Button default>★ Star on GitHub</W95Button>
-      <W95Button>Report Issue</W95Button>
       <W95Button>Sponsor</W95Button>
     </div>
   </W95Window>

@@ -1,138 +1,62 @@
 <script setup>
+import { isZh } from "../i18n";
 import { ref } from "vue";
-import {
-  W95Table,
-  W95SpinButton,
-  W95DatePicker,
-  W95ProgressBar,
-  W95Button,
-} from "vue-win95";
+import { W95Table, W95SpinButton, W95DatePicker, W95ProgressBar, W95Button } from "vue-win95";
 
 const selected = ref(2);
 const copies = ref(3);
 const date = ref("2024-06-15");
 const progress = ref(45);
-
 const columns = [
-  { key: "name", label: "Name", width: 160 },
-  { key: "version", label: "Version", width: 80 },
-  { key: "company", label: "Company" },
+  { key: "name", label: "Name", width: 140, sortable: true },
+  { key: "version", label: "Version", width: 70 },
 ];
 const rows = [
-  { id: 1, name: "MySQL ODBC 3.51", version: "3.51.11", company: "MySQL AB" },
-  { id: 2, name: "SQL Server", version: "3.70.06", company: "Microsoft" },
-  { id: 3, name: "Access Driver", version: "4.00", company: "Microsoft" },
-  { id: 4, name: "Oracle ODBC", version: "12.1", company: "Oracle" },
+  { id: 1, name: "MySQL ODBC", version: "3.51" },
+  { id: 2, name: "SQL Server", version: "3.70" },
 ];
 </script>
+
+<div v-if="isZh">
 
 # Data 数据组件
 
 Table · SpinButton · DatePicker · ProgressBar
 
-## Table
+</div>
+<div v-else>
 
-<div class="demo">
-  <div class="demo-label">TABLE</div>
-  <W95Table
-    v-model:selected-key="selected"
-    :columns="columns"
-    :rows="rows"
-    :height="140"
-    row-key="id"
-  />
-  <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-    <W95Button @click="selected = null">Clear selection</W95Button>
-    <span style="color:#fff;font-size:13px">selected = {{ selected }}</span>
-  </div>
+# Data
+
+Table · SpinButton · DatePicker · ProgressBar
+
 </div>
 
-### API — `W95Table`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `columns` | `{ key, label, width? }[]` | — | **必填** 列定义 |
-| `rows` | `Record<string, unknown>[]` | `[]` | 行数据 |
-| `selectedKey` | `string\|number\|null` | `null` | 选中行 key（v-model） |
-| `rowKey` | `string` | `"id"` | 行主键字段名 |
-| `interactive` | `boolean` | `true` | 允许点击选中 |
-| `height` | `number\|string` | — | 滚动区高度 |
-
-| Event | Payload |
-|-------|---------|
-| `update:selectedKey` | 行 key 或 `null` |
-| `select` | 整行对象 |
-
----
-
-## SpinButton
-
 <div class="demo">
-  <div class="demo-label">SPIN BUTTON</div>
-  <W95SpinButton v-model="copies" :min="0" :max="20" :step="2" label="Copies" />
-  <p style="color:#fff;font-size:13px;margin:8px 0 0">copies = {{ copies }}</p>
-</div>
-
-### API — `W95SpinButton`
-
-| Prop | Type | Default |
-|------|------|---------|
-| `modelValue` | `number` | `0` |
-| `min` / `max` / `step` | `number` | `0` / `99` / `1` |
-| `label` | `string` | 空 |
-| `disabled` | `boolean` | `false` |
-
-`role="spinbutton"` · ↑↓ 键 · ▲▼ 按钮 · min/max 钳制。
-
----
-
-## DatePicker
-
-<div class="demo">
-  <div class="demo-label">DATE PICKER</div>
-  <W95DatePicker v-model="date" label="Date" />
-  <p style="color:#fff;font-size:13px;margin:8px 0 0">date = {{ date }} · 格式 YYYY-MM-DD</p>
-</div>
-
-### API — `W95DatePicker`
-
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `modelValue` | `string \| null` | `null` | ISO 日期 `YYYY-MM-DD`（v-model） |
-| `label` | `string` | 空 | 标签 |
-
-| Event | Payload |
-|-------|---------|
-| `update:modelValue` | `string \| null` |
-| `change` | 同上 |
-
-月历对话框：上月/下月、点选日期；输入框只读。
-
----
-
-## ProgressBar
-
-<div class="demo">
-  <div class="demo-label">PROGRESS</div>
-  <div style="max-width:360px;display:flex;flex-direction:column;gap:8px">
-    <W95ProgressBar :value="progress" label="Install" />
-    <W95ProgressBar :value="progress" segmented label="Segmented" />
+  <div class="demo-label">LIVE DATA</div>
+  <W95Table v-model:selected-key="selected" :columns="columns" :rows="rows" :height="90" />
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px">
+    <W95SpinButton v-model="copies" :min="0" :max="20" :label="isZh ? '份数' : 'Copies'" />
+    <W95DatePicker v-model="date" :label="isZh ? '日期' : 'Date'" />
   </div>
   <div style="margin-top:8px">
-    <W95Button @click="progress = (progress + 15) % 120">+15%</W95Button>
+    <W95ProgressBar :value="progress" :label="isZh ? '进度' : 'Progress'" />
   </div>
+  <W95Button style="margin-top:8px" @click="progress = (progress + 15) % 120">+15%</W95Button>
 </div>
 
-### API — `W95ProgressBar`
+<div v-if="isZh">
 
-| Prop | Type | Default | 说明 |
-|------|------|---------|------|
-| `value` | `number` | `0` | 当前值 |
-| `max` | `number` | `100` | 最大值 |
-| `segmented` | `boolean` | `false` | Win95 分段条 |
-| `label` | `string` | `"Progress"` | `aria-label` |
+Table 支持排序、多选（Ctrl 点选）、方向键选择。DatePicker 支持 `min`/`max`。
+
+</div>
+<div v-else>
+
+Table supports sort, multi-select (Ctrl+click), and arrow-key selection. DatePicker supports `min`/`max`.
+
+</div>
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
-.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
 </style>

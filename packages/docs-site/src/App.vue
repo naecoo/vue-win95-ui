@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, h, onMounted, ref, watch } from "vue";
+import { lang, toggleLang, t, isZh } from "./i18n";
 
 type PageId =
   | "welcome"
@@ -26,69 +27,73 @@ interface WinState {
 
 const pages: Record<
   PageId,
-  { title: string; icon: string; mod: () => Promise<unknown> }
+  { titleKey: PageId; icon: string; mod: () => Promise<unknown> }
 > = {
   welcome: {
-    title: "Welcome to vue-win95",
+    titleKey: "welcome",
     icon: "help",
     mod: () => import("./mdx/welcome.mdx"),
   },
   install: {
-    title: "安装 Install",
+    titleKey: "install",
     icon: "folder",
     mod: () => import("./mdx/install.mdx"),
   },
   input: {
-    title: "Form 表单",
+    titleKey: "input",
     icon: "folder",
     mod: () => import("./mdx/input.mdx"),
   },
   window: {
-    title: "Window / Dialog",
+    titleKey: "window",
     icon: "folder",
     mod: () => import("./mdx/window.mdx"),
   },
   navigation: {
-    title: "Navigation",
+    titleKey: "navigation",
     icon: "folder",
     mod: () => import("./mdx/navigation.mdx"),
   },
   overlays: {
-    title: "Overlays 浮层",
+    titleKey: "overlays",
     icon: "folder",
     mod: () => import("./mdx/overlays.mdx"),
   },
   data: {
-    title: "Data 数据",
+    titleKey: "data",
     icon: "folder",
     mod: () => import("./mdx/data.mdx"),
   },
   misc: {
-    title: "Misc 其它",
+    titleKey: "misc",
     icon: "folder",
     mod: () => import("./mdx/misc.mdx"),
   },
   gallery: {
-    title: "Component Gallery",
+    titleKey: "gallery",
     icon: "computer",
     mod: () => import("./mdx/gallery.mdx"),
   },
   all: {
-    title: "All Components 全组件",
+    titleKey: "all",
     icon: "computer",
     mod: () => import("./mdx/all.mdx"),
   },
   theme: {
-    title: "Theme Editor",
+    titleKey: "theme",
     icon: "help",
     mod: () => import("./mdx/theme.mdx"),
   },
   changelog: {
-    title: "Changelog & Sponsor",
+    titleKey: "changelog",
     icon: "help",
     mod: () => import("./mdx/changelog.mdx"),
   },
 };
+
+function pageTitle(id: PageId) {
+  return t("pages", id);
+}
 
 const windows = ref<WinState[]>([]);
 const zTop = ref(10);
@@ -100,7 +105,7 @@ setInterval(() => {
 }, 30_000);
 
 const clock = computed(() =>
-  now.value.toLocaleTimeString("en-US", {
+  now.value.toLocaleTimeString(lang.value === "zh" ? "zh-CN" : "en-US", {
     hour: "numeric",
     minute: "2-digit",
   })
@@ -111,7 +116,6 @@ const resolved = new Map<PageId, unknown>();
 async function loadMod(id: PageId) {
   if (!resolved.has(id)) {
     const mod = (await pages[id]!.mod()) as { default?: unknown };
-    // vite-plugin-md exports a Vue component on `default`
     resolved.set(id, mod.default ?? mod);
   }
   return resolved.get(id);
@@ -129,29 +133,25 @@ async function ensurePage(id: PageId) {
       [id]: {
         name: "PageError",
         render() {
-          return h(
-            "div",
-            { class: "w95-md" },
-            [
-              h("p", { style: "font-size:14px" }, "页面加载失败 / Failed to load page"),
-              h(
-                "button",
-                {
-                  type: "button",
-                  class:
-                    "w95-focus min-w-w95-btn min-h-w95-btn bg-w95-surface shadow-w95-raised border-0 font-w95 text-w95 cursor-default",
-                  onClick: () => {
-                    resolved.delete(id);
-                    const next = { ...modCache.value };
-                    delete next[id];
-                    modCache.value = next;
-                    void ensurePage(id);
-                  },
+          return h("div", { class: "w95-md" }, [
+            h("p", { style: "font-size:14px" }, t("loadError")),
+            h(
+              "button",
+              {
+                type: "button",
+                class:
+                  "w95-focus min-w-w95-btn min-h-w95-btn bg-w95-surface shadow-w95-raised border-0 font-w95 text-w95 cursor-default",
+                onClick: () => {
+                  resolved.delete(id);
+                  const next = { ...modCache.value };
+                  delete next[id];
+                  modCache.value = next;
+                  void ensurePage(id);
                 },
-                "重试 Retry"
-              ),
-            ]
-          );
+              },
+              t("retry")
+            ),
+          ]);
         },
       },
     };
@@ -175,13 +175,12 @@ function restoreFromTaskbar(w: WinState) {
   focus(w);
 }
 
-/* drag — only from title text / empty bar area, never from control buttons */
 let drag: { w: WinState; ox: number; oy: number } | null = null;
 
 function onTitleDown(e: PointerEvent, w: WinState) {
   focus(w);
   const target = e.target as HTMLElement;
-  if (target.closest("button")) return; // let close/minimize receive click
+  if (target.closest("button")) return;
   drag = { w, ox: e.clientX - w.x, oy: e.clientY - w.y };
   (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
 }
@@ -209,7 +208,14 @@ watch(
   { immediate: true }
 );
 
-/** inject copy buttons into markdown code blocks */
+/** keep window titles in sync with language */
+watch(lang, () => {
+  windows.value = windows.value.map((w) => ({
+    ...w,
+    title: pageTitle(w.id),
+  }));
+});
+
 watch(
   () =>
     windows.value.map((w) => `${w.id}:${modCache.value[w.id] ? 1 : 0}`).join(","),
@@ -249,7 +255,6 @@ function iconClass(kind: string) {
       : "w95-icon w95-icon-help";
 }
 
-/** Desktop: show a curated subset; Start menu lists all */
 const desktopIds = computed<PageId[]>(() => [
   "welcome",
   "install",
@@ -262,40 +267,17 @@ const desktopIds = computed<PageId[]>(() => [
   "changelog",
 ]);
 
-/** simple UI i18n for chrome labels */
-const lang = ref<"zh" | "en">("zh");
-const t = computed(() =>
-  lang.value === "zh"
-    ? { start: "开始", search: "搜索页面…", ready: "就绪", clock: "" }
-    : { start: "Start", search: "Search…", ready: "Ready", clock: "" }
-);
-
-function toggleLang() {
-  lang.value = lang.value === "zh" ? "en" : "zh";
-}
-
-function onDesktopClick(e: MouseEvent) {
-  const t = e.target as HTMLElement;
-  if (!t.closest(".w95-start-panel") && !t.closest("[data-start-btn]")) {
-    startOpen.value = false;
-  }
-}
-
-/** simple filter for Start menu */
 const query = ref("");
 
 const filteredIds = computed(() => {
   const q = query.value.trim().toLowerCase();
   if (!q) return pageIds;
   return pageIds.filter((id) => {
-    const p = pages[id]!;
-    return (
-      p.title.toLowerCase().includes(q) || id.toLowerCase().includes(q)
-    );
+    const name = pageTitle(id).toLowerCase();
+    return name.includes(q) || id.toLowerCase().includes(q);
   });
 });
 
-/** hash deep-link: #button opens that page */
 function syncHash() {
   const id = location.hash.replace(/^#/, "") as PageId;
   if (id && id in pages) openPage(id);
@@ -318,13 +300,20 @@ function openPage(id: PageId) {
   const offset = windows.value.length * 24;
   windows.value.push({
     id,
-    title: pages[id]!.title,
+    title: pageTitle(id),
     x: 40 + offset,
     y: 32 + offset,
     z: ++zTop.value,
     minimized: false,
   });
   void ensurePage(id);
+}
+
+function onDesktopClick(e: MouseEvent) {
+  const el = e.target as HTMLElement;
+  if (!el.closest(".w95-start-panel") && !el.closest("[data-start-btn]")) {
+    startOpen.value = false;
+  }
 }
 </script>
 
@@ -333,13 +322,12 @@ function openPage(id: PageId) {
     class="w95-scanlines relative w-full h-full overflow-hidden bg-w95-desktop select-none"
     @pointerdown="onDesktopClick"
   >
-    <!-- Desktop icons (curated) -->
     <div class="absolute top-3 left-3 flex flex-col gap-4">
       <button
         v-for="id in desktopIds"
         :key="id"
         type="button"
-        class="flex flex-col items-center gap-1 w-[76px] bg-transparent border-0 cursor-default p-1 focus:outline-none"
+        class="flex flex-col items-center gap-1 w-[88px] bg-transparent border-0 cursor-default p-1 focus:outline-none"
         @dblclick="openPage(id)"
         @click="openPage(id)"
       >
@@ -348,12 +336,11 @@ function openPage(id: PageId) {
           class="text-white text-center px-1 leading-tight"
           style="text-shadow: 1px 1px 0 #000;font-size:12px"
         >
-          {{ pages[id]!.title }}
+          {{ pageTitle(id) }}
         </span>
       </button>
     </div>
 
-    <!-- Windows -->
     <div
       v-for="w in windows"
       :key="w.id"
@@ -399,30 +386,22 @@ function openPage(id: PageId) {
               inset -2px -2px #808080, inset 2px 2px #ffffff;
           "
         >
-          <component :is="modCache[w.id]" v-if="modCache[w.id]" :key="w.id" />
-          <p v-else class="font-w95 text-w95 m-0">Loading…</p>
+          <component :is="modCache[w.id]" v-if="modCache[w.id]" :key="w.id + lang" />
+          <p v-else class="font-w95 text-w95 m-0">{{ t("loading") }}</p>
         </div>
 
         <div class="flex gap-px mx-px mb-px">
-          <p
-            class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95"
-          >
-            Ready
+          <p class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95">
+            {{ t("ready") }}
           </p>
-          <p
-            class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95"
-          >
-            vue-win95 v0.2.0 Docs
+          <p class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95">
+            {{ t("docsVersion") }} v0.2.1
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Start menu -->
-    <div
-      v-if="startOpen"
-      class="absolute bottom-[28px] left-0 z-[2000]"
-    >
+    <div v-if="startOpen" class="absolute bottom-[28px] left-0 z-[2000]">
       <div class="w95-start-panel">
         <div class="w95-start-banner">vue-win95</div>
         <ul class="flex-1 list-none m-0 p-1 font-w95 text-w95 max-h-[50vh] overflow-auto">
@@ -430,7 +409,7 @@ function openPage(id: PageId) {
             <input
               v-model="query"
               type="search"
-              placeholder="Search… / 搜索…"
+              :placeholder="t('search')"
               aria-label="Search pages"
               class="w95-focus box-border w-full font-w95 text-w95"
               style="height:22px;padding:2px 4px;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;border:0;background:#fff;font-size:12px"
@@ -446,36 +425,36 @@ function openPage(id: PageId) {
             <span class="w-4 text-center" aria-hidden="true">
               {{ pages[id]!.icon === "folder" ? "📁" : pages[id]!.icon === "computer" ? "💻" : "❓" }}
             </span>
-            {{ pages[id]!.title }}
+            {{ pageTitle(id) }}
           </li>
           <li v-if="filteredIds.length === 0" class="px-2 py-1 text-w95-shadow" style="font-size:12px">
-            No matches
+            {{ t("noMatch") }}
           </li>
         </ul>
       </div>
     </div>
 
-    <!-- Taskbar -->
     <div
       class="absolute bottom-0 left-0 right-0 h-[28px] bg-w95-surface shadow-w95-raised flex items-center gap-1 px-1 z-[1900] font-w95 text-w95"
     >
-            <button
-              type="button"
-              class="min-w-w95-btn h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised font-bold cursor-default active:shadow-w95-sunken"
-              :aria-expanded="startOpen"
-              @pointerdown.stop
-              @click="startOpen = !startOpen"
-            >
-              <span class="mr-1">🪟</span> {{ t.start }}
-            </button>
-            <button
-              type="button"
-              class="h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised cursor-default active:shadow-w95-sunken"
-              :aria-label="lang === 'zh' ? 'Switch language' : '切换语言'"
-              @click="toggleLang"
-            >
-              {{ lang === "zh" ? "EN" : "中" }}
-            </button>
+      <button
+        type="button"
+        data-start-btn
+        class="min-w-w95-btn h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised font-bold cursor-default active:shadow-w95-sunken"
+        :aria-expanded="startOpen"
+        @pointerdown.stop
+        @click="startOpen = !startOpen"
+      >
+        <span class="mr-1">🪟</span> {{ t("start") }}
+      </button>
+      <button
+        type="button"
+        class="h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised cursor-default active:shadow-w95-sunken"
+        :aria-label="isZh ? 'Switch to English' : '切换为中文'"
+        @click="toggleLang"
+      >
+        {{ isZh ? "EN" : "中" }}
+      </button>
       <div class="h-[18px] w-px bg-w95-button-shadow mx-0.5" />
       <button
         v-for="w in windows"
@@ -492,9 +471,7 @@ function openPage(id: PageId) {
         {{ w.title }}
       </button>
       <div class="flex-1" />
-      <div
-        class="h-[22px] px-2 flex items-center shadow-w95-status min-w-[70px] justify-center"
-      >
+      <div class="h-[22px] px-2 flex items-center shadow-w95-status min-w-[70px] justify-center">
         {{ clock }}
       </div>
     </div>

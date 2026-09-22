@@ -1,97 +1,73 @@
 <script setup>
+import { isZh } from "../i18n";
 import { ref } from "vue";
 import {
-  W95Accordion,
-  W95AccordionItem,
-  W95Breadcrumb,
-  W95Pagination,
-  W95Switch,
-  W95Avatar,
-  W95GroupBox,
-  W95Checkbox,
-  W95Divider,
-  W95FieldRow,
-  W95StatusBar,
-  W95StatusBarField,
+  W95Icon, W95Link, W95Skeleton, W95Upload, W95Popover, W95Notification,
+  W95Switch, W95Avatar, W95Button, W95Divider,
+  W95Alert, W95Confirm,
 } from "vue-win95";
 
-const open = ref("a");
-const page = ref(1);
-const sound = ref(true);
-const remember = ref(false);
-const crumbs = [
-  { label: "Desktop" },
-  { label: "My Computer" },
-  { label: "Control Panel" },
-];
+const on = ref(true);
+const files = ref([]);
+const pop = ref(false);
+const notif = ref([
+  { id: 1, title: "Error", message: "Disk full.", type: "error", duration: 0 },
+]);
 </script>
 
-# Misc 其它组件
+<div v-if="isZh">
 
-Accordion · Breadcrumb · Pagination · Switch · Avatar · GroupBox · FieldRow · StatusBar
+# Misc 其它
 
-> 完整 API 也可在分类页查看：Accordion/Window 在 **Window & Dialog**；Breadcrumb/Pagination 在 **Navigation**；Switch/Avatar/Divider 在 **Button & Controls**。本页为速查与组合演示。
+Icon · Link · Skeleton · Upload · Popover · Notification · Switch · Avatar · MessageBox
 
-## 组合演示
+</div>
+<div v-else>
 
-<div class="demo">
-  <div class="demo-label">COMPOSITION</div>
-  <W95GroupBox legend="Control Panel" style="background:#c0c0c0;padding:12px">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <W95Avatar initials="CP" size="lg" />
-      <div style="flex:1">
-        <div style="font-weight:bold;font-size:14px;margin-bottom:4px">System</div>
-        <W95Switch v-model="sound" label="System sounds" />
-      </div>
-    </div>
+# Misc
 
-    <W95FieldRow>
-      <W95Checkbox v-model="remember" label="Remember these settings" />
-    </W95FieldRow>
+Icon · Link · Skeleton · Upload · Popover · Notification · Switch · Avatar · MessageBox
 
-    <W95Divider style="margin:10px 0" />
-
-    <W95Breadcrumb :items="crumbs" />
-    <div style="height:8px"></div>
-    <W95Pagination v-model="page" :total="30" :page-size="10" />
-
-    <W95Divider style="margin:10px 0" />
-
-    <W95Accordion v-model="open">
-      <W95AccordionItem value="a" title="General">
-        Date format, sounds, accessibility options.
-      </W95AccordionItem>
-      <W95AccordionItem value="b" title="Display">
-        Resolution, color depth, wallpaper.
-      </W95AccordionItem>
-      <W95AccordionItem value="c" title="Network">
-        Dial-up and LAN settings.
-      </W95AccordionItem>
-    </W95Accordion>
-  </W95GroupBox>
-
-  <div style="height:8px"></div>
-  <W95StatusBar>
-    <W95StatusBarField>page={{ page }}</W95StatusBarField>
-    <W95StatusBarField>sound={{ sound }}</W95StatusBarField>
-    <W95StatusBarField>open={{ open }}</W95StatusBarField>
-  </W95StatusBar>
 </div>
 
-## 速查 API
+<div class="demo">
+  <div class="demo-label">MIXED</div>
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+    <W95Icon name="folder" :size="20" label="Folder" />
+    <W95Avatar initials="W9" />
+    <W95Switch v-model="on" :label="isZh ? '开关' : 'Switch'" />
+    <W95Link href="#">{{ isZh ? "链接" : "Link" }}</W95Link>
+  </div>
+  <W95Skeleton :lines="1" />
+  <W95Divider style="margin:8px 0" />
+  <W95Upload v-model="files" :label="isZh ? '选择文件…' : 'Browse…'" />
+  <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <W95Popover v-model="pop" title="Tip" :width="200">
+      <template #trigger>
+        <W95Button @click="pop = !pop">Popover</W95Button>
+      </template>
+      <span style="font-size:13px">{{ isZh ? "气泡内容" : "Popover body" }}</span>
+    </W95Popover>
+    <W95Button @click="W95Alert(isZh ? '来自 MessageBox' : 'From MessageBox', 'Alert')">Alert</W95Button>
+    <W95Button default @click="W95Confirm(isZh ? '确定删除？' : 'Delete file?')">
+      {{ isZh ? "确认框" : "Confirm" }}
+    </W95Button>
+  </div>
+  <W95Notification v-model="notif" position="bottom-right" />
+</div>
 
-| 组件 | 关键 Props | 无障碍 |
-|------|-----------|--------|
-| `W95Accordion` / `Item` | `modelValue`; `value`,`title` | `aria-expanded`, region |
-| `W95Breadcrumb` | `items[]`, `separator` | nav + `aria-current` |
-| `W95Pagination` | `modelValue`,`total`,`pageSize` | nav + `aria-current` |
-| `W95Switch` | `modelValue`,`label`,`disabled` | `role=switch` |
-| `W95Avatar` | `src`,`alt`,`initials`,`size` | title/alt |
-| `W95GroupBox` | `legend` | fieldset + legend |
-| `W95FieldRow` | `stacked` | 布局 |
-| `W95StatusBar(Field)` | `grow` | `role=status` |
+<div v-if="isZh">
+
+命令式通知请用 `useNotifier()` / `notify()`。完整导出列表见 **All Components**。
+
+</div>
+<div v-else>
+
+Use `useNotifier()` / `notify()` for imperative toasts. Full exports on **All Components**.
+
+</div>
 
 <style>
 .demo { background:#008080;padding:14px;margin:8px 0; }
-.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-family:"Pixelated MS Sans Serif",sans-serif;font-size:12px; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
 </style>
