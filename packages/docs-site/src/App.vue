@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, h, onMounted, ref, watch } from "vue";
 
 type PageId =
   | "welcome"
@@ -40,7 +40,7 @@ const pages: Record<
     mod: () => import("./mdx/install.mdx"),
   },
   button: {
-    title: "Button & Controls",
+    title: "基础控件 Controls",
     icon: "folder",
     mod: () => import("./mdx/button.mdx"),
   },
@@ -124,9 +124,44 @@ async function loadMod(id: PageId) {
 }
 
 async function ensurePage(id: PageId) {
-  const comp = await loadMod(id);
-  // replace whole object so nested key is reactive
-  modCache.value = { ...modCache.value, [id]: comp };
+  if (modCache.value[id]) return;
+  try {
+    const comp = await loadMod(id);
+    modCache.value = { ...modCache.value, [id]: comp };
+  } catch (err) {
+    console.error("Failed to load docs page", id, err);
+    modCache.value = {
+      ...modCache.value,
+      [id]: {
+        name: "PageError",
+        render() {
+          return h(
+            "div",
+            { class: "w95-md" },
+            [
+              h("p", { style: "font-size:14px" }, "页面加载失败 / Failed to load page"),
+              h(
+                "button",
+                {
+                  type: "button",
+                  class:
+                    "w95-focus min-w-w95-btn min-h-w95-btn bg-w95-surface shadow-w95-raised border-0 font-w95 text-w95 cursor-default",
+                  onClick: () => {
+                    resolved.delete(id);
+                    const next = { ...modCache.value };
+                    delete next[id];
+                    modCache.value = next;
+                    void ensurePage(id);
+                  },
+                },
+                "重试 Retry"
+              ),
+            ]
+          );
+        },
+      },
+    };
+  }
 }
 
 function focus(w: WinState) {

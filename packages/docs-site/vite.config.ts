@@ -4,8 +4,9 @@ import Markdown from "vite-plugin-md";
 import { resolve } from "node:path";
 
 export default defineConfig({
-  // relative base so GitHub Pages project sites work
-  base: process.env.DOCS_BASE || "./",
+  // GitHub Pages project site lives under /vue-win95-ui/
+  // Local dev uses the same base so asset URLs always resolve.
+  base: process.env.DOCS_BASE || "/vue-win95-ui/",
   plugins: [
     vue({
       include: [/\.vue$/, /\.md$/, /\.mdx$/],
