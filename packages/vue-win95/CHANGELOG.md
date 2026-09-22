@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.1 — unreleased
+
+### Added
+- `W95Icon`, `W95Link`, `W95Skeleton`, `W95Popover`
+- `W95Notification`（类型 info/success/warn/error + 图标）
+- MessageBox 命令式 API：`W95Alert` / `W95Confirm` / `W95ShowMessageBox`
+- Dialog `size`（sm/md/lg），`width` 可覆盖
+- `vue-win95/tokens.css` exports 别名
+- Docs-site：Start 菜单搜索、hash 深链（`#button` 等）
+- 键盘导航测试补充（Tabs / Dropdown / Tree）
+- Extras 组件测试（117 total）
+
+### Housekeeping
+- LICENSE / CI / prepublish-check / docs/PUBLISH.md
+- repository 元数据 → github.com/naecoo/vue-win95-ui
+
 ## 0.2.0 — 2026-09-17
 
 ### Added
@@ -17,12 +33,6 @@
 - Tailwind utilities `w95-*` (colors, shadows, sizes)
 - Unified `.w95-focus` dotted focus ring
 - Dialog default width 480
-
-### Docs site (`pnpm docs`)
-- Welcome / Install / component category pages / Changelog & Sponsor
-- Live demos via real library components
-- Desktop shell: icons, Start menu, taskbar, draggable windows
-- Larger readable typography
 
 ## 0.1.0
 

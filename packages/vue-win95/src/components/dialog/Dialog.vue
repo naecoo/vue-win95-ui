@@ -11,12 +11,14 @@ const props = withDefaults(
     title?: string;
     showClose?: boolean;
     width?: string | number;
+    size?: "sm" | "md" | "lg";
     closeOnOverlay?: boolean;
   }>(),
   {
     title: "Dialog",
     showClose: true,
-    width: 480,
+    width: undefined,
+    size: "md",
     closeOnOverlay: true,
   }
 );
@@ -27,6 +29,11 @@ const emit = defineEmits<{
   confirm: [];
   cancel: [];
 }>();
+
+const sizeWidth = computed(() =>
+  props.size === "sm" ? 360 : props.size === "lg" ? 640 : 480
+);
+const effectiveWidth = computed(() => props.width ?? sizeWidth.value);
 
 const titleId = useId("w95-dialog-title");
 const panelRef = ref<HTMLElement | null>(null);
@@ -104,7 +111,7 @@ watch(
         >
           <W95Window
             :title="title"
-            :width="width"
+            :width="effectiveWidth"
             :show-minimize="false"
             :show-maximize="false"
             :show-close="showClose"

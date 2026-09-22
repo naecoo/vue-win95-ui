@@ -30,6 +30,17 @@ import { W95Breadcrumb } from "./breadcrumb";
 import { W95Pagination } from "./pagination";
 import { W95Switch } from "./switch";
 import { W95Avatar } from "./avatar";
+import { W95Icon } from "./icon";
+import { W95Link } from "./link";
+import { W95Skeleton } from "./skeleton";
+import { W95Popover } from "./popover";
+import { W95Notification } from "./notification";
+import {
+  W95Alert,
+  W95Confirm,
+  W95ShowMessageBox,
+  W95MessageBox,
+} from "./message";
 
 export * from "./button";
 export * from "./input";
@@ -61,6 +72,12 @@ export * from "./breadcrumb";
 export * from "./pagination";
 export * from "./switch";
 export * from "./avatar";
+export * from "./icon";
+export * from "./link";
+export * from "./skeleton";
+export * from "./popover";
+export * from "./notification";
+export * from "./message";
 
 const components = [
   W95Button,
@@ -102,6 +119,11 @@ const components = [
   W95Pagination,
   W95Switch,
   W95Avatar,
+  W95Icon,
+  W95Link,
+  W95Skeleton,
+  W95Popover,
+  W95Notification,
 ];
 
 const install: Plugin = {
@@ -110,5 +132,12 @@ const install: Plugin = {
   },
 };
 
-export { install };
+export {
+  install,
+  W95Alert,
+  W95Confirm,
+  W95ShowMessageBox,
+  W95MessageBox,
+};
+
 export default install;

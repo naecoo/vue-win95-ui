@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 type PageId =
   | "welcome"
@@ -111,26 +111,6 @@ async function loadMod(id: PageId) {
   return resolved.get(id);
 }
 
-function openPage(id: PageId) {
-  startOpen.value = false;
-  const existing = windows.value.find((w) => w.id === id);
-  if (existing) {
-    existing.minimized = false;
-    focus(existing);
-    return;
-  }
-  const offset = windows.value.length * 24;
-  windows.value.push({
-    id,
-    title: pages[id]!.title,
-    x: 40 + offset,
-    y: 32 + offset,
-    z: ++zTop.value,
-    minimized: false,
-  });
-  void ensurePage(id);
-}
-
 async function ensurePage(id: PageId) {
   const comp = await loadMod(id);
   // replace whole object so nested key is reactive
@@ -212,6 +192,52 @@ function onDesktopClick(e: MouseEvent) {
   if (!t.closest(".w95-start-panel") && !t.closest("[data-start-btn]")) {
     startOpen.value = false;
   }
+}
+
+/** simple filter for Start menu */
+const query = ref("");
+
+const filteredIds = computed(() => {
+  const q = query.value.trim().toLowerCase();
+  if (!q) return pageIds;
+  return pageIds.filter((id) => {
+    const p = pages[id]!;
+    return (
+      p.title.toLowerCase().includes(q) || id.toLowerCase().includes(q)
+    );
+  });
+});
+
+/** hash deep-link: #button opens that page */
+function syncHash() {
+  const id = location.hash.replace(/^#/, "") as PageId;
+  if (id && id in pages) openPage(id);
+}
+
+window.addEventListener("hashchange", syncHash);
+onMounted(() => syncHash());
+
+function openPage(id: PageId) {
+  startOpen.value = false;
+  if (location.hash !== `#${id}`) {
+    history.replaceState(null, "", `#${id}`);
+  }
+  const existing = windows.value.find((w) => w.id === id);
+  if (existing) {
+    existing.minimized = false;
+    focus(existing);
+    return;
+  }
+  const offset = windows.value.length * 24;
+  windows.value.push({
+    id,
+    title: pages[id]!.title,
+    x: 40 + offset,
+    y: 32 + offset,
+    z: ++zTop.value,
+    minimized: false,
+  });
+  void ensurePage(id);
 }
 </script>
 
@@ -313,8 +339,18 @@ function onDesktopClick(e: MouseEvent) {
       <div class="w95-start-panel">
         <div class="w95-start-banner">vue-win95</div>
         <ul class="flex-1 list-none m-0 p-1 font-w95 text-w95 max-h-[50vh] overflow-auto">
+          <li class="px-1 pb-1">
+            <input
+              v-model="query"
+              type="search"
+              placeholder="Search…"
+              aria-label="Search pages"
+              class="w95-focus box-border w-full font-w95 text-w95"
+              style="height:22px;padding:2px 4px;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;border:0;background:#fff;font-size:12px"
+            />
+          </li>
           <li
-            v-for="id in pageIds"
+            v-for="id in filteredIds"
             :key="id"
             class="px-2 py-1.5 cursor-default hover:bg-w95-blue hover:text-w95-highlight flex items-center gap-2"
             style="font-size:13px"
@@ -324,6 +360,9 @@ function onDesktopClick(e: MouseEvent) {
               {{ pages[id]!.icon === "folder" ? "📁" : pages[id]!.icon === "computer" ? "💻" : "❓" }}
             </span>
             {{ pages[id]!.title }}
+          </li>
+          <li v-if="filteredIds.length === 0" class="px-2 py-1 text-w95-shadow" style="font-size:12px">
+            No matches
           </li>
         </ul>
       </div>

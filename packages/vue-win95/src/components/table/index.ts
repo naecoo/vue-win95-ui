@@ -10,4 +10,5 @@ export type W95TableProps = {
   rowKey?: string;
   interactive?: boolean;
   height?: string | number;
+  emptyText?: string;
 };
