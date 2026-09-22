@@ -36,13 +36,6 @@ const dict = {
   pages: {
     welcome: { zh: "欢迎 Welcome", en: "Welcome" },
     install: { zh: "安装 Install", en: "Install" },
-    input: { zh: "Form 表单", en: "Form" },
-    window: { zh: "Window / Dialog", en: "Window / Dialog" },
-    navigation: { zh: "Navigation 导航", en: "Navigation" },
-    overlays: { zh: "Overlays 浮层", en: "Overlays" },
-    data: { zh: "Data 数据", en: "Data" },
-    misc: { zh: "Misc 其它", en: "Misc" },
-    gallery: { zh: "Gallery 画廊", en: "Gallery" },
     all: { zh: "All Components 全组件", en: "All Components" },
     theme: { zh: "Theme Editor 主题", en: "Theme Editor" },
     changelog: { zh: "Changelog & Sponsor", en: "Changelog & Sponsor" },
