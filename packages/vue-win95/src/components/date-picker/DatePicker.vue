@@ -8,12 +8,16 @@ const props = withDefaults(
     modelValue?: string | null;
     label?: string;
     id?: string;
+    min?: string | null;
+    max?: string | null;
     class?: string;
   }>(),
   {
     modelValue: null,
     label: "",
     id: undefined,
+    min: null,
+    max: null,
   }
 );
 
@@ -25,7 +29,7 @@ const emit = defineEmits<{
 const autoId = useId("w95-date");
 const inputId = computed(() => props.id ?? autoId.value);
 
-function parse(s: string | null) {
+function parse(s: string | null | undefined) {
   if (!s) return null;
   const [y, m, d] = s.split("-").map(Number);
   if (!y || !m || !d) return null;
@@ -39,6 +43,9 @@ function fmt(d: Date) {
 }
 
 const selected = computed(() => parse(props.modelValue));
+const minDate = computed(() => parse(props.min));
+const maxDate = computed(() => parse(props.max));
+
 const open = ref(false);
 const cursor = ref<Date>(
   selected.value
@@ -63,7 +70,6 @@ const monthNames = [
   "November",
   "December",
 ];
-
 const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 const cells = computed(() => {
@@ -87,7 +93,28 @@ function isSameDay(a: Date | null, b: Date | null) {
   );
 }
 
+function isDisabled(d: Date) {
+  if (minDate.value) {
+    const start = new Date(
+      minDate.value.getFullYear(),
+      minDate.value.getMonth(),
+      minDate.value.getDate()
+    );
+    if (d < start) return true;
+  }
+  if (maxDate.value) {
+    const end = new Date(
+      maxDate.value.getFullYear(),
+      maxDate.value.getMonth(),
+      maxDate.value.getDate()
+    );
+    if (d > end) return true;
+  }
+  return false;
+}
+
 function pick(d: Date) {
+  if (isDisabled(d)) return;
   const value = fmt(d);
   emit("update:modelValue", value);
   emit("change", value);
@@ -114,7 +141,7 @@ function toggle() {
 
 const inputClasses = computed(() =>
   cn(
-    "box-border border-0 rounded-none w-[110px] h-w95-input px-1 py-[3px]",
+    "box-border border-0 rounded-none w-[120px] h-w95-input px-1 py-[3px]",
     "font-w95 text-w95 shadow-w95-field bg-w95-highlight text-w95-text",
     "focus:outline-none",
     props.class
@@ -122,17 +149,17 @@ const inputClasses = computed(() =>
 );
 
 const calClasses =
-  "absolute left-0 top-full z-[1000] mt-px w-[180px] " +
+  "absolute left-0 top-full z-[1100] mt-px w-[200px] " +
   "bg-w95-surface shadow-w95-window p-[3px] font-w95 text-w95 text-w95-text";
 
 const dayBtn =
-  "w-[22px] h-[18px] min-w-0 p-0 border-0 rounded-none bg-transparent " +
+  "w-[24px] h-[20px] min-w-0 p-0 border-0 rounded-none bg-transparent " +
   "font-w95 text-w95 cursor-default " +
   "hover:bg-w95-blue hover:text-w95-highlight " +
-  "focus:outline focus:outline-1 focus:outline-dotted";
+  "focus:outline focus:outline-1 focus:outline-dotted disabled:text-w95-shadow disabled:pointer-events-none";
 
 const navBtn =
-  "w-[18px] h-[14px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised " +
+  "w-[20px] h-[16px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised " +
   "cursor-default font-w95 text-w95 " +
   "active:shadow-w95-sunken";
 </script>
@@ -178,11 +205,10 @@ const navBtn =
           <button
             v-if="cell"
             type="button"
+            :disabled="isDisabled(cell)"
             :class="[
               dayBtn,
-              isSameDay(cell, selected)
-                ? 'bg-w95-blue text-w95-highlight'
-                : '',
+              isSameDay(cell, selected) ? 'bg-w95-blue text-w95-highlight' : '',
             ]"
             @click="pick(cell)"
           >

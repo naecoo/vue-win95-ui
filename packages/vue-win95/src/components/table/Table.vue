@@ -6,6 +6,7 @@ export interface W95TableColumn {
   key: string;
   label: string;
   width?: string | number;
+  sortable?: boolean;
 }
 
 const props = withDefaults(
@@ -17,6 +18,8 @@ const props = withDefaults(
     interactive?: boolean;
     height?: string | number;
     emptyText?: string;
+    sortBy?: string;
+    sortDir?: "asc" | "desc";
     class?: string;
   }>(),
   {
@@ -26,13 +29,53 @@ const props = withDefaults(
     interactive: true,
     height: undefined,
     emptyText: "No data",
+    sortBy: undefined,
+    sortDir: "asc",
   }
 );
 
 const emit = defineEmits<{
   "update:selectedKey": [key: string | number | null];
   select: [row: Record<string, unknown>];
+  "update:sortBy": [key: string | undefined];
+  "update:sortDir": [dir: "asc" | "desc"];
+  sort: [key: string, dir: "asc" | "desc"];
 }>();
+
+const internalSortBy = ref<string | undefined>(props.sortBy);
+const internalDir = ref<"asc" | "desc">(props.sortDir);
+
+const activeSortKey = computed(() => props.sortBy ?? internalSortBy.value);
+const activeDir = computed(() => (props.sortBy ? props.sortDir : internalDir.value));
+
+const displayRows = computed(() => {
+  const key = activeSortKey.value;
+  if (!key) return props.rows;
+  const dir = activeDir.value === "desc" ? -1 : 1;
+  return [...props.rows].sort((a, b) => {
+    const av = a[key];
+    const bv = b[key];
+    if (av === bv) return 0;
+    if (av == null) return -1 * dir;
+    if (bv == null) return 1 * dir;
+    if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+    return String(av).localeCompare(String(bv)) * dir;
+  });
+});
+
+function toggleSort(col: W95TableColumn) {
+  if (!col.sortable) return;
+  const key = col.key;
+  let nextDir: "asc" | "desc" = "asc";
+  if (activeSortKey.value === key) {
+    nextDir = activeDir.value === "asc" ? "desc" : "asc";
+  }
+  internalSortBy.value = key;
+  internalDir.value = nextDir;
+  emit("update:sortBy", key);
+  emit("update:sortDir", nextDir);
+  emit("sort", key, nextDir);
+}
 
 const wrapStyle = computed(() =>
   props.height !== undefined
@@ -51,14 +94,13 @@ function onSelect(row: Record<string, unknown>) {
   emit("select", row);
 }
 
-/** keyboard: move selection among rows */
 const focusIndex = ref(0);
 
 function onKeydown(e: KeyboardEvent) {
-  if (!props.interactive || props.rows.length === 0) return;
+  if (!props.interactive || displayRows.value.length === 0) return;
   if (e.key === "ArrowDown") {
     e.preventDefault();
-    focusIndex.value = Math.min(props.rows.length - 1, focusIndex.value + 1);
+    focusIndex.value = Math.min(displayRows.value.length - 1, focusIndex.value + 1);
   } else if (e.key === "ArrowUp") {
     e.preventDefault();
     focusIndex.value = Math.max(0, focusIndex.value - 1);
@@ -67,16 +109,16 @@ function onKeydown(e: KeyboardEvent) {
     focusIndex.value = 0;
   } else if (e.key === "End") {
     e.preventDefault();
-    focusIndex.value = props.rows.length - 1;
+    focusIndex.value = displayRows.value.length - 1;
   } else if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
-    const row = props.rows[focusIndex.value];
+    const row = displayRows.value[focusIndex.value];
     if (row) onSelect(row);
     return;
   } else {
     return;
   }
-  const row = props.rows[focusIndex.value];
+  const row = displayRows.value[focusIndex.value];
   if (row) emit("update:selectedKey", rowId(row));
 }
 
@@ -118,26 +160,38 @@ const wrapClasses = computed(() =>
                 : undefined
             "
             scope="col"
+            :aria-sort="
+              col.sortable && activeSortKey === col.key
+                ? activeDir === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : undefined
+            "
           >
-            {{ col.label }}
+            <button
+              v-if="col.sortable"
+              type="button"
+              class="bg-transparent border-0 p-0 m-0 font-w95 text-w95 cursor-default"
+              :aria-label="`Sort by ${col.label}`"
+              @click="toggleSort(col)"
+            >
+              {{ col.label }}
+              <span aria-hidden="true">{{
+                activeSortKey === col.key ? (activeDir === "asc" ? " ▲" : " ▼") : ""
+              }}</span>
+            </button>
+            <template v-else>{{ col.label }}</template>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-if="rows.length === 0"
-          class="text-w95-shadow"
-        >
-          <td
-            :colspan="columns.length"
-            class="px-1.5 py-2 text-center"
-            style="font-size:13px"
-          >
+        <tr v-if="displayRows.length === 0" class="text-w95-shadow">
+          <td :colspan="columns.length" class="px-1.5 py-2 text-center" style="font-size:13px">
             {{ emptyText }}
           </td>
         </tr>
         <tr
-          v-for="(row, index) in rows"
+          v-for="(row, index) in displayRows"
           :key="String(rowId(row))"
           :class="
             rowId(row) === selectedKey || index === focusIndex

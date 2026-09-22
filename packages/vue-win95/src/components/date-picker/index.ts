@@ -5,4 +5,6 @@ export const W95DatePicker = withInstall(_DatePicker);
 export type W95DatePickerProps = {
   modelValue?: string | null;
   label?: string;
+  min?: string | null;
+  max?: string | null;
 };

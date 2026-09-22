@@ -45,6 +45,7 @@
   "scripts": {
     "build": "vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "story:dev": "storybook dev -p 6006",

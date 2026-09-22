@@ -199,6 +199,24 @@ body {
   padding: 12px;
   overflow: auto;
   margin: 0.6em 0;
+  position: relative;
+}
+
+.w95-md pre .copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-height: 18px;
+  padding: 0 6px;
+  font-family: "Pixelated MS Sans Serif", sans-serif;
+  font-size: 11px;
+  border: 0;
+  border-radius: 0;
+  background: var(--w95-surface);
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
+    inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+  cursor: default;
+  z-index: 2;
 }
 
 .w95-md pre code {

@@ -168,6 +168,38 @@ watch(
   { immediate: true }
 );
 
+/** inject copy buttons into markdown code blocks */
+watch(
+  () =>
+    windows.value.map((w) => `${w.id}:${modCache.value[w.id] ? 1 : 0}`).join(","),
+  () => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".docs-body pre").forEach((pre) => {
+        if (pre.querySelector(".copy-btn")) return;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "copy-btn";
+        btn.textContent = "Copy";
+        btn.addEventListener("click", async () => {
+          const code = pre.querySelector("code");
+          const text = code?.textContent ?? pre.textContent ?? "";
+          try {
+            await navigator.clipboard.writeText(text);
+            btn.textContent = "Copied";
+            setTimeout(() => {
+              btn.textContent = "Copy";
+            }, 1200);
+          } catch {
+            btn.textContent = "Failed";
+          }
+        });
+        pre.appendChild(btn);
+      });
+    });
+  },
+  { immediate: true }
+);
+
 function iconClass(kind: string) {
   return kind === "folder"
     ? "w95-icon w95-icon-folder"

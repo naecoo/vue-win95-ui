@@ -35,6 +35,7 @@ import { W95Link } from "./link";
 import { W95Skeleton } from "./skeleton";
 import { W95Popover } from "./popover";
 import { W95Notification } from "./notification";
+import { W95ContextMenu, W95ContextMenuArea } from "./context-menu";
 import {
   W95Alert,
   W95Confirm,
@@ -77,6 +78,7 @@ export * from "./link";
 export * from "./skeleton";
 export * from "./popover";
 export * from "./notification";
+export * from "./context-menu";
 export * from "./message";
 
 const components = [
@@ -124,6 +126,8 @@ const components = [
   W95Skeleton,
   W95Popover,
   W95Notification,
+  W95ContextMenu,
+  W95ContextMenuArea,
 ];
 
 const install: Plugin = {

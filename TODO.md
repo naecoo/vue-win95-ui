@@ -1,6 +1,6 @@
 # TODO — vue-win95
 
-> 更新时间：v0.2.1 开发中（不发布）· 测试 **117 passed**  
+> 更新时间：v0.2.1 开发中（不发布）· 测试 **122 passed**  
 > 约定：`[x]` 已完成 · `[ ]` 未做（保留为后续增强）
 
 ---
@@ -39,13 +39,13 @@
 
 ### 组件深度
 - [ ] Menu 子菜单 + 视口 flip 定位
-- [ ] ContextMenu（右键）
+- [x] ContextMenu（`W95ContextMenu` / `W95ContextMenuArea`）
 - [ ] ComboBox loading / 远程搜索 slot
-- [ ] DatePicker：min/max、禁用日、完整日历键盘
-- [ ] Table：排序、多选、列宽拖拽
+- [x] DatePicker：min/max 禁用范围（完整日历键盘仍可选）
+- [x] Table：列排序（`sortable`）；[ ] 多选、列宽拖拽
 - [ ] Tabs 多行样式
 - [ ] Tree：typeahead、完整 ←→ 展开收起
-- [ ] Toast 与 Notification 队列 API（`notify()` 命令式）
+- [x] Toast/Notification：`useNotifier` / `notify()` 命令式 store
 - [ ] Window 边缘 resize、`useZIndex` 窗口管理
 - [ ] Upload / FileList
 
@@ -56,13 +56,13 @@
 
 ### DX
 - [ ] `unplugin-vue-components` resolver（`W95*` 自动导入）
-- [ ] 文档「复制代码」按钮
+- [x] 文档「复制代码」按钮（Copy / Copied）
 - [ ] 主题编辑器（实时调 `--w95-*`）
 - [ ] 文档 i18n（en / zh）
 - [ ] vite-plugin-md 与 Vite 6 peer 升级或换 MDX 方案
 
 ### 工程
-- [ ] vitest coverage 阈值
+- [x] vitest coverage 配置（`pnpm --filter vue-win95 test:coverage`）
 - [ ] Changesets 发版自动化（**publish 仍人工**）
 - [ ] docs / playground 部署（GitHub Pages）
 - [ ] 发布 npm（**明确暂缓**，见 `docs/PUBLISH.md`）

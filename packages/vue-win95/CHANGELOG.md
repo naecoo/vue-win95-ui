@@ -5,12 +5,15 @@
 ### Added
 - `W95Icon`, `W95Link`, `W95Skeleton`, `W95Popover`
 - `W95Notification`（类型 info/success/warn/error + 图标）
+- `W95ContextMenu` / `W95ContextMenuArea`（右键菜单）
 - MessageBox 命令式 API：`W95Alert` / `W95Confirm` / `W95ShowMessageBox`
+- `useNotifier()` / `notify()` 全局通知 store
 - Dialog `size`（sm/md/lg），`width` 可覆盖
+- DatePicker `min` / `max` 禁用范围外日期
+- Table 列排序（`sortable` + `aria-sort`）、键盘导航、空态
 - `vue-win95/tokens.css` exports 别名
-- Docs-site：Start 菜单搜索、hash 深链（`#button` 等）
-- 键盘导航测试补充（Tabs / Dropdown / Tree）
-- Extras 组件测试（117 total）
+- Docs-site：Start 菜单搜索、hash 深链、代码块 **Copy** 按钮
+- 键盘导航与 extras 测试；`test:coverage` 脚本（122 tests）
 
 ### Housekeeping
 - LICENSE / CI / prepublish-check / docs/PUBLISH.md
