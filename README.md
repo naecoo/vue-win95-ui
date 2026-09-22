@@ -2,10 +2,12 @@
 
 [![CI](https://github.com/naecoo/vue-win95-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/naecoo/vue-win95-ui/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://naecoo.github.io/vue-win95-ui/)
 
 Windows 95 style Vue 3 component library.
 
 - **Repo**: [github.com/naecoo/vue-win95-ui](https://github.com/naecoo/vue-win95-ui)
+- **Live docs**: [naecoo.github.io/vue-win95-ui](https://naecoo.github.io/vue-win95-ui/)
 - **Stack**: Vue 3 · TypeScript · Tailwind CSS (shadcn pattern)
 - **A11y**: WAI-ARIA APG patterns, semantic HTML, focus management
 - **Theme**: CSS custom properties + shared Tailwind preset

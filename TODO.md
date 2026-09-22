@@ -48,7 +48,7 @@
    pnpm --filter vue-win95 publish
    git tag v0.2.1 && git push origin v0.2.1
    ```
-2. GitHub **Settings → Pages → Source: GitHub Actions**（启用文档部署）
+2. ~~GitHub Pages~~ **已启用并部署成功**：https://naecoo.github.io/vue-win95-ui/
 3. 可选：`pnpm add -D @playwright/test && npx playwright install chromium` 后跑 `node scripts/visual-smoke.mjs`
 4. 可选：发包后给 README 加 npm version 徽章
 
