@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://naecoo.github.io/vue-win95-ui/)
 
+**English** | [中文](./README_ZH.md)
+
 Windows 95 style Vue 3 component library.
 
 - **Repo**: [github.com/naecoo/vue-win95-ui](https://github.com/naecoo/vue-win95-ui)
@@ -36,7 +38,7 @@ import { W95Button, W95Window } from "vue-win95";
 import "vue-win95/styles.css";
 ```
 
-See docs site **安装 Install** for Tailwind preset usage.
+See the docs site **Install** page for Tailwind preset usage.
 
 ## Theming
 
@@ -51,30 +53,32 @@ See docs site **安装 Install** for Tailwind preset usage.
 ## Docs site (Win95 desktop)
 
 ```bash
-pnpm docs        # http://localhost:5174
+pnpm docs        # http://localhost:5174/vue-win95-ui/
 pnpm docs:build
 ```
 
-| 页面 | 内容 |
+| Entry | Content |
 |------|------|
-| Welcome | 组件库内容与技术栈 |
-| Install | 全局 / 按需 / Tailwind preset |
-| Button · Form · Window · Navigation | 组件说明 + live demo |
-| Overlays · Data · Misc | 其余组件分类 |
-| Gallery | 综合演示 |
-| Changelog & Sponsor | 版本历史与链接 |
+| Welcome | Library overview and tech stack |
+| Install | Global / on-demand / Tailwind preset |
+| All Components | Every export with detail modals (Props / Events / Slots) |
+| Theme Editor | Live `--w95-*` variable tweaks |
+| Changelog & Sponsor | Releases and links |
+| Calculator / Notepad / Minesweeper | Mini apps built with the library |
 
-特色：桌面图标、Start 菜单、任务栏、可拖拽窗口；`.mdx` 文档内嵌真实组件。
+The docs shell is a Win95 desktop (icons, Start menu, taskbar, draggable windows) with zh/en i18n.
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
 | `pnpm dev` | playground |
-| `pnpm docs` | Win95 MDX 文档站 |
-| `pnpm story` | Storybook |
+| `pnpm docs` | Win95 MDX docs site |
 | `pnpm test` | Vitest + axe |
 | `pnpm build` | library build |
+| `pnpm release:check` | pre-publish checks |
 
 - Component catalog: [docs/components.md](./docs/components.md)
+- Accessibility notes: [docs/A11Y.md](./docs/A11Y.md)
 - Changelog: [packages/vue-win95/CHANGELOG.md](./packages/vue-win95/CHANGELOG.md)
+- Publish guide: [docs/PUBLISH.md](./docs/PUBLISH.md)
