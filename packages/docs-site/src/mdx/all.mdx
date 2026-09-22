@@ -14,6 +14,17 @@ const {
 } = Win95;
 
 const openName = ref(null);
+const modalOpen = ref(false);
+
+function showDetail(name) {
+  openName.value = name;
+  modalOpen.value = true;
+}
+
+function hideDetail() {
+  modalOpen.value = false;
+  openName.value = null;
+}
 const on = ref(true);
 const num = ref(2);
 const range = ref(5);
@@ -122,7 +133,7 @@ Click a card to open the **component detail** (props, events, slots).
       type="button"
       class="w95-focus"
       style="min-width:140px;min-height:36px;border:0;background:#c0c0c0;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px #808080,inset 2px 2px #dfdfdf;font-family:inherit;font-size:12px;cursor:default"
-      @click="openName = item.name"
+      @click="showDetail(item.name)"
     >
       {{ item.name.replace(/^W95/, "") }}
     </button>
@@ -130,12 +141,12 @@ Click a card to open the **component detail** (props, events, slots).
 </template>
 
 <W95Dialog
-  :model-value="!!openName"
+  :model-value="modalOpen"
   :title="openName || ''"
   :width="520"
   size="md"
-  @update:model-value="(v) => { if (!v) openName = null }"
-  @close="openName = null"
+  @update:model-value="hideDetail"
+  @close="hideDetail"
 >
   <div v-if="current" style="font-size:13px;line-height:1.5">
     <p style="margin:0 0 8px"><b>Props:</b> {{ current.props }}</p>
