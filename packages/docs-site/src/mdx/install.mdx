@@ -5,12 +5,12 @@ import { isZh } from "../i18n";
 
 <div v-if="isZh">
 
-# 安装 Install
+# 安装
 
-## 要求
+## 环境要求
 
-- Node.js 18+
-- Vue `^3.4.0`（peer dependency）
+- Node.js 18 及以上
+- Vue 3.4 及以上（对等依赖）
 
 </div>
 <div v-else>
@@ -20,19 +20,17 @@ import { isZh } from "../i18n";
 ## Requirements
 
 - Node.js 18+
-- Vue `^3.4.0` (peer dependency)
+- Vue 3.4+ (peer dependency)
 
 </div>
 
 ```bash
 pnpm add vue-win95
-# npm i vue-win95
-# yarn add vue-win95
 ```
 
 <div v-if="isZh">
 
-## 全局安装
+## 全局注册
 
 ```ts
 import { createApp } from "vue";
@@ -42,7 +40,7 @@ import "vue-win95/styles.css";
 createApp(App).use(Win95).mount("#app");
 ```
 
-## 按需引入（推荐）
+## 按需引入
 
 ```vue
 <script setup lang="ts">
@@ -51,7 +49,7 @@ import "vue-win95/styles.css";
 </script>
 ```
 
-样式只需引入一次 `vue-win95/styles.css`。
+样式文件每个应用只需引入一次。
 
 ## 自动导入
 
@@ -68,7 +66,7 @@ export default {
 };
 ```
 
-## Tailwind preset
+## Tailwind 预设
 
 ```ts
 import preset from "@win95/tailwind-preset";
@@ -90,7 +88,7 @@ import "vue-win95/styles.css";
 createApp(App).use(Win95).mount("#app");
 ```
 
-## On-demand import (recommended)
+## On-demand import
 
 ```vue
 <script setup lang="ts">
@@ -99,7 +97,7 @@ import "vue-win95/styles.css";
 </script>
 ```
 
-Import `styles.css` once per app.
+Import the stylesheet once per application.
 
 ## Auto-import
 
@@ -130,9 +128,9 @@ export default { presets: [preset], content: [/* … */] };
 <div class="demo">
   <div class="demo-label">SMOKE TEST</div>
   <W95Window title="Install Check" :width="300">
-    <p v-if="isZh" style="font-size:13px;margin:0 0 8px">若能看到 Win95 窗口与按钮，说明安装成功。</p>
-    <p v-else style="font-size:13px;margin:0 0 8px">If you see this Win95 window and button, install works.</p>
-    <W95Button default>It works!</W95Button>
+    <p v-if="isZh" style="font-size:13px;margin:0 0 8px">若能看到窗口与按钮，说明安装成功。</p>
+    <p v-else style="font-size:13px;margin:0 0 8px">If you see this window and button, install works.</p>
+    <W95Button default>OK</W95Button>
   </W95Window>
 </div>
 

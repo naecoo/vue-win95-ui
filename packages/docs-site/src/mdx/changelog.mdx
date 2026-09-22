@@ -5,48 +5,68 @@ import { W95Window, W95Button } from "vue-win95";
 
 <div v-if="isZh">
 
-# Changelog & Sponsor
+# 更新日志
 
-版本历史见仓库 `packages/vue-win95/CHANGELOG.md`。
+完整记录见仓库中的变更日志文件。
 
 ## 0.2.1
-更多组件、文档站增强、i18n、小应用。
+
+更多组件、文档站增强、中英切换、小应用。
 
 ## 0.2.0
+
 组件库主体与 Win95 文档站。
 
 </div>
 <div v-else>
 
-# Changelog & Sponsor
+# Changelog
 
-See `packages/vue-win95/CHANGELOG.md` in the repo.
+Full history lives in the repository changelog.
 
 ## 0.2.1
+
 More components, docs polish, i18n, mini apps.
 
 ## 0.2.0
+
 Core library and Win95 docs site.
 
 </div>
 
-## Links
+<div v-if="isZh">
+
+## 链接与赞助
 
 | | |
 |--|--|
-| GitHub | https://github.com/naecoo/vue-win95-ui |
+| 代码仓库 | https://github.com/naecoo/vue-win95-ui |
+| 在线文档 | https://naecoo.github.io/vue-win95-ui/ |
+| 问题反馈 | GitHub Issues |
+| 赞助 | 点赞、提交拉取请求或赞助维护 |
+
+</div>
+<div v-else>
+
+## Links and sponsorship
+
+| | |
+|--|--|
+| Source | https://github.com/naecoo/vue-win95-ui |
 | Docs | https://naecoo.github.io/vue-win95-ui/ |
 | Issues | GitHub Issues |
-| Sponsor | Star / PR / GitHub Sponsors |
+| Sponsor | Star, open a pull request, or sponsor maintenance |
+
+</div>
 
 <div class="demo">
   <div class="demo-label">SPONSOR</div>
   <W95Window title="Support vue-win95" :width="420">
     <p style="font-size:14px;margin:0 0 12px">
-      {{ isZh ? "欢迎 Star、PR 或赞助。" : "Star, contribute, or sponsor if this helps you." }}
+      {{ isZh ? "欢迎点赞、贡献代码或赞助。" : "Star, contribute, or sponsor if this helps you." }}
     </p>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <W95Button default>★ Star on GitHub</W95Button>
+      <W95Button default>Star</W95Button>
       <W95Button>Sponsor</W95Button>
     </div>
   </W95Window>

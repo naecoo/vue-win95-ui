@@ -26,33 +26,34 @@ export const isZh = computed(() => lang.value === "zh");
 
 const dict = {
   start: { zh: "开始", en: "Start" },
-  search: { zh: "搜索页面…", en: "Search pages…" },
+  search: { zh: "搜索…", en: "Search…" },
   ready: { zh: "就绪", en: "Ready" },
   loading: { zh: "加载中…", en: "Loading…" },
   loadError: { zh: "页面加载失败", en: "Failed to load page" },
   retry: { zh: "重试", en: "Retry" },
   noMatch: { zh: "无匹配", en: "No matches" },
-  docsVersion: { zh: "vue-win95 文档", en: "vue-win95 Docs" },
+  docsVersion: { zh: "组件库文档", en: "Docs" },
   pages: {
-    welcome: { zh: "欢迎 Welcome", en: "Welcome" },
-    install: { zh: "安装 Install", en: "Install" },
-    all: { zh: "All Components 全组件", en: "All Components" },
-    theme: { zh: "Theme Editor 主题", en: "Theme Editor" },
-    changelog: { zh: "Changelog & Sponsor", en: "Changelog & Sponsor" },
+    welcome: { zh: "欢迎", en: "Welcome" },
+    install: { zh: "安装", en: "Install" },
+    all: { zh: "全部组件", en: "All Components" },
+    theme: { zh: "主题编辑器", en: "Theme Editor" },
+    changelog: { zh: "更新日志", en: "Changelog" },
   },
 } as const;
 
 export function t(key: keyof typeof dict, page?: string): string {
   const l = lang.value;
   if (key === "pages" && page) {
-    const p = dict.pages[page as keyof typeof dict.pages];
+    const p = dict.pages[page as keyof typeof dict.pages] as
+      | { zh: string; en: string }
+      | undefined;
     return p ? p[l] : page;
   }
   const entry = dict[key as keyof typeof dict] as Record<string, string> | undefined;
   return entry?.[l] ?? String(key);
 }
 
-/** Use in MDX / components: `const { lang, isZh, t } = useDocsI18n()` */
 export function useDocsI18n() {
   return { lang, isZh, t, toggleLang };
 }

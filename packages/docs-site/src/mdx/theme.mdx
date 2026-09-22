@@ -1,27 +1,66 @@
 <script setup>
 import { isZh } from "../i18n";
+import { W95Window, W95Button, W95Input } from "vue-win95";
+import { ref, watchEffect } from "vue";
+
+const surface = ref("#c0c0c0");
+const blue = ref("#000080");
+const blueLight = ref("#1084d0");
+const text = ref("#222222");
+const desktop = ref("#008080");
+
+watchEffect(() => {
+  const r = document.documentElement.style;
+  r.setProperty("--w95-surface", surface.value);
+  r.setProperty("--w95-dialog-blue", blue.value);
+  r.setProperty("--w95-dialog-blue-light", blueLight.value);
+  r.setProperty("--w95-text", text.value);
+  r.setProperty("--w95-desktop", desktop.value);
+});
+
+function reset() {
+  surface.value = "#c0c0c0";
+  blue.value = "#000080";
+  blueLight.value = "#1084d0";
+  text.value = "#222222";
+  desktop.value = "#008080";
+}
 </script>
 
 <div v-if="isZh">
 
-# Theme Editor
+# 主题编辑器
 
-实时修改 `--w95-*` CSS 变量，预览 Win95 皮肤。
+实时修改主题变量，预览 Win95 皮肤。
 
 </div>
 <div v-else>
 
 # Theme Editor
 
-Tweak `--w95-*` CSS variables live.
+Tweak theme variables live.
 
 </div>
 
 <div class="demo">
-  <div class="demo-label">COMING IN THEME PAGE</div>
-  <p style="font-size:13px;margin:0">
-    {{ isZh ? "本页控件会全局修改 CSS 变量。" : "Controls on this page write CSS variables globally." }}
-  </p>
+  <div class="demo-label">LIVE THEME</div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:12px">
+    <label style="font-size:13px">surface <input type="color" v-model="surface" /></label>
+    <label style="font-size:13px">title A <input type="color" v-model="blue" /></label>
+    <label style="font-size:13px">title B <input type="color" v-model="blueLight" /></label>
+    <label style="font-size:13px">text <input type="color" v-model="text" /></label>
+    <label style="font-size:13px">desktop <input type="color" v-model="desktop" /></label>
+    <W95Button @click="reset">{{ isZh ? "重置" : "Reset" }}</W95Button>
+  </div>
+
+  <W95Window title="Preview" :width="360">
+    <p style="font-size:14px;margin:0 0 8px">
+      {{ isZh ? "主题变量会全局生效。" : "Theme variables apply globally." }}
+    </p>
+    <W95Input label="Name" model-value="Win95" />
+    <div style="height:8px"></div>
+    <W95Button default>OK</W95Button>
+  </W95Window>
 </div>
 
 <style>

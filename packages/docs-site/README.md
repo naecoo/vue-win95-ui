@@ -1,26 +1,28 @@
-# vue-win95 Docs Site
+# docs-site
 
-Win95 桌面风格的 **MDX 文档站**，用组件库自己的 UI 搭建。
+Win95 desktop-style **MDX documentation site**, built with the vue-win95 library itself.
 
-## 特色
+## Features
 
-| 元素 | 实现 |
+| Element | Implementation |
 |------|------|
-| 桌面 | 青绿 `#008080` + CRT 扫描线 |
-| 桌面图标 | CSS 像素图标，点击打开文档窗口 |
-| Start 菜单 | 左侧竖排 banner + 组件列表 |
-| 任务栏 | Start 按钮、窗口任务条、时钟 |
-| 窗口 | 可拖拽标题栏、最小化/关闭、状态栏 |
-| 文档内容 | `.mdx`（Markdown + Vue），实时渲染 `vue-win95` 组件 |
+| Desktop | Teal `#008080` with CRT scanlines |
+| Desktop icons | Pixel CSS icons open doc windows |
+| Start menu | Side banner and searchable list |
+| Taskbar | Start, window buttons, clock |
+| Windows | Draggable title bar, minimize/close, status bar |
+| Docs | MDX pages with live `vue-win95` demos |
+| i18n | Chinese / English toggle and browser language detection |
+| Mini apps | Calculator, Notepad, Minesweeper |
 
-## 运行
+## Run
 
 ```bash
 pnpm docs
-# → http://localhost:5174
+# http://localhost:5174/vue-win95-ui/
 ```
 
-## 新增页面
+## Add a page
 
-1. 在 `src/mdx/` 新建 `xxx.mdx`（可含 `<script setup>` + 组件）
-2. 在 `src/App.vue` 的 `pages` 表里注册 title / icon / `import()`
+1. Add `src/mdx/xxx.mdx` (use `isZh` from `../i18n` for bilingual blocks).
+2. Register it in `src/App.vue` (`docPages`) and `src/i18n.ts` (`pages`).

@@ -4,21 +4,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://naecoo.github.io/vue-win95-ui/)
 
-**English** | [中文](./README_ZH.md)
-
 Windows 95 style Vue 3 component library.
 
-- **Repo**: [github.com/naecoo/vue-win95-ui](https://github.com/naecoo/vue-win95-ui)
-- **Live docs**: [naecoo.github.io/vue-win95-ui](https://naecoo.github.io/vue-win95-ui/)
-- **Stack**: Vue 3 · TypeScript · Tailwind CSS (shadcn pattern)
-- **A11y**: WAI-ARIA APG patterns, semantic HTML, focus management
-- **Theme**: CSS custom properties + shared Tailwind preset
+- **Repo**: https://github.com/naecoo/vue-win95-ui
+- **Docs**: https://naecoo.github.io/vue-win95-ui/
+- **Stack**: Vue 3, TypeScript, Tailwind CSS (shadcn pattern)
+- **A11y**: WAI-ARIA APG, semantic HTML, focus management
+- **Theme**: CSS custom properties and a shared Tailwind preset
 
 ## Install
 
 ```bash
 pnpm add vue-win95
-# or: npm i vue-win95
 ```
 
 ### Global
@@ -38,7 +35,7 @@ import { W95Button, W95Window } from "vue-win95";
 import "vue-win95/styles.css";
 ```
 
-See the docs site **Install** page for Tailwind preset usage.
+See the docs **Install** page for Tailwind preset usage.
 
 ## Theming
 
@@ -59,26 +56,26 @@ pnpm docs:build
 
 | Entry | Content |
 |------|------|
-| Welcome | Library overview and tech stack |
+| Welcome | Overview and tech stack |
 | Install | Global / on-demand / Tailwind preset |
 | All Components | Every export with detail modals (Props / Events / Slots) |
-| Theme Editor | Live `--w95-*` variable tweaks |
-| Changelog & Sponsor | Releases and links |
+| Theme Editor | Live theme variable tweaks |
+| Changelog | Releases and links |
 | Calculator / Notepad / Minesweeper | Mini apps built with the library |
-
-The docs shell is a Win95 desktop (icons, Start menu, taskbar, draggable windows) with zh/en i18n.
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | playground |
-| `pnpm docs` | Win95 MDX docs site |
+| `pnpm dev` | Playground |
+| `pnpm docs` | Docs site |
 | `pnpm test` | Vitest + axe |
-| `pnpm build` | library build |
-| `pnpm release:check` | pre-publish checks |
+| `pnpm build` | Library build |
+| `pnpm release:check` | Pre-publish checks |
 
-- Component catalog: [docs/components.md](./docs/components.md)
-- Accessibility notes: [docs/A11Y.md](./docs/A11Y.md)
-- Changelog: [packages/vue-win95/CHANGELOG.md](./packages/vue-win95/CHANGELOG.md)
-- Publish guide: [docs/PUBLISH.md](./docs/PUBLISH.md)
+More:
+
+- [Component catalog](./docs/components.md)
+- [Accessibility](./docs/A11Y.md)
+- [Changelog](./packages/vue-win95/CHANGELOG.md)
+- [Publish guide](./docs/PUBLISH.md)
