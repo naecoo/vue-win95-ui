@@ -4,6 +4,16 @@
   "description": "Windows 95 style Vue 3 component library (Tailwind / shadcn pattern) with accessibility",
   "type": "module",
   "license": "MIT",
+  "author": "naecoo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naecoo/vue-win95-ui.git",
+    "directory": "packages/vue-win95"
+  },
+  "bugs": {
+    "url": "https://github.com/naecoo/vue-win95-ui/issues"
+  },
+  "homepage": "https://github.com/naecoo/vue-win95-ui/tree/main/packages/vue-win95#readme",
   "keywords": [
     "vue",
     "vue3",

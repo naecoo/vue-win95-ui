@@ -2,19 +2,12 @@
 
 > 实际执行 `publish` 前请人工确认。本仓库**不会自动发布**。
 
+**Remote**: https://github.com/naecoo/vue-win95-ui.git
+
 ## 一次性准备
 
-1. **GitHub 远程仓库**
-   ```bash
-   git remote add origin git@github.com:<you>/win95-ui.git
-   git push -u origin main
-   ```
-2. 在 `packages/vue-win95/package.json` 填入：
-   ```json
-   "repository": { "type": "git", "url": "git+https://github.com/<you>/win95-ui.git" },
-   "bugs": { "url": "https://github.com/<you>/win95-ui/issues" },
-   "homepage": "https://github.com/<you>/win95-ui/tree/main/packages/vue-win95#readme"
-   ```
+1. ~~GitHub 远程仓库~~ **已配置** `origin`
+2. ~~package.json repository 字段~~ **已填写**
 3. **npm 包名可用性**
    ```bash
    npm view vue-win95 name version 2>&1

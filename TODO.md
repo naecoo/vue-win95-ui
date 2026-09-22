@@ -30,11 +30,11 @@
 - [x] **发布检查脚本**：`pnpm release:check` / `scripts/prepublish-check.mjs`
 - [x] **发布文档**：`docs/PUBLISH.md`（逐步命令）
 - [x] `files` 含 LICENSE；`publishConfig.access=public`；`prepublishOnly` 挂检查
-- [ ] **确认 npm 包名**是否被占用（`vue-win95` 或 scope `@you/vue-win95`）← 需登录网络
-- [ ] **GitHub 远程仓库** + `repository` / `bugs` / `homepage` 写入 package.json
-- [ ] **手动 publish**（按 `docs/PUBLISH.md`，需人工确认；当前 `release:check` 因缺 repository 会 FAIL）
+- [x] **GitHub 远程仓库** `https://github.com/naecoo/vue-win95-ui.git` + repository/bugs/homepage
+- [ ] **确认 npm 包名**是否被占用（`vue-win95`）← 需 `npm view`
+- [ ] **手动 publish**（按 `docs/PUBLISH.md`，需人工确认）
 - [ ] **CHANGELOG** 与 git tag 对齐（publish 时打 `v0.2.0`）
-- [ ] **README** 徽章：npm version / CI / license（依赖远程仓库地址）
+- [ ] **README** 徽章：补 npm version（发包后）
 
 ---
 
