@@ -4,6 +4,8 @@ import Markdown from "vite-plugin-md";
 import { resolve } from "node:path";
 
 export default defineConfig({
+  // relative base so GitHub Pages project sites work
+  base: process.env.DOCS_BASE || "./",
   plugins: [
     vue({
       include: [/\.vue$/, /\.md$/, /\.mdx$/],
