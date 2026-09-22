@@ -16,6 +16,8 @@ export type W95TableProps = {
   interactive?: boolean;
   height?: string | number;
   emptyText?: string;
+  multiple?: boolean;
+  selectedKeys?: (string | number)[];
   sortBy?: string;
   sortDir?: "asc" | "desc";
 };

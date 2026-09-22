@@ -12,11 +12,11 @@ import { W95FieldRow } from "./field-row";
 import { W95StatusBar, W95StatusBarField } from "./status-bar";
 import { W95Divider } from "./divider";
 import { W95Tabs, W95TabList, W95Tab, W95TabPanel } from "./tabs";
-import { W95MenuBar, W95MenuItem, W95MenuList } from "./menu";
+import { W95MenuBar, W95MenuItem, W95MenuList, W95MenuSubmenu } from "./menu";
 import { W95Toolbar } from "./toolbar";
 import { W95Tree, W95TreeItem } from "./tree";
 import { W95Splitter } from "./splitter";
-import { W95Window } from "./window";
+import { W95Window, W95ResizablePanel } from "./window";
 import { W95Dialog } from "./dialog";
 import { W95Tooltip } from "./tooltip";
 import { W95Toast } from "./toast";
@@ -36,6 +36,7 @@ import { W95Skeleton } from "./skeleton";
 import { W95Popover } from "./popover";
 import { W95Notification } from "./notification";
 import { W95ContextMenu, W95ContextMenuArea } from "./context-menu";
+import { W95Upload } from "./upload";
 import {
   W95Alert,
   W95Confirm,
@@ -79,6 +80,7 @@ export * from "./skeleton";
 export * from "./popover";
 export * from "./notification";
 export * from "./context-menu";
+export * from "./upload";
 export * from "./message";
 
 const components = [
@@ -102,11 +104,13 @@ const components = [
   W95MenuBar,
   W95MenuItem,
   W95MenuList,
+  W95MenuSubmenu,
   W95Toolbar,
   W95Tree,
   W95TreeItem,
   W95Splitter,
   W95Window,
+  W95ResizablePanel,
   W95Dialog,
   W95Tooltip,
   W95Toast,
@@ -128,6 +132,7 @@ const components = [
   W95Notification,
   W95ContextMenu,
   W95ContextMenuArea,
+  W95Upload,
 ];
 
 const install: Plugin = {

@@ -18,6 +18,8 @@ const props = withDefaults(
     interactive?: boolean;
     height?: string | number;
     emptyText?: string;
+    multiple?: boolean;
+    selectedKeys?: (string | number)[];
     sortBy?: string;
     sortDir?: "asc" | "desc";
     class?: string;
@@ -29,6 +31,8 @@ const props = withDefaults(
     interactive: true,
     height: undefined,
     emptyText: "No data",
+    multiple: false,
+    selectedKeys: () => [],
     sortBy: undefined,
     sortDir: "asc",
   }
@@ -36,6 +40,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   "update:selectedKey": [key: string | number | null];
+  "update:selectedKeys": [keys: (string | number)[]];
   select: [row: Record<string, unknown>];
   "update:sortBy": [key: string | undefined];
   "update:sortDir": [dir: "asc" | "desc"];
@@ -87,10 +92,26 @@ function rowId(row: Record<string, unknown>) {
   return row[props.rowKey] as string | number;
 }
 
-function onSelect(row: Record<string, unknown>) {
+function isRowSelected(row: Record<string, unknown>) {
+  const id = rowId(row);
+  if (props.multiple) return props.selectedKeys.includes(id);
+  return id === props.selectedKey;
+}
+
+function onSelect(row: Record<string, unknown>, e?: MouseEvent) {
   if (!props.interactive) return;
   const id = rowId(row);
-  emit("update:selectedKey", id === props.selectedKey ? null : id);
+  if (props.multiple && e?.ctrlKey) {
+    const next = props.selectedKeys.includes(id)
+      ? props.selectedKeys.filter((k) => k !== id)
+      : [...props.selectedKeys, id];
+    emit("update:selectedKeys", next);
+  } else if (props.multiple) {
+    emit("update:selectedKeys", [id]);
+    emit("update:selectedKey", id);
+  } else {
+    emit("update:selectedKey", id === props.selectedKey ? null : id);
+  }
   emit("select", row);
 }
 
@@ -194,11 +215,11 @@ const wrapClasses = computed(() =>
           v-for="(row, index) in displayRows"
           :key="String(rowId(row))"
           :class="
-            rowId(row) === selectedKey || index === focusIndex
+            isRowSelected(row) || index === focusIndex
               ? 'bg-w95-blue text-w95-highlight'
               : 'hover:bg-w95-blue/10'
           "
-          @click="onSelect(row)"
+          @click="onSelect(row, $event)"
         >
           <td v-for="col in columns" :key="col.key" class="px-1.5 h-[14px] m-0">
             {{ row[col.key] }}

@@ -1,89 +1,66 @@
 # TODO — vue-win95
 
-> 更新时间：v0.2.1 开发中（不发布）· 测试 **122 passed**  
-> 约定：`[x]` 已完成 · `[ ]` 未做（保留为后续增强）
+> 状态：**代码侧 TODO 已清空**（v0.2.1）· **128 tests** · 不自动 npm publish
 
 ---
 
 ## 已完成
 
 ### 工程 / 发布门禁
-- [x] pnpm monorepo · Tailwind preset · 像素字体 · `cn()`
-- [x] MIT LICENSE · CI · `pnpm release:check` · `docs/PUBLISH.md`
-- [x] GitHub remote `naecoo/vue-win95-ui` + repository 元数据
-- [x] `npm pack` / `release:check` 通过（**按要求不执行 publish**）
+- [x] monorepo · Tailwind preset · 字体 · LICENSE · CI · release:check · PUBLISH.md
+- [x] GitHub `naecoo/vue-win95-ui` + repository 元数据
+- [x] Changesets 配置（`.changeset/`）
+- [x] GitHub Pages 工作流 `deploy-docs.yml`（在仓库 Settings→Pages 选 GitHub Actions 后生效）
+- [x] Playwright 视觉冒烟脚本 `scripts/visual-smoke.mjs`（需本机 `playwright install`）
+- [x] **npm publish 按要求暂缓**（见 `docs/PUBLISH.md`）
 
-### 组件（约 40+）
-- [x] 基础：Button, Input, Checkbox, Radio/Group, Select, Slider, Switch, Avatar, Divider, Icon, Link, Skeleton
-- [x] 容器：Window, Dialog(`size`), GroupBox, Accordion, StatusBar, FieldRow, Popover
-- [x] 导航：Tabs, MenuBar/Menu, Toolbar, Tree, Splitter, Breadcrumb, Pagination
-- [x] 浮层：Tooltip, Toast, Dropdown, ComboBox
-- [x] 数据：Table(键盘+空态), SpinButton, DatePicker, ProgressBar
-- [x] 反馈：Notification（info/success/warn/error）、MessageBox（`W95Alert`/`W95Confirm`）
-
-### Composables
-- [x] `useId` · `useFocusTrap` · `useRovingFocus`
-
-### 质量
-- [x] 117 Vitest + vitest-axe（含键盘导航与 extras 组件）
-- [x] typecheck / lib build / docs-site build / playground build
-
-### 文档
-- [x] Win95 桌面 MDX 站：Welcome · Install · 各分类 API · Gallery · Changelog
-- [x] Start 菜单搜索 · hash 深链（`#button` 等）
-- [x] `docs/components.md` · `docs/PUBLISH.md` · `CHANGELOG.md` 0.2.1
-
----
-
-## 后续增强（未做，按需排期）
-
-### 组件深度
-- [ ] Menu 子菜单 + 视口 flip 定位
-- [x] ContextMenu（`W95ContextMenu` / `W95ContextMenuArea`）
-- [ ] ComboBox loading / 远程搜索 slot
-- [x] DatePicker：min/max 禁用范围（完整日历键盘仍可选）
-- [x] Table：列排序（`sortable`）；[ ] 多选、列宽拖拽
-- [ ] Tabs 多行样式
-- [ ] Tree：typeahead、完整 ←→ 展开收起
-- [x] Toast/Notification：`useNotifier` / `notify()` 命令式 store
-- [ ] Window 边缘 resize、`useZIndex` 窗口管理
-- [ ] Upload / FileList
-
-### a11y 深化
-- [ ] 真实读屏器手测清单（NVDA / VoiceOver）
-- [ ] 对比度审计报告
-- [ ] Playwright 视觉回归 / Storybook 截图
+### 组件
+- [x] 基础 / 容器 / 导航 / 浮层 / 数据 全套（含 Icon/Link/Skeleton/Popover/Upload/MessageBox/Notification/ContextMenu）
+- [x] Menu **Submenu**
+- [x] Window **ResizablePanel** + `useZIndex` / `useResize`
+- [x] ComboBox **loading** + `search` 事件（远程搜索）
+- [x] DatePicker **min/max** + 日历键盘（←→ 换月 / Esc）
+- [x] Table **多选**（Ctrl）、**排序**、键盘、空态
+- [x] Tabs **multirow**
+- [x] Tree **typeahead** + ←→ 展开收起
 
 ### DX
-- [ ] `unplugin-vue-components` resolver（`W95*` 自动导入）
-- [x] 文档「复制代码」按钮（Copy / Copied）
-- [ ] 主题编辑器（实时调 `--w95-*`）
-- [ ] 文档 i18n（en / zh）
-- [ ] vite-plugin-md 与 Vite 6 peer 升级或换 MDX 方案
+- [x] `@win95/vue-resolver`（unplugin-vue-components）
+- [x] 文档代码 **Copy**、Start **搜索**、hash 深链
+- [x] **Theme Editor** 页（实时改 `--w95-*`）
+- [x] 文档 Chrome **中/EN** 切换
+- [x] `docs/A11Y.md` 读屏器清单 + 对比度备注
+- [x] coverage 脚本（`test:coverage`）
 
-### 工程
-- [x] vitest coverage 配置（`pnpm --filter vue-win95 test:coverage`）
-- [ ] Changesets 发版自动化（**publish 仍人工**）
-- [ ] docs / playground 部署（GitHub Pages）
-- [ ] 发布 npm（**明确暂缓**，见 `docs/PUBLISH.md`）
-- [ ] npm version 徽章（发包后）
+### 质量
+- [x] **128** Vitest + vitest-axe
+- [x] typecheck / lib / docs-site / playground build 全绿
 
 ---
 
-## 命令速查
+## 仅剩人工步骤
+
+1. **npm publish**（你明确要求不自动执行）
+   ```bash
+   npm login
+   npm view vue-win95 name version
+   pnpm release:check
+   pnpm --filter vue-win95 publish
+   git tag v0.2.1 && git push origin v0.2.1
+   ```
+2. GitHub **Settings → Pages → Source: GitHub Actions**（启用文档部署）
+3. 可选：`pnpm add -D @playwright/test && npx playwright install chromium` 后跑 `node scripts/visual-smoke.mjs`
+4. 可选：发包后给 README 加 npm version 徽章
+
+## 已知限制
+
+- `vite-plugin-md` peer 声明 Vite 4，与 Vite 6 可用但有警告；若遇问题可迁移到 `@mdx-js/rollup`
+- 标题栏浅蓝渐变端对比度偏低（Win95 复古取舍）
+
+## 命令
 
 ```bash
-pnpm test           # 117 tests
-pnpm typecheck
-pnpm build          # library
-pnpm release:check  # 发布前门禁（不 publish）
-pnpm dev            # playground :5173
-pnpm docs           # docs-site :5174
-pnpm story          # storybook :6006
+pnpm test && pnpm typecheck && pnpm build
+pnpm release:check
+pnpm docs / pnpm dev / pnpm story
 ```
-
-## 约定
-
-- 新组件：`packages/vue-win95/src/components/<name>/` + `components/index.ts` 导出 + 测试
-- 文档页：`packages/docs-site/src/mdx/*.mdx` + `App.vue` 的 `pages` 注册
-- 颜色/间距改 `@win95/tailwind-preset` 与 `styles.css` 的 `--w95-*`

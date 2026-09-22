@@ -15,6 +15,7 @@ const props = withDefaults(
     options?: W95ComboOption[];
     label?: string;
     disabled?: boolean;
+    loading?: boolean;
     id?: string;
     class?: string;
   }>(),
@@ -23,6 +24,7 @@ const props = withDefaults(
     options: () => [],
     label: "",
     disabled: false,
+    loading: false,
     id: undefined,
   }
 );
@@ -30,6 +32,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   "update:modelValue": [value: string | number | null];
   change: [value: string | number | null];
+  search: [query: string];
 }>();
 
 const uid = useId("w95-combo");
@@ -77,6 +80,7 @@ function onInput(e: Event) {
   filter.value = (e.target as HTMLInputElement).value;
   if (!open.value) openList();
   activeIndex.value = 0;
+  emit("search", filter.value);
 }
 
 function onKeydown(e: KeyboardEvent) {
@@ -156,6 +160,7 @@ const listClasses =
         :aria-expanded="open"
         :aria-controls="listId"
         :aria-autocomplete="'list'"
+        :aria-busy="loading || undefined"
         :aria-activedescendant="open ? `${listId}-opt-${activeIndex}` : undefined"
         autocomplete="off"
         @input="onInput"
@@ -179,6 +184,9 @@ const listClasses =
         :class="listClasses"
         :aria-label="label || 'Options'"
       >
+        <li v-if="loading" class="px-1.5 py-1 text-w95-shadow" role="presentation">
+          Loading…
+        </li>
         <li
           v-for="(opt, i) in filtered"
           :id="`${listId}-opt-${i}`"
@@ -200,7 +208,7 @@ const listClasses =
           {{ opt.label }}
         </li>
         <li
-          v-if="filtered.length === 0"
+          v-if="!loading && filtered.length === 0"
           class="px-1.5 py-0.5 text-w95-shadow list-none"
           role="presentation"
         >

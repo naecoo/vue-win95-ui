@@ -1,0 +1,68 @@
+<script setup>
+import { ref, watchEffect } from "vue";
+import { W95Window, W95Button, W95Input, W95Slider } from "vue-win95";
+
+const surface = ref("#c0c0c0");
+const blue = ref("#000080");
+const blueLight = ref("#1084d0");
+const text = ref("#222222");
+const desktop = ref("#008080");
+
+watchEffect(() => {
+  const r = document.documentElement.style;
+  r.setProperty("--w95-surface", surface.value);
+  r.setProperty("--w95-dialog-blue", blue.value);
+  r.setProperty("--w95-dialog-blue-light", blueLight.value);
+  r.setProperty("--w95-text", text.value);
+  r.setProperty("--w95-desktop", desktop.value);
+});
+
+function reset() {
+  surface.value = "#c0c0c0";
+  blue.value = "#000080";
+  blueLight.value = "#1084d0";
+  text.value = "#222222";
+  desktop.value = "#008080";
+}
+</script>
+
+# Theme Editor
+
+实时修改 `--w95-*` CSS 变量，预览 Win95 皮肤。
+
+<div class="demo">
+  <div class="demo-label">LIVE THEME</div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:12px">
+    <label style="font-size:13px">surface <input type="color" v-model="surface" /></label>
+    <label style="font-size:13px">title A <input type="color" v-model="blue" /></label>
+    <label style="font-size:13px">title B <input type="color" v-model="blueLight" /></label>
+    <label style="font-size:13px">text <input type="color" v-model="text" /></label>
+    <label style="font-size:13px">desktop <input type="color" v-model="desktop" /></label>
+    <W95Button @click="reset">Reset</W95Button>
+  </div>
+
+  <W95Window title="Preview Window" :width="360">
+    <p style="font-size:14px;margin:0 0 8px">Theme variables apply globally.</p>
+    <W95Input label="Name" model-value="Win95" />
+    <div style="height:8px"></div>
+    <W95Button default>OK</W95Button>
+  </W95Window>
+</div>
+
+## 导出 CSS
+
+```css
+:root {
+  --w95-surface: #c0c0c0;
+  --w95-dialog-blue: #000080;
+  --w95-dialog-blue-light: #1084d0;
+  --w95-text: #222222;
+  --w95-desktop: #008080;
+}
+```
+
+<style>
+.demo { background:#008080;padding:14px;margin:8px 0; }
+.demo-label { color:#fff;font-weight:bold;margin-bottom:8px;font-size:12px;font-family:"Pixelated MS Sans Serif",sans-serif; }
+.demo input[type=color] { vertical-align:middle; }
+</style>

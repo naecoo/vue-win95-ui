@@ -1,0 +1,16 @@
+{
+  "name": "@win95/vue-resolver",
+  "version": "0.2.1",
+  "description": "unplugin-vue-components resolver for vue-win95",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": ["src"],
+  "peerDependencies": {
+    "unplugin-vue-components": ">=0.20.0",
+    "vue-win95": ">=0.2.0"
+  }
+}

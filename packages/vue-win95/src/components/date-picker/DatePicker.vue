@@ -187,7 +187,16 @@ const navBtn =
       📅
     </button>
 
-    <div v-if="open" :class="calClasses" role="dialog" aria-label="Choose date">
+    <div
+      v-if="open"
+      :class="calClasses"
+      role="dialog"
+      aria-label="Choose date"
+      tabindex="-1"
+      @keydown.esc="open = false"
+      @keydown.left.prevent="prevMonth"
+      @keydown.right.prevent="nextMonth"
+    >
       <div class="flex items-center justify-between mb-1">
         <button type="button" :class="navBtn" aria-label="Previous month" @click="prevMonth">
           ‹

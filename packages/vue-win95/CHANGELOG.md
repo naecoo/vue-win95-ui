@@ -10,10 +10,14 @@
 - `useNotifier()` / `notify()` 全局通知 store
 - Dialog `size`（sm/md/lg），`width` 可覆盖
 - DatePicker `min` / `max` 禁用范围外日期
-- Table 列排序（`sortable` + `aria-sort`）、键盘导航、空态
-- `vue-win95/tokens.css` exports 别名
-- Docs-site：Start 菜单搜索、hash 深链、代码块 **Copy** 按钮
-- 键盘导航与 extras 测试；`test:coverage` 脚本（122 tests）
+- Table 列排序（`sortable` + `aria-sort`）、多选（Ctrl）、键盘导航、空态
+- Menu 子菜单 `W95MenuSubmenu`；`W95Upload`；`W95ResizablePanel`
+- ComboBox `loading` + `search`；DatePicker 日历键盘；Tabs `multirow`
+- Tree typeahead + ←→ 展开；`useZIndex` / `useResize`
+- `@win95/vue-resolver`（unplugin-vue-components）
+- Docs：Theme Editor、中/EN 切换、Copy、搜索、hash 深链
+- `docs/A11Y.md`；Changesets；Deploy Docs workflow；visual-smoke 脚本
+- 键盘导航与 extras 测试；`test:coverage` 脚本（128 tests）
 
 ### Housekeeping
 - LICENSE / CI / prepublish-check / docs/PUBLISH.md

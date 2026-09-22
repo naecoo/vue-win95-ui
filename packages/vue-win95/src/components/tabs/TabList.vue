@@ -9,7 +9,7 @@ interface TabsCtx {
   select: (id: string | number) => void;
 }
 
-const props = withDefaults(defineProps<{ class?: string }>(), {});
+const props = withDefaults(defineProps<{ class?: string; multirow?: boolean }>(), { multirow: false });
 const ctx = inject<ComputedRef<TabsCtx> | null>("w95-tabs", null);
 const listRef = ref<HTMLElement | null>(null);
 
@@ -40,6 +40,7 @@ const listClasses = computed(() =>
   cn(
     "relative flex flex-wrap list-none m-0 p-0 pl-[3px]",
     "border-0 bg-transparent",
+    props.multirow && "flex-wrap [&>li]:flex-1 [&>li]:text-center",
     props.class
   )
 );

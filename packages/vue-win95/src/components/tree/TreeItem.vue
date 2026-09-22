@@ -46,6 +46,36 @@ const toggleClasses =
   "border border-w95-shadow bg-w95-highlight text-w95-text " +
   "align-middle cursor-default select-none";
 
+let typeBuf = "";
+let typeTimer: ReturnType<typeof setTimeout> | null = null;
+
+function onKeydownItem(e: KeyboardEvent) {
+  if (e.key === "ArrowRight" && props.hasChildren) {
+    e.preventDefault();
+    open.value = true;
+  } else if (e.key === "ArrowLeft" && props.hasChildren) {
+    e.preventDefault();
+    open.value = false;
+  } else if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    onClick();
+  } else if (e.key.length === 1 && /\S/.test(e.key)) {
+    typeBuf += e.key.toLowerCase();
+    if (typeTimer) clearTimeout(typeTimer);
+    typeTimer = setTimeout(() => {
+      typeBuf = "";
+    }, 500);
+    const rootEl = (e.currentTarget as HTMLElement).closest('[role="tree"]');
+    const items = rootEl?.querySelectorAll('[role="treeitem"]');
+    items?.forEach((node) => {
+      const el = node as HTMLElement;
+      if (el.textContent?.trim().toLowerCase().startsWith(typeBuf)) {
+        el.focus();
+      }
+    });
+  }
+}
+
 function onClick() {
   if (props.disabled) return;
   ctx?.value.select(props.value);
@@ -62,6 +92,7 @@ function onClick() {
     :aria-disabled="disabled || undefined"
     :tabindex="isSelected ? 0 : -1"
     @click="onClick"
+    @keydown="onKeydownItem"
   >
     <button
       v-if="hasChildren"

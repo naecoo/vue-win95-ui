@@ -12,6 +12,7 @@ type PageId =
   | "data"
   | "misc"
   | "gallery"
+  | "theme"
   | "changelog";
 
 interface WinState {
@@ -76,6 +77,11 @@ const pages: Record<
     title: "Component Gallery",
     icon: "computer",
     mod: () => import("./mdx/gallery.mdx"),
+  },
+  theme: {
+    title: "Theme Editor",
+    icon: "help",
+    mod: () => import("./mdx/theme.mdx"),
   },
   changelog: {
     title: "Changelog & Sponsor",
@@ -216,8 +222,21 @@ const desktopIds = computed<PageId[]>(() => [
   "window",
   "navigation",
   "gallery",
+  "theme",
   "changelog",
 ]);
+
+/** simple UI i18n for chrome labels */
+const lang = ref<"zh" | "en">("zh");
+const t = computed(() =>
+  lang.value === "zh"
+    ? { start: "开始", search: "搜索页面…", ready: "就绪", clock: "" }
+    : { start: "Start", search: "Search…", ready: "Ready", clock: "" }
+);
+
+function toggleLang() {
+  lang.value = lang.value === "zh" ? "en" : "zh";
+}
 
 function onDesktopClick(e: MouseEvent) {
   const t = e.target as HTMLElement;
@@ -375,7 +394,7 @@ function openPage(id: PageId) {
             <input
               v-model="query"
               type="search"
-              placeholder="Search…"
+              placeholder="Search… / 搜索…"
               aria-label="Search pages"
               class="w95-focus box-border w-full font-w95 text-w95"
               style="height:22px;padding:2px 4px;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;border:0;background:#fff;font-size:12px"
@@ -404,16 +423,23 @@ function openPage(id: PageId) {
     <div
       class="absolute bottom-0 left-0 right-0 h-[28px] bg-w95-surface shadow-w95-raised flex items-center gap-1 px-1 z-[1900] font-w95 text-w95"
     >
-      <button
-        type="button"
-        data-start-btn
-        class="min-w-w95-btn h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised font-bold cursor-default active:shadow-w95-sunken"
-        :aria-expanded="startOpen"
-        @pointerdown.stop
-        @click="startOpen = !startOpen"
-      >
-        <span class="mr-1">🪟</span> Start
-      </button>
+            <button
+              type="button"
+              class="min-w-w95-btn h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised font-bold cursor-default active:shadow-w95-sunken"
+              :aria-expanded="startOpen"
+              @pointerdown.stop
+              @click="startOpen = !startOpen"
+            >
+              <span class="mr-1">🪟</span> {{ t.start }}
+            </button>
+            <button
+              type="button"
+              class="h-[22px] px-2 border-0 rounded-none bg-w95-surface shadow-w95-raised cursor-default active:shadow-w95-sunken"
+              :aria-label="lang === 'zh' ? 'Switch language' : '切换语言'"
+              @click="toggleLang"
+            >
+              {{ lang === "zh" ? "EN" : "中" }}
+            </button>
       <div class="h-[18px] w-px bg-w95-button-shadow mx-0.5" />
       <button
         v-for="w in windows"

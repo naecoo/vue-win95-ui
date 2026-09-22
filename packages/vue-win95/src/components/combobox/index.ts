@@ -8,4 +8,5 @@ export type W95ComboBoxProps = {
   options?: { value: string | number; label: string; disabled?: boolean }[];
   label?: string;
   disabled?: boolean;
+  loading?: boolean;
 };
