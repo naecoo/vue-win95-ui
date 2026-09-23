@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, h, defineComponent } from "vue";
 import { isZh } from "../i18n";
 import * as Win95 from "vue-win95";
+import { docs, type ComponentDoc } from "./component-docs";
 
-const {
-  W95Button,
-  W95Dialog,
-} = Win95 as Record<string, any>;
+const W95Dialog = (Win95 as any).W95Dialog;
 
 const openName = ref<string | null>(null);
 const modalOpen = ref(false);
+const tab = ref<"guide" | "api">("guide");
 
 function showDetail(name: string) {
   openName.value = name;
   modalOpen.value = true;
+  tab.value = "guide";
 }
 
 function hideDetail() {
@@ -21,57 +21,7 @@ function hideDetail() {
   openName.value = null;
 }
 
-const items = [
-  { name: "W95Button", group: "basics", props: "type, default, disabled, block", events: "click", slots: "default" },
-  { name: "W95Input", group: "basics", props: "modelValue, type, label, disabled, readonly", events: "update:modelValue", slots: "—" },
-  { name: "W95Checkbox", group: "basics", props: "modelValue, label, disabled", events: "update:modelValue, change", slots: "default" },
-  { name: "W95Radio", group: "basics", props: "value, modelValue, label, disabled", events: "update:modelValue, change", slots: "default" },
-  { name: "W95RadioGroup", group: "basics", props: "modelValue, legend, name, disabled", events: "update:modelValue", slots: "default" },
-  { name: "W95Switch", group: "basics", props: "modelValue, label, disabled", events: "update:modelValue, change", slots: "—" },
-  { name: "W95Avatar", group: "basics", props: "src, alt, initials, size", events: "—", slots: "—" },
-  { name: "W95Icon", group: "basics", props: "name, size, label", events: "—", slots: "—" },
-  { name: "W95Link", group: "basics", props: "href, disabled", events: "click", slots: "default" },
-  { name: "W95Skeleton", group: "basics", props: "lines, width, height", events: "—", slots: "—" },
-  { name: "W95Select", group: "form", props: "modelValue, options, label, disabled", events: "update:modelValue, change", slots: "default" },
-  { name: "W95Slider", group: "form", props: "modelValue, min, max, step, label", events: "update:modelValue, change", slots: "—" },
-  { name: "W95SpinButton", group: "form", props: "modelValue, min, max, step, label", events: "update:modelValue, change", slots: "—" },
-  { name: "W95ComboBox", group: "form", props: "modelValue, options, loading, label", events: "update:modelValue, change, search", slots: "—" },
-  { name: "W95Upload", group: "form", props: "modelValue, multiple, accept, label", events: "update:modelValue, change", slots: "—" },
-  { name: "W95DatePicker", group: "form", props: "modelValue, min, max, label", events: "update:modelValue, change", slots: "—" },
-  { name: "W95Window", group: "container", props: "title, active, showMin, showMax, showClose, width", events: "minimize, maximize, close", slots: "default, status" },
-  { name: "W95Dialog", group: "container", props: "modelValue, size, width, closeOnOverlay", events: "confirm, cancel, close", slots: "default, footer" },
-  { name: "W95Accordion", group: "container", props: "modelValue", events: "update:modelValue", slots: "default" },
-  { name: "W95AccordionItem", group: "container", props: "value, title", events: "—", slots: "default, title" },
-  { name: "W95GroupBox", group: "container", props: "legend", events: "—", slots: "default" },
-  { name: "W95FieldRow", group: "container", props: "stacked", events: "—", slots: "default" },
-  { name: "W95StatusBar", group: "container", props: "—", events: "—", slots: "default" },
-  { name: "W95StatusBarField", group: "container", props: "grow", events: "—", slots: "default" },
-  { name: "W95Divider", group: "container", props: "vertical", events: "—", slots: "—" },
-  { name: "W95Popover", group: "container", props: "modelValue, title, width", events: "update:modelValue", slots: "trigger, default" },
-  { name: "W95ResizablePanel", group: "container", props: "width, minWidth, maxWidth", events: "resize", slots: "default" },
-  { name: "W95Tabs", group: "nav", props: "modelValue", events: "update:modelValue", slots: "default" },
-  { name: "W95TabList", group: "nav", props: "multirow", events: "—", slots: "default" },
-  { name: "W95Tab", group: "nav", props: "value, disabled", events: "—", slots: "default" },
-  { name: "W95TabPanel", group: "nav", props: "value", events: "—", slots: "default" },
-  { name: "W95MenuBar", group: "nav", props: "—", events: "—", slots: "default" },
-  { name: "W95MenuItem", group: "nav", props: "disabled", events: "click", slots: "default" },
-  { name: "W95MenuList", group: "nav", props: "—", events: "—", slots: "default" },
-  { name: "W95MenuSubmenu", group: "nav", props: "label, disabled", events: "—", slots: "default" },
-  { name: "W95Toolbar", group: "nav", props: "—", events: "—", slots: "default" },
-  { name: "W95Tree", group: "nav", props: "modelValue", events: "update:modelValue", slots: "default" },
-  { name: "W95TreeItem", group: "nav", props: "value, label, hasChildren, disabled", events: "—", slots: "default" },
-  { name: "W95Breadcrumb", group: "nav", props: "items, separator", events: "—", slots: "—" },
-  { name: "W95Pagination", group: "nav", props: "modelValue, total, pageSize", events: "update:modelValue", slots: "—" },
-  { name: "W95Splitter", group: "nav", props: "vertical, min, max", events: "resize", slots: "—" },
-  { name: "W95ContextMenu", group: "nav", props: "modelValue, x, y", events: "update:modelValue", slots: "default" },
-  { name: "W95ContextMenuArea", group: "nav", props: "items", events: "—", slots: "default" },
-  { name: "W95Tooltip", group: "overlay", props: "content, placement, openDelay", events: "—", slots: "default" },
-  { name: "W95Dropdown", group: "overlay", props: "modelValue, label", events: "update:modelValue", slots: "default" },
-  { name: "W95Toast", group: "overlay", props: "modelValue, duration", events: "update:modelValue", slots: "—" },
-  { name: "W95Notification", group: "overlay", props: "modelValue, duration, position", events: "update:modelValue", slots: "—" },
-  { name: "W95Table", group: "data", props: "columns, rows, selectedKey, multiple, sortBy, emptyText", events: "select, sort", slots: "—" },
-  { name: "W95ProgressBar", group: "data", props: "value, max, segmented, label", events: "—", slots: "—" },
-];
+const current = computed(() => docs.find((d) => d.name === openName.value));
 
 const groups = [
   { key: "basics", zh: "基础", en: "Basics" },
@@ -82,28 +32,62 @@ const groups = [
   { key: "data", zh: "数据", en: "Data" },
 ];
 
-const current = computed(() => items.find((i) => i.name === openName.value));
-
 const cardStyle =
-  "min-width:140px;min-height:36px;border:0;background:#c0c0c0;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px #808080,inset 2px 2px #dfdfdf;font-family:inherit;font-size:12px;cursor:default";
+  "min-width:140px;min-height:36px;border:0;background:#c0c0c0;box-shadow:inset -1px -1px #0a0a0a,inset 1px 1px #fff,inset -2px -2px #808080,inset 2px 2px #dfdfdf;font-family:inherit;font-size:13px;cursor:default;padding:4px 8px";
+
+const th =
+  "border:1px solid #808080;background:#c0c0c0;padding:4px 8px;text-align:left;font-size:12px";
+const td = "border:1px solid #808080;padding:4px 8px;font-size:12px;vertical-align:top";
+
+function LiveDemo(props: { doc?: ComponentDoc }) {
+  const live = props.doc?.demos?.find((d) => d.live)?.live;
+  if (!live) return null;
+  const comp = (Win95 as any)[live.comp];
+  if (!comp) return null;
+  return h(
+    "div",
+    {
+      style:
+        "background:#008080;padding:12px;margin:8px 0;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a",
+    },
+    [
+      h(
+        "div",
+        {
+          style:
+            "color:#fff;font-weight:bold;font-size:12px;margin-bottom:8px;font-family:'Pixelated MS Sans Serif',sans-serif",
+        },
+        "LIVE"
+      ),
+      h(comp, { ...(live.props || {}) }, () => live.text),
+    ]
+  );
+}
+
+const LiveDemoComp = defineComponent({
+  props: ["doc"],
+  setup(props) {
+    return () => h(LiveDemo, { doc: props.doc as ComponentDoc });
+  },
+});
 </script>
 
 <template>
-  <div class="w95-md">
+  <div class="w95-md" style="font-size: 14px; line-height: 1.55">
     <template v-if="isZh">
       <h1>全部组件</h1>
-      <p>点击卡片打开<strong>组件详情</strong>（属性、事件、插槽）。</p>
+      <p>点击卡片查看<strong>完整说明</strong>：用途、示例、属性、事件与插槽。</p>
     </template>
     <template v-else>
       <h1>All Components</h1>
-      <p>Click a card to open the <strong>component detail</strong> (props, events, slots).</p>
+      <p>Click a card for the <strong>full guide</strong>: usage, examples, props, events, and slots.</p>
     </template>
 
     <template v-for="g in groups" :key="g.key">
-      <h3>{{ isZh ? g.zh : g.en }}</h3>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px">
+      <h3 style="margin: 16px 0 8px">{{ isZh ? g.zh : g.en }}</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px">
         <button
-          v-for="item in items.filter((i) => i.group === g.key)"
+          v-for="item in docs.filter((d) => d.group === g.key)"
           :key="item.name"
           type="button"
           class="w95-focus"
@@ -117,16 +101,126 @@ const cardStyle =
 
     <W95Dialog
       :model-value="modalOpen"
-      :title="openName || ''"
-      :width="520"
-      size="md"
+      :title="current ? (isZh ? current.title.zh : current.title.en) : ''"
+      :width="720"
+      size="lg"
       @update:model-value="hideDetail"
       @close="hideDetail"
     >
-      <div v-if="current" style="font-size: 13px; line-height: 1.5">
-        <p style="margin: 0 0 8px"><b>Props:</b> {{ current.props }}</p>
-        <p style="margin: 0 0 8px"><b>Events:</b> {{ current.events }}</p>
-        <p style="margin: 0 0 8px"><b>Slots:</b> {{ current.slots }}</p>
+      <div v-if="current" style="font-size: 14px; line-height: 1.55; max-height: 62vh; overflow: auto">
+        <!-- tabs -->
+        <div style="display: flex; gap: 4px; margin-bottom: 12px">
+          <button
+            type="button"
+            class="w95-focus"
+            :style="cardStyle + (tab === 'guide' ? ';box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px #808080;padding-top:6px' : '')"
+            @click="tab = 'guide'"
+          >
+            {{ isZh ? "指南" : "Guide" }}
+          </button>
+          <button
+            type="button"
+            class="w95-focus"
+            :style="cardStyle + (tab === 'api' ? ';box-shadow:inset -1px -1px #fff,inset 1px 1px #0a0a0a,inset -2px -2px #dfdfdf,inset 2px 2px #808080;padding-top:6px' : '')"
+            @click="tab = 'api'"
+          >
+            API
+          </button>
+        </div>
+
+        <!-- Guide -->
+        <template v-if="tab === 'guide'">
+          <p style="margin: 0 0 12px">
+            <code style="font-weight: bold">{{ current.name }}</code>
+            — {{ isZh ? current.desc.zh : current.desc.en }}
+          </p>
+
+          <template v-if="current.when.zh.length">
+            <h4 style="margin: 12px 0 6px">{{ isZh ? "何时使用" : "When to use" }}</h4>
+            <ul style="margin: 0 0 12px; padding-left: 1.2em">
+              <li v-for="(w, i) in (isZh ? current.when.zh : current.when.en)" :key="i">{{ w }}</li>
+            </ul>
+          </template>
+
+          <template v-for="(demo, i) in current.demos" :key="i">
+            <h4 style="margin: 12px 0 6px">{{ isZh ? demo.title.zh : demo.title.en }}</h4>
+            <LiveDemoComp :doc="current" v-if="i === 0" />
+            <pre
+              style="background:#fff;box-shadow:inset -1px -1px #fff,inset 1px 1px #808080,inset -2px -2px #dfdfdf,inset 2px 2px #0a0a0a;padding:10px;overflow:auto;font-size:12px;margin:0 0 12px"
+            ><code>{{ demo.code }}</code></pre>
+          </template>
+
+          <p v-if="current.a11y" style="margin: 12px 0 0">
+            <b>{{ isZh ? "无障碍" : "Accessibility" }}：</b>
+            {{ isZh ? current.a11y.zh : current.a11y.en }}
+          </p>
+        </template>
+
+        <!-- API -->
+        <template v-else>
+          <h4 style="margin: 0 0 6px">Props</h4>
+          <table style="border-collapse: collapse; width: 100%; margin: 0 0 16px; background: #fff">
+            <thead>
+              <tr>
+                <th :style="th">{{ isZh ? "名称" : "Name" }}</th>
+                <th :style="th">{{ isZh ? "说明" : "Description" }}</th>
+                <th :style="th">Type</th>
+                <th :style="th">Default</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="p in current.props" :key="p.name">
+                <td :style="td"><code>{{ p.name }}</code></td>
+                <td :style="td">{{ isZh ? p.desc.zh : p.desc.en }}</td>
+                <td :style="td"><code>{{ p.type }}</code></td>
+                <td :style="td"><code>{{ p.def }}</code></td>
+              </tr>
+              <tr v-if="!current.props.length">
+                <td :style="td" colspan="4">{{ isZh ? "无属性" : "No props" }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 style="margin: 0 0 6px">Events</h4>
+          <table style="border-collapse: collapse; width: 100%; margin: 0 0 16px; background: #fff">
+            <thead>
+              <tr>
+                <th :style="th">{{ isZh ? "名称" : "Name" }}</th>
+                <th :style="th">{{ isZh ? "说明" : "Description" }}</th>
+                <th :style="th">{{ isZh ? "参数" : "Params" }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="e in current.events" :key="e.name">
+                <td :style="td"><code>{{ e.name }}</code></td>
+                <td :style="td">{{ isZh ? e.desc.zh : e.desc.en }}</td>
+                <td :style="td"><code>{{ e.params }}</code></td>
+              </tr>
+              <tr v-if="!current.events.length">
+                <td :style="td" colspan="3">{{ isZh ? "无事件" : "No events" }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 style="margin: 0 0 6px">Slots</h4>
+          <table style="border-collapse: collapse; width: 100%; margin: 0; background: #fff">
+            <thead>
+              <tr>
+                <th :style="th">{{ isZh ? "名称" : "Name" }}</th>
+                <th :style="th">{{ isZh ? "说明" : "Description" }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="s in current.slots" :key="s.name">
+                <td :style="td"><code>{{ s.name }}</code></td>
+                <td :style="td">{{ isZh ? s.desc.zh : s.desc.en }}</td>
+              </tr>
+              <tr v-if="!current.slots.length">
+                <td :style="td" colspan="2">{{ isZh ? "无插槽" : "No slots" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </template>
       </div>
     </W95Dialog>
   </div>
