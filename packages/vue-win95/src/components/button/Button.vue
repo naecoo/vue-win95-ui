@@ -35,9 +35,7 @@ const classes = computed(() =>
     "w95-focus",
     "disabled:text-w95-shadow disabled:cursor-not-allowed",
     "disabled:hover:shadow-w95-raised disabled:hover:pt-0 disabled:hover:pl-3 disabled:hover:pr-3 disabled:hover:pb-0",
-    // Win95 text-shadow trick: color transparent + text-shadow paints the glyph
-    "text-transparent [text-shadow:0_0_var(--w95-text)]",
-    "disabled:[text-shadow:1px_1px_0_var(--w95-button-highlight)]",
+    "text-w95-text",
     "disabled:active:pt-0 disabled:active:pl-3 disabled:active:pr-3 disabled:active:pb-0",
     props.block && "w-full block",
     props.class

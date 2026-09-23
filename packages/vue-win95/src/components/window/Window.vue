@@ -46,7 +46,7 @@ const titleBarClasses = computed(() =>
 
 const btnBase =
   "relative box-border border-0 rounded-none cursor-default select-none " +
-  "w-4 h-4 min-w-0 min-h-0 p-0 " +
+  "w-[16px] h-[14px] min-w-0 min-h-0 max-w-none max-h-none p-0 overflow-visible " +
   "bg-w95-surface shadow-w95-raised w95-btn-motion " +
   "hover:shadow-w95-sunken " +
   "active:shadow-w95-sunken active:pt-px active:pl-px " +

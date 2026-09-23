@@ -41,9 +41,11 @@
 
   .w95-root {
     font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--w95-text);
-    -webkit-font-smoothing: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* Unified Win95 focus ring (dotted inset) — slightly clearer */
@@ -153,23 +155,27 @@
     box-sizing: border-box;
   }
 
+  .w95-title-glyph-close {
+    position: relative;
+  }
+
   .w95-title-glyph-close::before,
   .w95-title-glyph-close::after {
     content: "";
     position: absolute;
-    top: 2px;
-    left: 6px;
-    width: 1px;
-    height: 9px;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 2px;
     background: var(--w95-text);
   }
 
   .w95-title-glyph-close::before {
-    transform: rotate(45deg);
+    transform: translate(-50%, -50%) rotate(45deg);
   }
 
   .w95-title-glyph-close::after {
-    transform: rotate(-45deg);
+    transform: translate(-50%, -50%) rotate(-45deg);
   }
 
   .w95-slider {
