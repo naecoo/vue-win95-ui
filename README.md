@@ -1,6 +1,7 @@
 # vue-win95
 
 [![CI](https://github.com/naecoo/vue-win95-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/naecoo/vue-win95-ui/actions/workflows/ci.yml)
+![npm](https://img.shields.io/npm/v/vue-win95-ui.svg?label=npm) ![npm beta](https://img.shields.io/npm/v/vue-win95-ui/beta.svg?label=beta)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://naecoo.github.io/vue-win95-ui/)
 
