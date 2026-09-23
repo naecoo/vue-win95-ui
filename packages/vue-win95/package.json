@@ -1,6 +1,6 @@
 {
-  "name": "vue-win95",
-  "version": "0.2.1",
+  "name": "vue-win95-ui",
+  "version": "0.2.1-beta.0",
   "description": "Windows 95 style Vue 3 component library (Tailwind / shadcn pattern) with accessibility",
   "type": "module",
   "license": "MIT",
@@ -25,8 +25,15 @@
     "a11y",
     "accessibility"
   ],
-  "sideEffects": ["**/*.css"],
-  "files": ["dist", "CHANGELOG.md", "README.md", "LICENSE"],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
