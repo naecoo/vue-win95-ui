@@ -15,7 +15,7 @@ Windows 95 style Vue 3 component library.
 ## Install
 
 ```bash
-pnpm add vue-win95
+pnpm add vue-win95-ui
 ```
 
 ### Global

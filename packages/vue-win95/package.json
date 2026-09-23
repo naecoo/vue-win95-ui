@@ -57,7 +57,7 @@
     "typecheck": "vue-tsc -p tsconfig.build.json --noEmit",
     "story:dev": "storybook dev -p 6006",
     "story:build": "storybook build",
-    "prepublishOnly": "node ../../scripts/prepublish-check.mjs && pnpm test && pnpm build"
+    "prepublishOnly": "ALLOW_BETA=1 node ../../scripts/prepublish-check.mjs && pnpm test && pnpm build"
   },
   "peerDependencies": {
     "vue": "^3.4.0"

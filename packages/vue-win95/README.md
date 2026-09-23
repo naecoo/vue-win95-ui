@@ -3,7 +3,7 @@
 Windows 95 style Vue 3 component library — TypeScript + Tailwind (shadcn pattern) + WAI-ARIA.
 
 ```bash
-pnpm add vue-win95
+pnpm add vue-win95-ui
 ```
 
 ### Global install

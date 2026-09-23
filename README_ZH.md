@@ -15,7 +15,7 @@ Windows 95 风格的 Vue 3 组件库。
 ## 安装
 
 ```bash
-pnpm add vue-win95
+pnpm add vue-win95-ui
 ```
 
 ### 全局注册

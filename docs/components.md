@@ -8,7 +8,7 @@ Interactive docs: https://naecoo.github.io/vue-win95-ui/ (or `pnpm docs` locally
 ## Install
 
 ```bash
-pnpm add vue-win95
+pnpm add vue-win95-ui
 ```
 
 ```ts
