@@ -4,6 +4,7 @@ export { useRovingFocus } from "./useRovingFocus";
 export { useFloating } from "./useFloating";
 export { useDismiss } from "./useDismiss";
 export { nextZIndex, currentZIndex, resetZIndex } from "./useZIndex";
+export { useControllable } from "./useControllable";
 export {
   useNotifier,
   notify,
@@ -15,3 +16,4 @@ export type { Orientation, RovingFocusOptions } from "./useRovingFocus";
 export type { NotifyItem, NotifyType } from "./useNotifier";
 export type { Placement, FloatingOptions, FloatingPosition, FloatingPoint } from "./useFloating";
 export type { DismissOptions } from "./useDismiss";
+export type { ControllableOptions } from "./useControllable";

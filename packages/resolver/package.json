@@ -1,6 +1,6 @@
 {
   "name": "@win95/vue-resolver",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "unplugin-vue-components resolver for vue-win95-ui",
   "license": "MIT",
   "type": "module",

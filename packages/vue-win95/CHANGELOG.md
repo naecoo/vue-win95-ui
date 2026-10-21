@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.1
+
+### Fixed
+- 默认导出丢失：`import Win95 from "vue-win95-ui"` 拿到的是 `undefined`，文档里的主要安装方式
+  在 0.3.0 上不可用（`export *` 不会转发 `default`）。两个入口现在都有 `default` 插件导出。
+- `useControllable` 写进了文档却没从 barrel 导出，实际不可达。
+- `exports` 补上 `./package.json`，工具链读包元数据不再抛 `ERR_PACKAGE_PATH_NOT_EXPORTED`。
+
+### Added
+- 公开入口契约测试：默认导出可 `app.use`、组件全部以 `W95` 前缀注册、文档引用的导出必须真实存在。
+
 ## 0.3.0
 
 一次"从外观库到行为库"的重构：修掉了会真坏事的缺陷，把重复实现收进公共内核，并补齐了窗口、菜单、表单、语言与数据组件的能力。
