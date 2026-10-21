@@ -7,21 +7,26 @@ const props = withDefaults(
     vertical?: boolean;
     min?: number;
     max?: number;
+    /** 受控尺寸；不传时组件自己维护 */
+    modelValue?: number;
     class?: string;
   }>(),
   {
     vertical: false,
     min: 80,
     max: 600,
+    modelValue: undefined,
   }
 );
 
 const emit = defineEmits<{
   resize: [size: number];
+  "update:modelValue": [size: number];
 }>();
 
 const dragging = ref(false);
-const size = ref(200);
+const internalSize = ref(props.modelValue ?? 200);
+const size = computed(() => props.modelValue ?? internalSize.value);
 const startPos = ref(0);
 const startSize = ref(0);
 
@@ -36,44 +41,42 @@ const classes = computed(() =>
   )
 );
 
+function apply(next: number) {
+  const clamped = Math.min(props.max, Math.max(props.min, next));
+  internalSize.value = clamped;
+  emit("update:modelValue", clamped);
+  emit("resize", clamped);
+}
+
 function onPointerDown(e: PointerEvent) {
   dragging.value = true;
   startPos.value = props.vertical ? e.clientX : e.clientY;
   startSize.value = size.value;
   const target = e.currentTarget as HTMLElement;
-  target.setPointerCapture(e.pointerId);
+  target.setPointerCapture?.(e.pointerId);
 }
 
 function onPointerMove(e: PointerEvent) {
   if (!dragging.value) return;
   const delta = (props.vertical ? e.clientX : e.clientY) - startPos.value;
-  size.value = Math.min(props.max, Math.max(props.min, startSize.value + delta));
-  emit("resize", size.value);
+  apply(startSize.value + delta);
 }
 
 function onPointerUp(e: PointerEvent) {
   dragging.value = false;
   const target = e.currentTarget as HTMLElement;
-  target.releasePointerCapture(e.pointerId);
+  target.releasePointerCapture?.(e.pointerId);
 }
 
 function onKeydown(e: KeyboardEvent) {
   const step = e.shiftKey ? 20 : 8;
   if (props.vertical && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
     e.preventDefault();
-    size.value = Math.min(
-      props.max,
-      Math.max(props.min, size.value + (e.key === "ArrowRight" ? step : -step))
-    );
-    emit("resize", size.value);
+    apply(size.value + (e.key === "ArrowRight" ? step : -step));
   }
   if (!props.vertical && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
     e.preventDefault();
-    size.value = Math.min(
-      props.max,
-      Math.max(props.min, size.value + (e.key === "ArrowDown" ? step : -step))
-    );
-    emit("resize", size.value);
+    apply(size.value + (e.key === "ArrowDown" ? step : -step));
   }
 }
 </script>

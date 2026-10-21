@@ -1,96 +1,75 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { useRovingFocus } from "../../composables/useRovingFocus";
-import { useId } from "../../composables/useId";
+import { computed, ref } from "vue";
 import { cn } from "../../utils/cn";
+import OverlayPanel from "../overlay/OverlayPanel.vue";
 
 const props = withDefaults(
   defineProps<{
     modelValue?: boolean;
     x?: number;
     y?: number;
+    label?: string;
     class?: string;
   }>(),
-  { modelValue: false, x: 0, y: 0 }
+  { modelValue: false, x: 0, y: 0, label: "Context menu" }
 );
 
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
 }>();
 
-const uid = useId("w95-ctx");
 const menuRef = ref<HTMLElement | null>(null);
-const { onKeydown } = useRovingFocus(menuRef, {
-  orientation: "vertical",
-  loop: true,
-  selector: '[role="menuitem"]:not([aria-disabled="true"])',
-});
-
 const open = computed({
   get: () => props.modelValue,
   set: (v: boolean) => emit("update:modelValue", v),
 });
 
-function close() {
-  open.value = false;
-}
-
-function onDocPointer() {
-  if (open.value) close();
-}
-
-function onKeydownRoot(e: KeyboardEvent) {
-  if (e.key === "Escape") {
-    e.stopPropagation();
-    close();
-    return;
+function onKeydown(e: KeyboardEvent) {
+  const items = Array.from(
+    menuRef.value?.querySelectorAll<HTMLElement>(
+      '[role="menuitem"]:not([aria-disabled="true"])'
+    ) ?? []
+  );
+  if (items.length === 0) return;
+  const idx = items.indexOf(document.activeElement as HTMLElement);
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    items[(idx + 1) % items.length]?.focus();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    items[(idx - 1 + items.length) % items.length]?.focus();
+  } else if (e.key === "Home") {
+    e.preventDefault();
+    items[0]?.focus();
+  } else if (e.key === "End") {
+    e.preventDefault();
+    items[items.length - 1]?.focus();
   }
-  onKeydown(e);
 }
 
-onMounted(() => document.addEventListener("pointerdown", onDocPointer, true));
-onBeforeUnmount(() =>
-  document.removeEventListener("pointerdown", onDocPointer, true)
-);
-
-watch(open, (v) => {
-  if (v) {
-    // focus first item after open
-    requestAnimationFrame(() => {
-      const first = menuRef.value?.querySelector<HTMLElement>(
-        '[role="menuitem"]:not([aria-disabled="true"])'
-      );
-      first?.focus();
-    });
-  }
-});
-
-const style = computed(() => ({
-  left: `${props.x}px`,
-  top: `${props.y}px`,
-}));
-
-const classes = computed(() =>
-  cn(
-    "fixed z-[1300] min-w-[140px] p-0.5 list-none m-0",
-    "bg-w95-surface shadow-w95-raised font-w95 text-w95 text-w95-text",
-    "focus:outline-none",
-    props.class
-  )
+const menuClasses = computed(() =>
+  cn("p-0.5 min-w-[140px] shadow-w95-raised", props.class)
 );
 </script>
 
 <template>
-  <ul
-    v-if="open"
-    :id="uid"
-    ref="menuRef"
+  <OverlayPanel
+    v-model="open"
+    :x="x"
+    :y="y"
+    :offset="0"
     role="menu"
-    :class="classes"
-    :style="style"
-    @keydown="onKeydownRoot"
-    @contextmenu.prevent
+    :label="label"
+    auto-focus
+    :class="menuClasses"
   >
-    <slot />
-  </ul>
+    <div
+      ref="menuRef"
+      class="focus:outline-none"
+      @keydown="onKeydown"
+      @contextmenu.prevent
+    >
+      <slot />
+    </div>
+  </OverlayPanel>
 </template>

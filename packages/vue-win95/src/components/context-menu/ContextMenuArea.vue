@@ -3,7 +3,7 @@ import { ref } from "vue";
 import ContextMenu from "./ContextMenu.vue";
 import MenuItem from "../menu/MenuItem.vue";
 
-export interface W95MenuEntry {
+export interface W95ContextMenuItem {
   label: string;
   disabled?: boolean;
   onClick?: () => void;
@@ -11,7 +11,7 @@ export interface W95MenuEntry {
 
 withDefaults(
   defineProps<{
-    items?: W95MenuEntry[];
+    items?: W95ContextMenuItem[];
   }>(),
   { items: () => [] }
 );

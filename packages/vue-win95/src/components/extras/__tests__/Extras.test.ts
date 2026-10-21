@@ -5,6 +5,7 @@ import { nextTick } from "vue";
 import Icon from "../../icon/Icon.vue";
 import Link from "../../link/Link.vue";
 import Skeleton from "../../skeleton/Skeleton.vue";
+import { $, cleanupOverlays } from "../../../test-utils/dom";
 import Popover from "../../popover/Popover.vue";
 import { alert, confirm } from "../../message/MessageBox";
 import Notification from "../../notification/Notification.vue";
@@ -54,6 +55,8 @@ describe("W95Skeleton", () => {
   });
 });
 
+afterEach(cleanupOverlays);
+
 describe("W95Popover", () => {
   it("renders dialog when open", () => {
     const wrapper = mount(Popover, {
@@ -64,8 +67,9 @@ describe("W95Popover", () => {
       },
       attachTo: document.body,
     });
-    expect(wrapper.find('[role="dialog"]').exists()).toBe(true);
-    expect(wrapper.text()).toContain("Body text");
+    const panel = $<HTMLElement>('[role="dialog"]');
+    expect(panel).toBeTruthy();
+    expect(panel?.textContent).toContain("Body text");
     wrapper.unmount();
   });
 
@@ -75,7 +79,7 @@ describe("W95Popover", () => {
       slots: { default: "Hello" },
       attachTo: document.body,
     });
-    const results = await axe(wrapper.find('[role="dialog"]').element);
+    const results = await axe($('[role="dialog"]')!);
     expect(results.violations).toEqual([]);
     wrapper.unmount();
   });

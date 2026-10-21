@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { computed, inject, type ComputedRef } from "vue";
+import { computed } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
-
-interface TabsCtx {
-  uid: string;
-  active: string | number | undefined;
-  select: (id: string | number) => void;
-}
+import { TabsCtx } from "./context";
 
 const props = withDefaults(
   defineProps<{
@@ -18,7 +13,9 @@ const props = withDefaults(
   { disabled: false }
 );
 
-const ctx = inject<ComputedRef<TabsCtx> | null>("w95-tabs", null);
+const emit = defineEmits<{ select: [value: string | number] }>();
+
+const ctx = TabsCtx.inject();
 const autoId = useId("w95-tab");
 const tabId = computed(() => `${ctx?.value.uid ?? autoId.value}-tab-${props.value}`);
 const panelId = computed(() => `${ctx?.value.uid ?? autoId.value}-panel-${props.value}`);
@@ -42,7 +39,16 @@ const classes = computed(() =>
 );
 
 function onClick() {
-  if (!props.disabled) ctx?.value.select(props.value);
+  if (props.disabled) return;
+  ctx?.value.select(props.value);
+  emit("select", props.value);
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    onClick();
+  }
 }
 </script>
 
@@ -56,6 +62,7 @@ function onClick() {
     :tabindex="isSelected ? 0 : -1"
     :aria-disabled="disabled || undefined"
     @click="onClick"
+    @keydown="onKeydown"
   >
     <slot />
   </li>

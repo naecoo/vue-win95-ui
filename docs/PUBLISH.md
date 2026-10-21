@@ -1,4 +1,4 @@
-# Publish checklist — vue-win95
+# Publish checklist — vue-win95-ui
 
 > Manual publish only. This repository never publishes automatically.
 
@@ -11,7 +11,7 @@
 3. Check npm name availability:
 
    ```bash
-   npm view vue-win95 name version
+   npm view vue-win95-ui name version
    # If taken: rename (for example @win95/vue or vue-win95-ui) and update docs
    ```
 
@@ -30,7 +30,7 @@ pnpm test
 pnpm build
 pnpm release:check
 # After review (version and CHANGELOG):
-pnpm --filter vue-win95 publish
+pnpm --filter vue-win95-ui publish
 ```
 
 ## After publish
@@ -38,7 +38,7 @@ pnpm --filter vue-win95 publish
 ```bash
 git tag v0.2.1
 git push origin v0.2.1
-npm view vue-win95
+npm view vue-win95-ui
 ```
 
 ## Rollback

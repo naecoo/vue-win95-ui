@@ -1,61 +1,70 @@
-# TODO — vue-win95
+# TODO — vue-win95-ui
 
-> 状态：**代码侧 TODO 已清空**（v0.2.1）· **128 tests** · 不自动 npm publish
+> 状态：**0.3.0 已就绪，仅剩人工发版** · 167 tests · 不自动 npm publish
 
 ---
 
-## 已完成
+## 本轮（0.3.0）已完成
 
-### 工程 / 发布门禁
-- [x] monorepo · Tailwind preset · 字体 · LICENSE · CI · release:check · PUBLISH.md
-- [x] GitHub `naecoo/vue-win95-ui` + repository 元数据
-- [x] Changesets 配置（`.changeset/`）
-- [x] GitHub Pages 工作流 `deploy-docs.yml`（在仓库 Settings→Pages 选 GitHub Actions 后生效）
-- [x] Playwright 视觉冒烟脚本 `scripts/visual-smoke.mjs`（需本机 `playwright install`）
-- [x] **npm publish 按要求暂缓**（见 `docs/PUBLISH.md`）
+### 工程链路
+- [x] 包名统一 `vue-win95-ui`（根脚本 / playground / docs-site / resolver / changeset / 文档）
+- [x] `styles.css` 去掉 Tailwind preflight；新增 `tokens.css`（纯变量）
+- [x] `release:check` 重写：名字一致性、exports 可解析、产物无 preflight、CHANGELOG 对齐、changeset 包名
+- [x] `prepublishOnly` 顺序修正（先 build 再 check）
+- [x] CI 增加 build → release:check → exports 解析校验
+- [x] 删除库 / 文档站 / playground 三份重复的 token 与组件 CSS 副本
 
-### 组件
-- [x] 基础 / 容器 / 导航 / 浮层 / 数据 全套（含 Icon/Link/Skeleton/Popover/Upload/MessageBox/Notification/ContextMenu）
-- [x] Menu **Submenu**
-- [x] Window **ResizablePanel** + `useZIndex` / `useResize`
-- [x] ComboBox **loading** + `search` 事件（远程搜索）
-- [x] DatePicker **min/max** + 日历键盘（←→ 换月 / Esc）
-- [x] Table **多选**（Ctrl）、**排序**、键盘、空态
-- [x] Tabs **multirow**
-- [x] Tree **typeahead** + ←→ 展开收起
+### 缺陷修复
+- [x] ContextMenu 菜单项点不动（pointerdown 抢先卸载面板）
+- [x] Tabs 挂载抢焦点；Enter/Space 不能选中
+- [x] Tree 无选中时键盘不可达
+- [x] Input 聚焦样式引用不存在的 token
+- [x] `.w95-tab--selected` 死规则
+- [x] Dialog 卸载漏滚动锁 / 嵌套 Esc 冲突
+- [x] MessageBox 假 ref、假的 `prompt` 类型
+- [x] Switch 标签无效关联、Breadcrumb 忽略 `href`、SpinButton 不回写
+- [x] Pagination 每页一个按钮
 
-### DX
-- [x] `@win95/vue-resolver`（unplugin-vue-components）
-- [x] 文档代码 **Copy**、Start **搜索**、hash 深链
-- [x] **Theme Editor** 页（实时改 `--w95-*`）
-- [x] 文档 Chrome **中/EN** 切换
-- [x] `docs/A11Y.md` 读屏器清单 + 对比度备注
-- [x] coverage 脚本（`test:coverage`）
+### 架构收口
+- [x] 浮层内核 `useFloating` + `useDismiss` + `OverlayPanel`（7 个浮层共用）
+- [x] 层级统一 `nextZIndex()`；删除无调用方的 `useResize` / `useZIndex()`
+- [x] 类型化 context（`createContext`），去掉字符串 inject key 与三处重复 interface
+- [x] props 类型改为 `InstanceType<typeof X>["$props"]`，删掉手写副本
+- [x] `withInstall(comp, name)`：全局注册名与文档一致
+
+### 能力补齐
+- [x] `W95Desktop` / `W95Taskbar` / `W95TaskbarItem` + `W95Window` 拖动、双击最大化、层级、最小化
+- [x] `W95MenuEntry`（菜单栏互斥展开、悬停切换、外部关闭）
+- [x] `W95Textarea`、`W95Form` / `W95FormItem`（aria 自动接线）
+- [x] 内置文案 i18n：`provideLocale` / `useLocale`，en + zh-CN
+- [x] Table 单元格插槽、加载态、行 `aria-selected`
+- [x] Tree 数据驱动 + 方向键；ComboBox `clearable`；DatePicker 今天/清除/首日；Pagination 省略号
 
 ### 质量
-- [x] **128** Vitest + vitest-axe
-- [x] typecheck / lib / docs-site / playground build 全绿
+- [x] 交互级回归测试（167 tests）：pointerdown→click、焦点、滚动锁、拖动、菜单互斥、受控排序
+- [x] 文档与库导出一致性测试（prop 写了不存在 / 组件没文档 → 红灯）
+- [x] 文档站的窗口管理器改为使用库内组件
 
 ---
 
 ## 仅剩人工步骤
 
-1. **npm publish**（你明确要求不自动执行）
+1. **npm publish**
    ```bash
    npm login
-   npm view vue-win95 name version
    pnpm release:check
-   pnpm --filter vue-win95 publish
-   git tag v0.2.1 && git push origin v0.2.1
+   pnpm --filter vue-win95-ui publish
+   git tag v0.3.0 && git push origin v0.3.0
    ```
-2. ~~GitHub Pages~~ **已启用并部署成功**：https://naecoo.github.io/vue-win95-ui/
-3. 可选：`pnpm add -D @playwright/test && npx playwright install chromium` 后跑 `node scripts/visual-smoke.mjs`
-4. 可选：发包后给 README 加 npm version 徽章
+2. 可选：`pnpm add -D @playwright/test && npx playwright install chromium` 后跑 `node scripts/visual-smoke.mjs`
+3. 可选：给 docs-site / playground 补 tsconfig，把 `vue-tsc` 纳入 CI
 
 ## 已知限制
 
-- `vite-plugin-md` peer 声明 Vite 4，与 Vite 6 可用但有警告；若遇问题可迁移到 `@mdx-js/rollup`
-- 标题栏浅蓝渐变端对比度偏低（Win95 复古取舍）
+- 组件库仍依赖 Tailwind 生成的原子类；宿主若想用 `class` 覆盖，需要自己的 Tailwind 扫描组件源码
+- `vite-plugin-md` peer 声明 Vite 4，与 Vite 6 可用但有警告
+- 浅蓝渐变端的标题栏对比度偏低（Win95 复古取舍）
+- Icon 仍是字形兜底，尚未提供像素图标集
 
 ## 命令
 

@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import { FormFieldCtx } from "../form/context";
 
 export interface W95SelectOption {
   value: string | number;
@@ -33,7 +34,8 @@ const emit = defineEmits<{
 }>();
 
 const autoId = useId("w95-select");
-const selectId = computed(() => props.id ?? autoId.value);
+const field = FormFieldCtx.inject();
+const selectId = computed(() => props.id ?? field?.value.id ?? autoId.value);
 
 const selectClasses = computed(() =>
   cn(
@@ -73,6 +75,9 @@ function onChange(e: Event) {
       :style="selectStyle"
       :disabled="disabled"
       :value="modelValue"
+      :aria-invalid="field?.invalid || undefined"
+      :aria-describedby="field?.describedBy"
+      :aria-required="field?.required || undefined"
       @change="onChange"
     >
       <option

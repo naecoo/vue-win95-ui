@@ -4,8 +4,8 @@ import { isZh } from "../i18n";
 
 const text = ref(
   isZh.value
-    ? "欢迎使用 Win95 记事本。\n这里是 vue-win95 文档站的小应用。\n你可以随意编辑这段文字。"
-    : "Welcome to Win95 Notepad.\nThis mini app lives in the vue-win95 docs.\nEdit this text freely."
+    ? "欢迎使用 Win95 记事本。\n这里是 vue-win95-ui 文档站的小应用。\n你可以随意编辑这段文字。"
+    : "Welcome to Win95 Notepad.\nThis mini app lives in the vue-win95-ui docs.\nEdit this text freely."
 );
 
 const lines = computed(() => text.value.split("\n").length);

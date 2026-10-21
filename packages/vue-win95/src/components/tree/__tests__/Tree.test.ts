@@ -37,9 +37,80 @@ describe("W95Tree", () => {
       attachTo: document.body,
     });
     const items = wrapper.findAll('[role="treeitem"]');
-    await items[1]!.trigger("click");
+    await items[1]!.find("[data-tree-row]").trigger("click");
     expect(wrapper.vm.sel).toBe("b");
     expect(items[1]!.attributes("aria-selected")).toBe("true");
+  });
+
+  it("clicking a child does not select its parent", async () => {
+    const wrapper = mount({
+      components: { Tree, TreeItem },
+      template: `
+        <Tree v-model="sel">
+          <TreeItem value="css" label="CSS" has-children>
+            <TreeItem value="sel" label="Selectors" />
+          </TreeItem>
+        </Tree>
+      `,
+      data: () => ({ sel: null }),
+      attachTo: document.body,
+    });
+    await wrapper.find('button[aria-label="Expand"]').trigger("click");
+    const child = wrapper.findAll('[role="treeitem"]')[1]!;
+    await child.find("[data-tree-row]").trigger("click");
+    expect(wrapper.vm.sel).toBe("sel");
+  });
+
+  it("is keyboard reachable without a selection", async () => {
+    const wrapper = mount({
+      components: { Tree, TreeItem },
+      template: `
+        <Tree>
+          <TreeItem value="a" label="A" />
+          <TreeItem value="b" label="B" />
+        </Tree>
+      `,
+      attachTo: document.body,
+    });
+    await wrapper.vm.$nextTick();
+    const items = wrapper.findAll('[role="treeitem"]');
+    expect(items[0]!.attributes("tabindex")).toBe("0");
+    expect(items[1]!.attributes("tabindex")).toBe("-1");
+  });
+
+  it("moves focus with ArrowDown", async () => {
+    const wrapper = mount(
+      {
+        components: { Tree, TreeItem },
+        template: `
+          <Tree>
+            <TreeItem value="a" label="A" />
+            <TreeItem value="b" label="B" />
+          </Tree>
+        `,
+      },
+      { attachTo: document.body }
+    );
+    const items = wrapper.findAll('[role="treeitem"]');
+    (items[0]!.element as HTMLElement).focus();
+    await items[0]!.trigger("keydown", { key: "ArrowDown" });
+    expect(document.activeElement).toBe(items[1]!.element);
+    wrapper.unmount();
+  });
+
+  it("renders data-driven items", () => {
+    const wrapper = mount(Tree, {
+      props: {
+        items: [
+          { value: "root", label: "Root", children: [{ value: "leaf", label: "Leaf" }] },
+        ],
+        expanded: ["root"],
+        modelValue: "leaf",
+      },
+      attachTo: document.body,
+    });
+    expect(wrapper.findAll('[role="treeitem"]')).toHaveLength(2);
+    expect(wrapper.text()).toContain("Leaf");
   });
 
   it("expands children", async () => {

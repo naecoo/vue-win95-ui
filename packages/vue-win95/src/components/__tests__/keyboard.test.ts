@@ -8,6 +8,7 @@ import Tree from "../tree/Tree.vue";
 import TreeItem from "../tree/TreeItem.vue";
 import Dropdown from "../dropdown/Dropdown.vue";
 import MenuItem from "../menu/MenuItem.vue";
+import { $ } from "../../test-utils/dom";
 
 describe("Keyboard navigation", () => {
   it("Tabs moves selection with ArrowRight", async () => {
@@ -53,8 +54,9 @@ describe("Keyboard navigation", () => {
         attachTo: document.body,
       }
     );
-    const menu = wrapper.find('[role="menu"]');
-    await menu.trigger("keydown", { key: "Escape" });
+    const menu = $('[role="menu"]') as HTMLElement;
+    menu.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.open).toBe(false);
     wrapper.unmount();
   });

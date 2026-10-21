@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
 
@@ -32,21 +32,39 @@ const emit = defineEmits<{
 
 const autoId = useId("w95-spin");
 const inputId = computed(() => props.id ?? autoId.value);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 function clamp(n: number) {
   return Math.min(props.max, Math.max(props.min, n));
 }
 
+/** 输入框显示必须跟模型一致：clamp 之后要把框里的值写回去，否则会看到越界的残值 */
+function syncInput(value: number) {
+  const el = inputRef.value;
+  if (el && el.value !== String(value)) el.value = String(value);
+}
+
 function setValue(n: number) {
   if (props.disabled) return;
   const v = clamp(n);
-  emit("update:modelValue", v);
-  emit("change", v);
+  syncInput(v);
+  if (v !== props.modelValue) {
+    emit("update:modelValue", v);
+    emit("change", v);
+  }
 }
 
 function onInput(e: Event) {
   const raw = Number((e.target as HTMLInputElement).value);
-  if (!Number.isNaN(raw)) setValue(raw);
+  if (Number.isNaN(raw)) {
+    syncInput(props.modelValue);
+    return;
+  }
+  setValue(raw);
+}
+
+function onBlur() {
+  syncInput(props.modelValue);
 }
 
 function inc() {
@@ -61,7 +79,7 @@ const inputClasses = computed(() =>
     "box-border border-0 rounded-none w-[42px] h-[22px] text-center",
     "font-w95 text-w95",
     "shadow-w95-field bg-w95-highlight text-w95-text",
-    "focus:outline-none",
+    "w95-focus",
     props.disabled && "bg-w95-surface text-w95-shadow",
     props.class
   )
@@ -83,6 +101,7 @@ const btnClasses =
     </label>
     <input
       :id="inputId"
+      ref="inputRef"
       type="number"
       role="spinbutton"
       :class="inputClasses"
@@ -94,8 +113,9 @@ const btnClasses =
       :aria-valuenow="modelValue"
       :aria-valuemin="min"
       :aria-valuemax="max"
-      :aria-label="label || undefined"
+      @input="onInput"
       @change="onInput"
+      @blur="onBlur"
       @keydown.up.prevent="inc"
       @keydown.down.prevent="dec"
     />

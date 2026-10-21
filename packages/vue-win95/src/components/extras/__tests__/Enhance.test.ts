@@ -3,6 +3,7 @@ import { mount } from "@vue/test-utils";
 import { nextTick, ref } from "vue";
 import { useNotifier, notify } from "../../../composables/useNotifier";
 import ContextMenu from "../../context-menu/ContextMenu.vue";
+import { $, $$, cleanupOverlays } from "../../../test-utils/dom";
 import MenuItem from "../../menu/MenuItem.vue";
 import DatePicker from "../../date-picker/DatePicker.vue";
 import Table from "../../table/Table.vue";
@@ -27,7 +28,7 @@ describe("useNotifier", () => {
 });
 
 describe("W95ContextMenu", () => {
-  it("renders menu items when open", () => {
+  it("renders menu items when open", async () => {
     const wrapper = mount(
       {
         components: { ContextMenu, MenuItem },
@@ -40,8 +41,9 @@ describe("W95ContextMenu", () => {
         attachTo: document.body,
       }
     );
-    expect(wrapper.findAll('[role="menuitem"]')).toHaveLength(2);
-    expect(wrapper.find('[role="menu"]').attributes("style")).toContain("left: 10px");
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    expect($$('[role="menuitem"]')).toHaveLength(2);
+    expect($('[role="menu"]')?.getAttribute("style")).toContain("left: 10px");
     wrapper.unmount();
   });
 });

@@ -1,23 +1,37 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRovingFocus } from "../../composables/useRovingFocus";
 import { cn } from "../../utils/cn";
+import { MenuBarCtx } from "./context";
+import { useLocale } from "../../locale";
 
 const props = withDefaults(
   defineProps<{
+    label?: string;
     class?: string;
   }>(),
-  {}
+  { label: undefined }
 );
 
-const listRef = ref<HTMLElement | null>(null);
-const { onKeydown, syncTabIndexes } = useRovingFocus(listRef, {
+const { t } = useLocale();
+const barRef = ref<HTMLElement | null>(null);
+const openId = ref<string | null>(null);
+
+MenuBarCtx.provide(
+  computed(() => ({
+    openId: openId.value,
+    setOpen: (id: string | null) => {
+      openId.value = id;
+    },
+  }))
+);
+
+const { onKeydown, syncTabIndexes } = useRovingFocus(barRef, {
   orientation: "horizontal",
   loop: true,
-  selector: '[role="menuitem"]:not([disabled]), button:not([disabled])',
+  selector: '[role="menuitem"]:not([aria-disabled="true"])',
 });
 
-import { onMounted } from "vue";
 onMounted(() => syncTabIndexes());
 
 const classes = computed(() =>
@@ -31,7 +45,13 @@ const classes = computed(() =>
 </script>
 
 <template>
-  <ul ref="listRef" role="menubar" :class="classes" @keydown="onKeydown">
+  <ul
+    ref="barRef"
+    role="menubar"
+    :aria-label="label ?? t('menu.label')"
+    :class="classes"
+    @keydown="onKeydown"
+  >
     <slot />
   </ul>
 </template>

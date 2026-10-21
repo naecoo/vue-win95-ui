@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { useId } from "../../composables/useId";
-import { useFocusTrap } from "../../composables/useFocusTrap";
 import { cn } from "../../utils/cn";
+import OverlayPanel from "../overlay/OverlayPanel.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -29,20 +29,22 @@ const open = computed({
   set: (v: boolean) => emit("update:modelValue", v),
 });
 
-useFocusTrap(menuRef, open);
-
 function toggle() {
   open.value = !open.value;
   if (open.value) {
     nextTick(() => {
-      const first = menuRef.value?.querySelector<HTMLElement>(
-        '[role="menuitem"]:not([aria-disabled="true"])'
-      );
-      first?.focus();
+      menuRef.value
+        ?.querySelector<HTMLElement>('[role="menuitem"]:not([aria-disabled="true"])')
+        ?.focus();
     });
   } else {
     triggerRef.value?.focus();
   }
+}
+
+function closeAndRestore() {
+  open.value = false;
+  triggerRef.value?.focus();
 }
 
 function onKeydownTrigger(e: KeyboardEvent) {
@@ -55,8 +57,7 @@ function onKeydownTrigger(e: KeyboardEvent) {
 function onMenuKeydown(e: KeyboardEvent) {
   if (e.key === "Escape") {
     e.stopPropagation();
-    open.value = false;
-    triggerRef.value?.focus();
+    closeAndRestore();
     return;
   }
   const items = Array.from(
@@ -81,21 +82,6 @@ function onMenuKeydown(e: KeyboardEvent) {
   }
 }
 
-function onDocClick(e: MouseEvent) {
-  const t = e.target as Node;
-  if (!open.value) return;
-  if (
-    triggerRef.value?.contains(t) ||
-    menuRef.value?.contains(t)
-  )
-    return;
-  open.value = false;
-}
-
-import { onMounted } from "vue";
-onMounted(() => document.addEventListener("mousedown", onDocClick));
-onBeforeUnmount(() => document.removeEventListener("mousedown", onDocClick));
-
 const triggerClasses = computed(() =>
   cn(
     "box-border border-0 rounded-none cursor-default select-none",
@@ -103,42 +89,36 @@ const triggerClasses = computed(() =>
     "bg-w95-surface shadow-w95-raised",
     "text-transparent [text-shadow:0_0_var(--w95-text)]",
     "active:shadow-w95-sunken",
-    "focus:outline focus:outline-1 focus:outline-dotted focus:outline-black focus:outline-offset-[-4px]",
+    "w95-focus",
     props.class
   )
 );
+
+const menuClasses = "p-0 min-w-[120px] shadow-w95-raised";
 </script>
 
 <template>
-  <div class="relative inline-block font-w95 text-w95">
-    <button
-      ref="triggerRef"
-      type="button"
-      :class="triggerClasses"
-      :aria-expanded="open"
-      :aria-haspopup="'menu'"
-      :aria-controls="uid"
-      @click="toggle"
-      @keydown="onKeydownTrigger"
-    >
-      {{ label }} ▾
-    </button>
-    <div
-      v-if="open"
-      ref="menuRef"
-      :id="uid"
-      role="menu"
-      tabindex="-1"
-      :class="
-        cn(
-          'absolute left-0 top-full z-[1000] mt-px min-w-full',
-          'bg-w95-surface shadow-w95-raised p-0.5 list-none m-0',
-          'focus:outline-none'
-        )
-      "
-      @keydown="onMenuKeydown"
-    >
+  <button
+    ref="triggerRef"
+    type="button"
+    :class="triggerClasses"
+    :aria-expanded="open"
+    aria-haspopup="menu"
+    :aria-controls="uid"
+    @click="toggle"
+    @keydown="onKeydownTrigger"
+  >
+    {{ label }} ▾
+  </button>
+  <OverlayPanel
+    v-model="open"
+    :anchor="triggerRef"
+    role="menu"
+    :label="label"
+    :class="menuClasses"
+  >
+    <div :id="uid" ref="menuRef" tabindex="-1" class="focus:outline-none" @keydown="onMenuKeydown">
       <slot />
     </div>
-  </div>
+  </OverlayPanel>
 </template>

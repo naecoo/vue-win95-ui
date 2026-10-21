@@ -22,7 +22,7 @@ let drag: { x0: number; w0: number } | null = null;
 
 function onDown(e: PointerEvent) {
   drag = { x0: e.clientX, w0: w.value };
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
 }
 function onMove(e: PointerEvent) {
   if (!drag) return;

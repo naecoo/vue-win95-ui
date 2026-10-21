@@ -1,6 +1,6 @@
 <script setup>
 import { isZh } from "../i18n";
-import { W95Window, W95Button } from "vue-win95";
+import { W95Window, W95Button } from "vue-win95-ui";
 </script>
 
 <div v-if="isZh">
@@ -61,7 +61,7 @@ Core library and Win95 docs site.
 
 <div class="demo">
   <div class="demo-label">SPONSOR</div>
-  <W95Window title="Support vue-win95" :width="420">
+  <W95Window title="Support vue-win95-ui" :width="420">
     <p style="font-size:14px;margin:0 0 12px">
       {{ isZh ? "欢迎点赞、贡献代码或赞助。" : "Star, contribute, or sponsor if this helps you." }}
     </p>

@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -30,6 +32,14 @@ jobs:
       - name: Build library
         run: pnpm build
 
+      # 门禁跑在 build 之后：它校验的是真实产物（exports 可解析、无 preflight、文档与 props 不漂移）
+      - name: Release gate
+        run: pnpm release:check
+
+      - name: Changesets present
+        run: pnpm exec changeset status --since=origin/main
+        continue-on-error: true
+
       - name: Build docs-site
         run: pnpm docs:build
 
@@ -39,3 +49,25 @@ jobs:
       - name: npm pack dry-run
         run: npm pack --dry-run
         working-directory: packages/vue-win95
+
+      - name: Verify published entry points resolve
+        working-directory: packages/vue-win95
+        run: |
+          node -e "
+          const pkg = require('./package.json');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const targets = Object.entries(pkg.exports).flatMap(([k, v]) =>
+            typeof v === 'string' ? [[k, v]] : Object.entries(v).map(([c, f]) => [k + ' ' + c, f])
+          );
+          let bad = 0;
+          for (const [key, file] of targets) {
+            const exists = fs.existsSync(path.join('.', file));
+            if (!exists) {
+              bad += 1;
+              console.error('missing export target:', key, '->', file);
+            }
+          }
+          if (bad) process.exit(1);
+          console.log('all exports resolve');
+          "

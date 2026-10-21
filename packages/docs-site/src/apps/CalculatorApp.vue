@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { W95Button, W95Input } from "vue-win95";
+import { W95Button, W95Input } from "vue-win95-ui";
 import { isZh } from "../i18n";
 
 const display = ref("0");

@@ -1,8 +1,8 @@
-import { h, render, type VNode } from "vue";
+import { h, ref, render, type VNode } from "vue";
 import W95Dialog from "../dialog/Dialog.vue";
 import W95Button from "../button/Button.vue";
 
-export type W95MessageBoxType = "alert" | "confirm" | "prompt";
+export type W95MessageBoxType = "alert" | "confirm";
 
 export interface W95MessageBoxOptions {
   title?: string;
@@ -19,79 +19,81 @@ function mountMessageBox(opts: W95MessageBoxOptions): Promise<boolean> {
     document.body.appendChild(host);
 
     const type = opts.type ?? "alert";
-    const showCancel = type !== "alert";
 
-    let vnode: VNode | null = null;
-
-    function destroy() {
-      if (vnode) render(null, host);
-      host.remove();
-      vnode = null;
-    }
+    // 必须是真正的 ref：普通对象冒充 ref 时，关闭不会触发重渲染，离场动画永远是假的
+    const open = ref(true);
+    let settled = false;
 
     function done(value: boolean) {
+      if (settled) return;
+      settled = true;
       open.value = false;
-      // wait leave transition
-      setTimeout(destroy, 50);
+      window.setTimeout(() => {
+        render(null, host);
+        host.remove();
+      }, 80);
       resolve(value);
     }
 
-    const open = { value: true } as { value: boolean };
-    // use a simple reactive-less wrapper via render function
     const Wrapper = {
-      name: "W95MessageBox",
+      name: "W95MessageBoxHost",
       setup() {
         return () =>
           h(
             W95Dialog,
             {
               modelValue: open.value,
-              title: opts.title ?? "Confirm",
+              title: opts.title ?? (type === "confirm" ? "Confirm" : "Alert"),
               width: opts.width ?? 480,
+              role: "alertdialog",
+              showClose: false,
+              closeOnOverlay: false,
+              confirmText: opts.confirmText ?? "OK",
+              cancelText: opts.cancelText ?? "Cancel",
               "onUpdate:modelValue": (v: boolean) => {
-                open.value = v;
                 if (!v) done(false);
               },
               onClose: () => done(false),
             },
             {
               default: () =>
-                h(
-                  "p",
-                  { style: "margin:0;font-size:14px;line-height:1.5" },
-                  opts.message
-                ),
-              footer: () => [
-                h(
-                  W95Button,
-                  {
-                    default: true,
-                    style: "min-width:88px;min-height:28px",
-                    onPointerdown: (e: Event) => e.stopPropagation(),
-                    onClick: () => done(true),
-                  },
-                  () => opts.confirmText ?? "OK"
-                ),
-                ...(showCancel
-                  ? [
+                h("p", { style: "margin:0;font-size:14px;line-height:1.5" }, opts.message),
+              footer: () =>
+                type === "alert"
+                  ? h(
+                      W95Button,
+                      {
+                        default: true,
+                        style: "min-width:88px;min-height:28px",
+                        onClick: () => done(true),
+                      },
+                      () => opts.confirmText ?? "OK"
+                    )
+                  : [
+                      h(
+                        W95Button,
+                        {
+                          default: true,
+                          style: "min-width:88px;min-height:28px",
+                          onClick: () => done(true),
+                        },
+                        () => opts.confirmText ?? "OK"
+                      ),
                       h(
                         W95Button,
                         {
                           style: "min-width:88px;min-height:28px",
-                          onPointerdown: (e: Event) => e.stopPropagation(),
                           onClick: () => done(false),
                         },
                         () => opts.cancelText ?? "Cancel"
                       ),
-                    ]
-                  : []),
-              ],
+                    ],
             }
           );
       },
     };
 
-    vnode = h(Wrapper);
+    const vnode: VNode = h(Wrapper);
     render(vnode, host);
   });
 }

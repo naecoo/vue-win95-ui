@@ -1,6 +1,13 @@
 import type { ComponentResolver } from "unplugin-vue-components/types";
 
 const components = new Set([
+  "W95TaskbarItem",
+  "W95Taskbar",
+  "W95Desktop",
+  "W95MenuEntry",
+  "W95FormItem",
+  "W95Form",
+  "W95Textarea",
   "W95Accordion",
   "W95AccordionItem",
   "W95Avatar",
@@ -57,7 +64,7 @@ export function VueWin95Resolver(): ComponentResolver {
     type: "component",
     resolve(name: string) {
       if (!components.has(name)) return;
-      return { name, from: "vue-win95" };
+      return { name, from: "vue-win95-ui" };
     },
   };
 }

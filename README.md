@@ -1,4 +1,4 @@
-# vue-win95
+# vue-win95-ui
 
 [![CI](https://github.com/naecoo/vue-win95-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/naecoo/vue-win95-ui/actions/workflows/ci.yml)
 ![npm](https://img.shields.io/npm/v/vue-win95-ui.svg?label=npm) ![npm beta](https://img.shields.io/npm/v/vue-win95-ui/beta.svg?label=beta)
@@ -23,17 +23,17 @@ pnpm add vue-win95-ui
 
 ```ts
 import { createApp } from "vue";
-import Win95 from "vue-win95";
-import "vue-win95/styles.css";
+import Win95 from "vue-win95-ui";
+import "vue-win95-ui/styles.css";
 
-createApp(App).use(Win95).mount("#app");
+createApp(App).use(Win95, { locale: "zh-CN" }).mount("#app");
 ```
 
 ### On-demand
 
 ```ts
-import { W95Button, W95Window } from "vue-win95";
-import "vue-win95/styles.css";
+import { W95Button, W95Window } from "vue-win95-ui";
+import "vue-win95-ui/styles.css";
 ```
 
 See the docs **Install** page for Tailwind preset usage.

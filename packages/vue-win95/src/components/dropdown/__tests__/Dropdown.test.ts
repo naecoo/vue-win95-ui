@@ -1,28 +1,51 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { axe } from "vitest-axe";
 import Dropdown from "../Dropdown.vue";
 import MenuItem from "../../menu/MenuItem.vue";
+import { $, $$, cleanupOverlays } from "../../../test-utils/dom";
+
+afterEach(cleanupOverlays);
 
 describe("W95Dropdown", () => {
   it("toggles menu on click", async () => {
-    const wrapper = mount({
-      components: { Dropdown, MenuItem },
-      template: `
-        <main>
-          <Dropdown v-model="open" label="File">
-            <MenuItem>New</MenuItem>
-            <MenuItem>Open</MenuItem>
-          </Dropdown>
-        </main>
-      `,
-      data: () => ({ open: false }),
-      attachTo: document.body,
-    });
-    expect(wrapper.find('[role="menu"]').exists()).toBe(false);
+    const wrapper = mount(
+      {
+        components: { Dropdown, MenuItem },
+        template: `
+          <main>
+            <Dropdown v-model="open" label="File">
+              <MenuItem>New</MenuItem>
+              <MenuItem>Open</MenuItem>
+            </Dropdown>
+          </main>
+        `,
+        data: () => ({ open: false }),
+        attachTo: document.body,
+      }
+    );
+    expect($('[role="menu"]')).toBeNull();
     await wrapper.find("button").trigger("click");
-    expect(wrapper.find('[role="menu"]').exists()).toBe(true);
-    expect(wrapper.findAll('[role="menuitem"]')).toHaveLength(2);
+    expect($('[role="menu"]')).toBeTruthy();
+    expect($$('[role="menuitem"]')).toHaveLength(2);
+    wrapper.unmount();
+  });
+
+  it("closes when clicking outside", async () => {
+    const wrapper = mount(
+      {
+        components: { Dropdown, MenuItem },
+        template: `
+          <Dropdown v-model="open" label="File"><MenuItem>New</MenuItem></Dropdown>
+        `,
+        data: () => ({ open: true }),
+        attachTo: document.body,
+      }
+    );
+    expect($('[role="menu"]')).toBeTruthy();
+    document.body.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+    expect($('[role="menu"]')).toBeNull();
     wrapper.unmount();
   });
 
@@ -37,18 +60,20 @@ describe("W95Dropdown", () => {
   });
 
   it("has no accessibility violations when open", async () => {
-    const wrapper = mount({
-      components: { Dropdown, MenuItem },
-      template: `
-        <main>
-          <Dropdown :model-value="true" label="File">
-            <MenuItem>New</MenuItem>
-            <MenuItem>Open</MenuItem>
-          </Dropdown>
-        </main>
-      `,
-      attachTo: document.body,
-    });
+    const wrapper = mount(
+      {
+        components: { Dropdown, MenuItem },
+        template: `
+          <main>
+            <Dropdown :model-value="true" label="File">
+              <MenuItem>New</MenuItem>
+              <MenuItem>Open</MenuItem>
+            </Dropdown>
+          </main>
+        `,
+        attachTo: document.body,
+      }
+    );
     const results = await axe(wrapper.element);
     expect(results.violations).toEqual([]);
     wrapper.unmount();

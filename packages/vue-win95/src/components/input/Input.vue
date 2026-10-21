@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import { FormFieldCtx } from "../form/context";
 
 const props = withDefaults(
   defineProps<{
@@ -29,7 +30,8 @@ const emit = defineEmits<{
 }>();
 
 const autoId = useId("w95-input");
-const inputId = computed(() => props.id ?? autoId.value);
+const field = FormFieldCtx.inject();
+const inputId = computed(() => props.id ?? field?.value.id ?? autoId.value);
 
 const inputClasses = computed(() =>
   cn(
@@ -37,7 +39,7 @@ const inputClasses = computed(() =>
     "font-w95 text-w95 h-w95-input min-w-[120px] px-1 py-[3px]",
     "shadow-w95-field bg-w95-highlight text-w95-text",
     "transition-[box-shadow] duration-75",
-    "focus:outline-none focus:shadow-w95-field-focus",
+    "w95-focus",
     "disabled:bg-w95-surface disabled:text-w95-shadow",
     "read-only:bg-w95-surface read-only:text-w95-shadow",
     props.class
@@ -60,6 +62,9 @@ function onInput(e: Event) {
       :readonly="readonly"
       :placeholder="placeholder"
       :value="modelValue"
+      :aria-invalid="field?.invalid || undefined"
+      :aria-describedby="field?.describedBy"
+      :aria-required="field?.required || undefined"
       @input="onInput"
     />
   </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, h, defineComponent } from "vue";
 import { isZh } from "../i18n";
-import * as Win95 from "vue-win95";
+import * as Win95 from "vue-win95-ui";
 import { docs, type ComponentDoc } from "./component-docs";
 
 const W95Dialog = (Win95 as any).W95Dialog;

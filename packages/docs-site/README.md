@@ -1,6 +1,6 @@
 # docs-site
 
-Win95 desktop-style **MDX documentation site**, built with the vue-win95 library itself.
+Win95 desktop-style **MDX documentation site**, built with the vue-win95-ui library itself.
 
 ## Features
 
@@ -11,7 +11,7 @@ Win95 desktop-style **MDX documentation site**, built with the vue-win95 library
 | Start menu | Side banner and searchable list |
 | Taskbar | Start, window buttons, clock |
 | Windows | Draggable title bar, minimize/close, status bar |
-| Docs | MDX pages with live `vue-win95` demos |
+| Docs | MDX pages with live `vue-win95-ui` demos |
 | i18n | Chinese / English toggle and browser language detection |
 | Mini apps | Calculator, Notepad, Minesweeper |
 

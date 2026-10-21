@@ -1,4 +1,4 @@
-# vue-win95
+# vue-win95-ui
 
 Windows 95 style Vue 3 component library — TypeScript + Tailwind (shadcn pattern) + WAI-ARIA.
 
@@ -10,8 +10,8 @@ pnpm add vue-win95-ui
 
 ```ts
 import { createApp } from "vue";
-import Win95 from "vue-win95";
-import "vue-win95/styles.css";
+import Win95 from "vue-win95-ui";
+import "vue-win95-ui/styles.css";
 
 createApp(App).use(Win95).mount("#app");
 ```
@@ -19,8 +19,8 @@ createApp(App).use(Win95).mount("#app");
 ### On-demand import
 
 ```ts
-import { W95Button, W95Dialog } from "vue-win95";
-import "vue-win95/styles.css";
+import { W95Button, W95Dialog } from "vue-win95-ui";
+import "vue-win95-ui/styles.css";
 ```
 
 - Theme via `--w95-*` CSS variables

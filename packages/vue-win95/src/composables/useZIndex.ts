@@ -1,21 +1,24 @@
-import { ref, type Ref } from "vue";
+/**
+ * 浮层层级分配器。
+ * 唯一的真源：所有需要叠放的浮层都从这里取 z-index，
+ * 而不是在组件里写 z-[1000] / z-[1100] / z-[1300] 这种魔法数字。
+ */
+const POPOVER_BASE = 1000;
 
-export type ZLayer = number;
+let current = POPOVER_BASE;
 
-/** Simple window/popup z-index manager */
-export function useZIndex(base = 1000) {
-  const z = ref(base);
-  function next(): number {
-    z.value += 1;
-    return z.value;
-  }
-  function top(): number {
-    return z.value;
-  }
-  return { z: z as Ref<number>, next, top, base };
+/** 取下一个浮层层级（后打开的在上层） */
+export function nextZIndex(): number {
+  current += 1;
+  return current;
 }
 
-const shared = useZIndex(1000);
-export function nextZIndex() {
-  return shared.next();
+/** 当前最高浮层层级，用于把已打开的浮层提到最前 */
+export function currentZIndex(): number {
+  return current;
+}
+
+/** 仅供测试使用：重置分配器 */
+export function resetZIndex(): void {
+  current = POPOVER_BASE;
 }

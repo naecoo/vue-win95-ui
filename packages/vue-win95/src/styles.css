@@ -1,7 +1,5 @@
-/**
- * Shared Win95 visual polish — subtle modernization without losing authenticity.
- */
-@tailwind base;
+@import "./tokens.css";
+
 @tailwind components;
 @tailwind utilities;
 
@@ -21,24 +19,11 @@
   font-display: swap;
 }
 
-@layer base {
-  :root {
-    --w95-surface: #c0c0c0;
-    --w95-button-highlight: #ffffff;
-    --w95-button-face: #dfdfdf;
-    --w95-button-shadow: #808080;
-    --w95-window-frame: #0a0a0a;
-    --w95-dialog-blue: #000080;
-    --w95-dialog-blue-light: #1084d0;
-    --w95-dialog-gray: #808080;
-    --w95-dialog-gray-light: #b5b5b5;
-    --w95-text: #222222;
-    --w95-link: #0000ff;
-    --w95-desktop: #008080;
-    --w95-radius: 0px;
-    --w95-motion: 60ms linear;
-  }
-
+/**
+ * 共享 Win95 视觉。刻意不包含 @tailwind base / preflight：
+ * 组件库不应重置宿主应用的全局样式。
+ */
+@layer components {
   .w95-root {
     font-family: "Pixelated MS Sans Serif", Tahoma, Arial, sans-serif;
     font-size: 12px;
@@ -48,7 +33,7 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Unified Win95 focus ring (dotted inset) — slightly clearer */
+  /* Unified Win95 focus ring (dotted inset) */
   .w95-focus:focus,
   .w95-focus:focus-visible {
     outline: 1px dotted var(--w95-text);
@@ -64,9 +49,7 @@
   .w95-btn-motion {
     transition: box-shadow var(--w95-motion), padding var(--w95-motion);
   }
-}
 
-@layer components {
   .w95-check::after {
     content: "";
     position: absolute;
@@ -123,9 +106,9 @@
     background: var(--w95-button-highlight);
   }
 
-  .w95-tab--selected {
-    padding-bottom: 7px !important;
-    margin-bottom: -2px !important;
+  .w95-tab-selected {
+    padding-bottom: 7px;
+    margin-bottom: -2px;
     z-index: 8;
   }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, watch } from "vue";
 import { cn } from "../../utils/cn";
+import { useLocale } from "../../locale";
 
 export interface W95ToastItem {
   id: string | number;
@@ -25,6 +26,7 @@ const emit = defineEmits<{
   "update:modelValue": [items: W95ToastItem[]];
 }>();
 
+const { t } = useLocale();
 const timers = new Map<string | number, ReturnType<typeof setTimeout>>();
 
 function dismiss(id: string | number) {
@@ -72,7 +74,7 @@ const itemClasses =
       v-if="modelValue.length"
       :class="rootClasses"
       role="region"
-      aria-label="Notifications"
+      :aria-label="t('notifications.label')"
     >
       <div
         v-for="item in modelValue"

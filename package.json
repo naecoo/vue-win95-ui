@@ -8,11 +8,11 @@
     "dev": "pnpm --filter playground dev",
     "docs": "pnpm --filter docs-site dev",
     "docs:build": "pnpm --filter docs-site build",
-    "build": "pnpm --filter vue-win95 build",
-    "test": "pnpm --filter vue-win95 test",
-    "typecheck": "pnpm --filter vue-win95 typecheck",
-    "story": "pnpm --filter vue-win95 story:dev",
-    "story:build": "pnpm --filter vue-win95 story:build",
+    "build": "pnpm --filter vue-win95-ui build",
+    "test": "pnpm --filter vue-win95-ui test",
+    "typecheck": "pnpm --filter vue-win95-ui typecheck",
+    "story": "pnpm --filter vue-win95-ui story:dev",
+    "story:build": "pnpm --filter vue-win95-ui story:build",
     "release:check": "node scripts/prepublish-check.mjs"
   },
   "devDependencies": {

@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { computed, inject, type ComputedRef } from "vue";
+import { computed } from "vue";
 import { cn } from "../../utils/cn";
-
-interface TabsCtx {
-  uid: string;
-  active: string | number | undefined;
-}
+import { TabsCtx } from "./context";
 
 const props = withDefaults(
   defineProps<{
@@ -15,7 +11,7 @@ const props = withDefaults(
   {}
 );
 
-const ctx = inject<ComputedRef<TabsCtx> | null>("w95-tabs", null);
+const ctx = TabsCtx.inject();
 const panelId = computed(() => `${ctx?.value.uid ?? "w95"}-panel-${props.value}`);
 const tabId = computed(() => `${ctx?.value.uid ?? "w95"}-tab-${props.value}`);
 const isActive = computed(() => ctx?.value.active === props.value);

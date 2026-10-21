@@ -2,6 +2,8 @@
 import { computed, ref } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import OverlayPanel from "../overlay/OverlayPanel.vue";
+import { useLocale } from "../../locale";
 
 const props = withDefaults(
   defineProps<{
@@ -10,6 +12,10 @@ const props = withDefaults(
     id?: string;
     min?: string | null;
     max?: string | null;
+    /** 首日：0=周日 1=周一 */
+    firstDayOfWeek?: 0 | 1;
+    disabled?: boolean;
+    placeholder?: string;
     class?: string;
   }>(),
   {
@@ -18,6 +24,9 @@ const props = withDefaults(
     id: undefined,
     min: null,
     max: null,
+    firstDayOfWeek: 0,
+    disabled: false,
+    placeholder: "",
   }
 );
 
@@ -26,8 +35,10 @@ const emit = defineEmits<{
   change: [value: string | null];
 }>();
 
+const { t, months, weekdays } = useLocale();
 const autoId = useId("w95-date");
 const inputId = computed(() => props.id ?? autoId.value);
+const triggerRef = ref<HTMLElement | null>(null);
 
 function parse(s: string | null | undefined) {
   if (!s) return null;
@@ -47,34 +58,26 @@ const minDate = computed(() => parse(props.min));
 const maxDate = computed(() => parse(props.max));
 
 const open = ref(false);
-const cursor = ref<Date>(
+const today = new Date();
+const cursor = ref(
   selected.value
     ? new Date(selected.value.getFullYear(), selected.value.getMonth(), 1)
-    : new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    : new Date(today.getFullYear(), today.getMonth(), 1)
 );
 
 const year = computed(() => cursor.value.getFullYear());
 const month = computed(() => cursor.value.getMonth());
 
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const weekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const orderedWeekdays = computed(() =>
+  props.firstDayOfWeek === 1
+    ? [...weekdays.value.slice(1), weekdays.value[0]!]
+    : weekdays.value
+);
 
 const cells = computed(() => {
   const first = new Date(year.value, month.value, 1);
-  const startDow = first.getDay();
+  const startDow =
+    (first.getDay() - props.firstDayOfWeek + 7) % 7;
   const daysInMonth = new Date(year.value, month.value + 1, 0).getDate();
   const list: (Date | null)[] = [];
   for (let i = 0; i < startDow; i++) list.push(null);
@@ -113,11 +116,19 @@ function isDisabled(d: Date) {
   return false;
 }
 
-function pick(d: Date) {
-  if (isDisabled(d)) return;
-  const value = fmt(d);
+function commit(value: string | null) {
   emit("update:modelValue", value);
   emit("change", value);
+}
+
+function pick(d: Date) {
+  if (isDisabled(d)) return;
+  commit(fmt(d));
+  open.value = false;
+}
+
+function clear() {
+  commit(null);
   open.value = false;
 }
 
@@ -128,14 +139,17 @@ function nextMonth() {
   cursor.value = new Date(year.value, month.value + 1, 1);
 }
 
+function goToday() {
+  const now = new Date();
+  cursor.value = new Date(now.getFullYear(), now.getMonth(), 1);
+  if (!isDisabled(now)) pick(now);
+}
+
 function toggle() {
+  if (props.disabled) return;
   open.value = !open.value;
   if (open.value && selected.value) {
-    cursor.value = new Date(
-      selected.value.getFullYear(),
-      selected.value.getMonth(),
-      1
-    );
+    cursor.value = new Date(selected.value.getFullYear(), selected.value.getMonth(), 1);
   }
 }
 
@@ -143,14 +157,11 @@ const inputClasses = computed(() =>
   cn(
     "box-border border-0 rounded-none w-[120px] h-w95-input px-1 py-[3px]",
     "font-w95 text-w95 shadow-w95-field bg-w95-highlight text-w95-text",
-    "focus:outline-none",
+    "w95-focus",
+    props.disabled && "bg-w95-surface text-w95-shadow",
     props.class
   )
 );
-
-const calClasses =
-  "absolute left-0 top-full z-[1100] mt-px w-[200px] " +
-  "bg-w95-surface shadow-w95-window p-[3px] font-w95 text-w95 text-w95-text";
 
 const dayBtn =
   "w-[24px] h-[20px] min-w-0 p-0 border-0 rounded-none bg-transparent " +
@@ -160,8 +171,7 @@ const dayBtn =
 
 const navBtn =
   "w-[20px] h-[16px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised " +
-  "cursor-default font-w95 text-w95 " +
-  "active:shadow-w95-sunken";
+  "cursor-default font-w95 text-w95 active:shadow-w95-sunken w95-focus";
 </script>
 
 <template>
@@ -169,45 +179,54 @@ const navBtn =
     <label v-if="label" :for="inputId" class="select-none text-w95-text">
       {{ label }}
     </label>
-    <input
-      :id="inputId"
-      type="text"
-      :class="inputClasses"
-      :value="modelValue || ''"
-      readonly
-      role="textbox"
-      aria-haspopup="dialog"
-      :aria-expanded="open"
-      aria-label="Date"
-      @focus="toggle"
-      @keydown.enter.prevent="toggle"
-      @keydown.esc="open = false"
-    />
-    <button type="button" :class="navBtn" aria-label="Open calendar" @click="toggle">
-      📅
-    </button>
+    <span ref="triggerRef" class="inline-flex items-center gap-w95-sm">
+      <input
+        :id="inputId"
+        type="text"
+        :class="inputClasses"
+        :value="modelValue || ''"
+        :placeholder="placeholder"
+        readonly
+        :disabled="disabled"
+        aria-haspopup="dialog"
+        :aria-expanded="open"
+        @click="toggle"
+        @keydown.enter.prevent="toggle"
+        @keydown.esc="open = false"
+      />
+      <button
+        type="button"
+        :class="navBtn"
+        :aria-label="t('date.open')"
+        :aria-expanded="open"
+        :disabled="disabled"
+        @click="toggle"
+      >
+        <span aria-hidden="true">▾</span>
+      </button>
+    </span>
 
-    <div
-      v-if="open"
-      :class="calClasses"
+    <OverlayPanel
+      v-model="open"
+      :anchor="triggerRef"
       role="dialog"
-      aria-label="Choose date"
-      tabindex="-1"
-      @keydown.esc="open = false"
+      :label="t('date.label')"
+      auto-focus
+      class="p-[3px] w-[200px]"
       @keydown.left.prevent="prevMonth"
       @keydown.right.prevent="nextMonth"
     >
       <div class="flex items-center justify-between mb-1">
-        <button type="button" :class="navBtn" aria-label="Previous month" @click="prevMonth">
+        <button type="button" :class="navBtn" :aria-label="t('date.prevMonth')" @click="prevMonth">
           ‹
         </button>
-        <span class="font-bold">{{ monthNames[month] }} {{ year }}</span>
-        <button type="button" :class="navBtn" aria-label="Next month" @click="nextMonth">
+        <span class="font-bold">{{ months[month] }} {{ year }}</span>
+        <button type="button" :class="navBtn" :aria-label="t('date.nextMonth')" @click="nextMonth">
           ›
         </button>
       </div>
       <div class="grid grid-cols-7 gap-0 text-center mb-0.5 text-w95-shadow">
-        <span v-for="d in weekdays" :key="d">{{ d }}</span>
+        <span v-for="d in orderedWeekdays" :key="d">{{ d }}</span>
       </div>
       <div class="grid grid-cols-7 gap-0 text-center">
         <template v-for="(cell, i) in cells" :key="i">
@@ -215,6 +234,8 @@ const navBtn =
             v-if="cell"
             type="button"
             :disabled="isDisabled(cell)"
+            :aria-current="isSameDay(cell, today) ? 'date' : undefined"
+            :aria-selected="isSameDay(cell, selected)"
             :class="[
               dayBtn,
               isSameDay(cell, selected) ? 'bg-w95-blue text-w95-highlight' : '',
@@ -226,6 +247,14 @@ const navBtn =
           <span v-else :class="dayBtn" />
         </template>
       </div>
-    </div>
+      <div class="flex justify-between mt-1">
+        <button type="button" :class="navBtn" class="w-auto px-1" @click="goToday">
+          {{ t("date.today") }}
+        </button>
+        <button type="button" :class="navBtn" class="w-auto px-1" @click="clear">
+          {{ t("date.clear") }}
+        </button>
+      </div>
+    </OverlayPanel>
   </div>
 </template>

@@ -1,27 +1,35 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import { useLocale } from "../../locale";
 
 export interface W95TableColumn {
   key: string;
   label: string;
   width?: string | number;
   sortable?: boolean;
+  align?: "left" | "center" | "right";
 }
+
+type RowKey = string | number;
 
 const props = withDefaults(
   defineProps<{
     columns: W95TableColumn[];
     rows?: Record<string, unknown>[];
-    selectedKey?: string | number | null;
+    selectedKey?: RowKey | null;
     rowKey?: string;
     interactive?: boolean;
     height?: string | number;
     emptyText?: string;
+    loading?: boolean;
+    loadingText?: string;
     multiple?: boolean;
-    selectedKeys?: (string | number)[];
+    selectedKeys?: RowKey[];
     sortBy?: string;
     sortDir?: "asc" | "desc";
+    label?: string;
     class?: string;
   }>(),
   {
@@ -30,28 +38,41 @@ const props = withDefaults(
     rowKey: "id",
     interactive: true,
     height: undefined,
-    emptyText: "No data",
+    emptyText: undefined,
+    loading: false,
+    loadingText: undefined,
     multiple: false,
     selectedKeys: () => [],
     sortBy: undefined,
     sortDir: "asc",
+    label: undefined,
   }
 );
 
 const emit = defineEmits<{
-  "update:selectedKey": [key: string | number | null];
-  "update:selectedKeys": [keys: (string | number)[]];
+  "update:selectedKey": [key: RowKey | null];
+  "update:selectedKeys": [keys: RowKey[]];
   select: [row: Record<string, unknown>];
   "update:sortBy": [key: string | undefined];
   "update:sortDir": [dir: "asc" | "desc"];
   sort: [key: string, dir: "asc" | "desc"];
+  "row:dblclick": [row: Record<string, unknown>];
 }>();
 
-const internalSortBy = ref<string | undefined>(props.sortBy);
-const internalDir = ref<"asc" | "desc">(props.sortDir);
+const { t } = useLocale();
+const uid = useId("w95-table");
 
-const activeSortKey = computed(() => props.sortBy ?? internalSortBy.value);
-const activeDir = computed(() => (props.sortBy ? props.sortDir : internalDir.value));
+/* ——— 排序：sortBy 是否传入决定"受控"与否，整对状态一起切换 ——— */
+const sortControlled = computed(() => props.sortBy !== undefined);
+const internalSortBy = ref<string | undefined>(undefined);
+const internalSortDir = ref<"asc" | "desc">("asc");
+
+const activeSortKey = computed(() =>
+  sortControlled.value ? props.sortBy : internalSortBy.value
+);
+const activeDir = computed(() =>
+  sortControlled.value ? props.sortDir : internalSortDir.value
+);
 
 const displayRows = computed(() => {
   const key = activeSortKey.value;
@@ -71,12 +92,12 @@ const displayRows = computed(() => {
 function toggleSort(col: W95TableColumn) {
   if (!col.sortable) return;
   const key = col.key;
-  let nextDir: "asc" | "desc" = "asc";
-  if (activeSortKey.value === key) {
-    nextDir = activeDir.value === "asc" ? "desc" : "asc";
+  const nextDir: "asc" | "desc" =
+    activeSortKey.value === key && activeDir.value === "asc" ? "desc" : "asc";
+  if (!sortControlled.value) {
+    internalSortBy.value = key;
+    internalSortDir.value = nextDir;
   }
-  internalSortBy.value = key;
-  internalDir.value = nextDir;
   emit("update:sortBy", key);
   emit("update:sortDir", nextDir);
   emit("sort", key, nextDir);
@@ -89,7 +110,11 @@ const wrapStyle = computed(() =>
 );
 
 function rowId(row: Record<string, unknown>) {
-  return row[props.rowKey] as string | number;
+  return row[props.rowKey] as RowKey;
+}
+
+function rowDomId(index: number) {
+  return `${uid.value}-row-${index}`;
 }
 
 function isRowSelected(row: Record<string, unknown>) {
@@ -117,40 +142,56 @@ function onSelect(row: Record<string, unknown>, e?: MouseEvent) {
 
 const focusIndex = ref(0);
 
+// 行数变化后焦点索引必须收敛，否则 Enter 会落到已不存在的行上
+watch(
+  () => displayRows.value.length,
+  (len) => {
+    if (len === 0) focusIndex.value = 0;
+    else if (focusIndex.value > len - 1) focusIndex.value = len - 1;
+  }
+);
+
+function moveFocus(next: number) {
+  const len = displayRows.value.length;
+  if (len === 0) return;
+  focusIndex.value = Math.min(len - 1, Math.max(0, next));
+  const row = displayRows.value[focusIndex.value];
+  if (row) emit("update:selectedKey", rowId(row));
+}
+
 function onKeydown(e: KeyboardEvent) {
   if (!props.interactive || displayRows.value.length === 0) return;
   if (e.key === "ArrowDown") {
     e.preventDefault();
-    focusIndex.value = Math.min(displayRows.value.length - 1, focusIndex.value + 1);
+    moveFocus(focusIndex.value + 1);
   } else if (e.key === "ArrowUp") {
     e.preventDefault();
-    focusIndex.value = Math.max(0, focusIndex.value - 1);
+    moveFocus(focusIndex.value - 1);
   } else if (e.key === "Home") {
     e.preventDefault();
-    focusIndex.value = 0;
+    moveFocus(0);
   } else if (e.key === "End") {
     e.preventDefault();
-    focusIndex.value = displayRows.value.length - 1;
+    moveFocus(displayRows.value.length - 1);
   } else if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
     const row = displayRows.value[focusIndex.value];
     if (row) onSelect(row);
-    return;
-  } else {
-    return;
   }
-  const row = displayRows.value[focusIndex.value];
-  if (row) emit("update:selectedKey", rowId(row));
 }
 
 const thClasses =
   "sticky top-0 h-[17px] box-border font-w95 text-w95 font-normal " +
   "shadow-w95-raised bg-w95-surface text-w95-text " +
-  "text-left whitespace-nowrap px-1.5 m-0";
+  "whitespace-nowrap px-1.5 m-0";
 
 const wrapClasses = computed(() =>
   cn("overflow-auto bg-w95-highlight shadow-w95-field", props.class)
 );
+
+const tableLabel = computed(() => props.label ?? t("table.label"));
+const emptyLabel = computed(() => props.emptyText ?? t("table.empty"));
+const loadingLabel = computed(() => props.loadingText ?? t("table.loading"));
 </script>
 
 <template>
@@ -159,7 +200,9 @@ const wrapClasses = computed(() =>
     :style="wrapStyle"
     tabindex="0"
     role="group"
-    aria-label="Data table"
+    :aria-label="tableLabel"
+    :aria-busy="loading || undefined"
+    :aria-activedescendant="displayRows.length ? rowDomId(focusIndex) : undefined"
     @keydown="onKeydown"
   >
     <table
@@ -172,14 +215,15 @@ const wrapClasses = computed(() =>
             v-for="col in columns"
             :key="col.key"
             :class="thClasses"
-            :style="
-              col.width
-                ? {
-                    width:
-                      typeof col.width === 'number' ? `${col.width}px` : col.width,
-                  }
-                : undefined
-            "
+            :style="{
+              width:
+                col.width !== undefined
+                  ? typeof col.width === 'number'
+                    ? `${col.width}px`
+                    : col.width
+                  : undefined,
+              textAlign: col.align,
+            }"
             scope="col"
             :aria-sort="
               col.sortable && activeSortKey === col.key
@@ -192,8 +236,7 @@ const wrapClasses = computed(() =>
             <button
               v-if="col.sortable"
               type="button"
-              class="bg-transparent border-0 p-0 m-0 font-w95 text-w95 cursor-default"
-              :aria-label="`Sort by ${col.label}`"
+              class="bg-transparent border-0 p-0 m-0 font-w95 text-w95 cursor-default w95-focus"
               @click="toggleSort(col)"
             >
               {{ col.label }}
@@ -206,23 +249,52 @@ const wrapClasses = computed(() =>
         </tr>
       </thead>
       <tbody>
-        <tr v-if="displayRows.length === 0" class="text-w95-shadow">
-          <td :colspan="columns.length" class="px-1.5 py-2 text-center" style="font-size:13px">
-            {{ emptyText }}
+        <tr v-if="loading" class="text-w95-shadow">
+          <td :colspan="columns.length" class="px-1.5 py-2 text-center">
+            {{ loadingLabel }}
+          </td>
+        </tr>
+        <tr v-else-if="displayRows.length === 0" class="text-w95-shadow">
+          <td :colspan="columns.length" class="px-1.5 py-2 text-center">
+            <slot name="empty">{{ emptyLabel }}</slot>
           </td>
         </tr>
         <tr
-          v-for="(row, index) in displayRows"
+          v-for="(row, index) in loading ? [] : displayRows"
+          :id="rowDomId(index)"
           :key="String(rowId(row))"
+          role="row"
+          :aria-selected="isRowSelected(row)"
           :class="
-            isRowSelected(row) || index === focusIndex
+            isRowSelected(row)
               ? 'bg-w95-blue text-w95-highlight'
               : 'hover:bg-w95-blue/10 transition-colors duration-75'
           "
           @click="onSelect(row, $event)"
+          @dblclick="emit('row:dblclick', row)"
         >
-          <td v-for="col in columns" :key="col.key" class="px-1.5 h-[14px] m-0">
-            {{ row[col.key] }}
+          <td
+            v-for="col in columns"
+            :key="col.key"
+            class="px-1.5 h-[14px] m-0"
+            :style="{ textAlign: col.align }"
+            :class="
+              index === focusIndex && !isRowSelected(row)
+                ? 'outline outline-1 outline-dotted outline-w95-text -outline-offset-1'
+                : ''
+            "
+          >
+            <slot
+              :name="`cell-${col.key}`"
+              :row="row"
+              :column="col"
+              :value="row[col.key]"
+              :index="index"
+            >
+              <slot name="cell" :row="row" :column="col" :value="row[col.key]" :index="index">
+                {{ row[col.key] }}
+              </slot>
+            </slot>
           </td>
         </tr>
       </tbody>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import { TabsCtx } from "./context";
 
 const props = withDefaults(
   defineProps<{
@@ -32,8 +33,7 @@ function select(id: string | number) {
   emit("update:modelValue", id);
 }
 
-provide(
-  "w95-tabs",
+TabsCtx.provide(
   computed(() => ({
     uid: uid.value,
     active: active.value,

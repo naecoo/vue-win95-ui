@@ -1,8 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { axe } from "vitest-axe";
 import Tooltip from "../Tooltip.vue";
 import Button from "../../button/Button.vue";
+import { $, cleanupOverlays } from "../../../test-utils/dom";
+
+afterEach(cleanupOverlays);
 
 describe("W95Tooltip", () => {
   it("shows tooltip on mouseenter", async () => {
@@ -11,28 +14,30 @@ describe("W95Tooltip", () => {
       slots: { default: "<button>Save</button>" },
       attachTo: document.body,
     });
-    expect(wrapper.find('[role="tooltip"]').exists()).toBe(false);
+    expect($('[role="tooltip"]')).toBeNull();
     await wrapper.trigger("mouseenter");
-    await new Promise((r) => setTimeout(r, 20));
+    await new Promise((r) => setTimeout(r, 30));
     await wrapper.vm.$nextTick();
-    const tip = wrapper.find('[role="tooltip"]');
-    expect(tip.exists()).toBe(true);
-    expect(tip.text()).toContain("Save file");
+    const tip = $('[role="tooltip"]');
+    expect(tip).toBeTruthy();
+    expect(tip?.textContent).toContain("Save file");
     wrapper.unmount();
   });
 
   it("has no accessibility violations", async () => {
-    const wrapper = mount({
-      components: { Tooltip, Button },
-      template: `
-        <main>
-          <Tooltip content="Help text" :open-delay="0">
-            <Button>OK</Button>
-          </Tooltip>
-        </main>
-      `,
-      attachTo: document.body,
-    });
+    const wrapper = mount(
+      {
+        components: { Tooltip, Button },
+        template: `
+          <main>
+            <Tooltip content="Help text" :open-delay="0">
+              <Button>OK</Button>
+            </Tooltip>
+          </main>
+        `,
+        attachTo: document.body,
+      }
+    );
     const results = await axe(wrapper.element);
     expect(results.violations).toEqual([]);
     wrapper.unmount();

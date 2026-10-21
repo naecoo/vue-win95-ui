@@ -15,6 +15,7 @@ import Skeleton from "../../skeleton/Skeleton.vue";
 import Popover from "../../popover/Popover.vue";
 import MenuSubmenu from "../../menu/MenuSubmenu.vue";
 import MenuItem from "../../menu/MenuItem.vue";
+import { $ } from "../../../test-utils/dom";
 
 async function noViolations(el: HTMLElement) {
   const results = await axe(el);
@@ -109,8 +110,9 @@ describe("Coverage — remaining components", () => {
       slots: { default: "body" },
       attachTo: document.body,
     });
-    const btn = wrapper.find('button[aria-label="Close"]');
-    await btn.trigger("click");
+    const btn = $('button[aria-label="Close"]') as HTMLElement;
+    btn.click();
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([false]);
     wrapper.unmount();
   });

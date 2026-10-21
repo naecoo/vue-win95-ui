@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useRovingFocus } from "../../composables/useRovingFocus";
+import { useLocale } from "../../locale";
 import { cn } from "../../utils/cn";
 
 const props = withDefaults(defineProps<{ class?: string }>(), {});
+const { t } = useLocale();
 const barRef = ref<HTMLElement | null>(null);
 const { onKeydown, syncTabIndexes } = useRovingFocus(barRef, {
   orientation: "horizontal",
@@ -29,7 +31,7 @@ const classes = computed(() =>
     ref="barRef"
     role="toolbar"
     :class="classes"
-    aria-label="Toolbar"
+    :aria-label="t('toolbar.label')"
     @keydown="onKeydown"
   >
     <slot />

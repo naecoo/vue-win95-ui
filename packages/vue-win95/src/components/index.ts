@@ -1,7 +1,10 @@
 import type { App, Plugin } from "vue";
+import { installLocale, type W95Locale } from "../locale";
 
 import { W95Button } from "./button";
 import { W95Input } from "./input";
+import { W95Textarea } from "./textarea";
+import { W95Form, W95FormItem } from "./form";
 import { W95Checkbox } from "./checkbox";
 import { W95Radio, W95RadioGroup } from "./radio";
 import { W95Select } from "./select";
@@ -12,11 +15,23 @@ import { W95FieldRow } from "./field-row";
 import { W95StatusBar, W95StatusBarField } from "./status-bar";
 import { W95Divider } from "./divider";
 import { W95Tabs, W95TabList, W95Tab, W95TabPanel } from "./tabs";
-import { W95MenuBar, W95MenuItem, W95MenuList, W95MenuSubmenu } from "./menu";
+import {
+  W95MenuBar,
+  W95MenuEntry,
+  W95MenuItem,
+  W95MenuList,
+  W95MenuSubmenu,
+} from "./menu";
 import { W95Toolbar } from "./toolbar";
 import { W95Tree, W95TreeItem } from "./tree";
 import { W95Splitter } from "./splitter";
-import { W95Window, W95ResizablePanel } from "./window";
+import {
+  W95Window,
+  W95ResizablePanel,
+  W95Desktop,
+  W95Taskbar,
+  W95TaskbarItem,
+} from "./window";
 import { W95Dialog } from "./dialog";
 import { W95Tooltip } from "./tooltip";
 import { W95Toast } from "./toast";
@@ -46,6 +61,8 @@ import {
 
 export * from "./button";
 export * from "./input";
+export * from "./textarea";
+export * from "./form";
 export * from "./checkbox";
 export * from "./radio";
 export * from "./select";
@@ -86,6 +103,9 @@ export * from "./message";
 const components = [
   W95Button,
   W95Input,
+  W95Textarea,
+  W95Form,
+  W95FormItem,
   W95Checkbox,
   W95Radio,
   W95RadioGroup,
@@ -102,6 +122,7 @@ const components = [
   W95Tab,
   W95TabPanel,
   W95MenuBar,
+  W95MenuEntry,
   W95MenuItem,
   W95MenuList,
   W95MenuSubmenu,
@@ -111,6 +132,9 @@ const components = [
   W95Splitter,
   W95Window,
   W95ResizablePanel,
+  W95Desktop,
+  W95Taskbar,
+  W95TaskbarItem,
   W95Dialog,
   W95Tooltip,
   W95Toast,
@@ -135,8 +159,14 @@ const components = [
   W95Upload,
 ];
 
+export interface Win95Options {
+  /** 内置文案语言，默认 en */
+  locale?: W95Locale;
+}
+
 const install: Plugin = {
-  install(app: App) {
+  install(app: App, options: Win95Options = {}) {
+    if (options.locale) installLocale(app, options.locale);
     components.forEach((c) => app.use(c));
   },
 };

@@ -1,16 +1,6 @@
 import { withInstall } from "../../utils/withInstall";
 import _Notification from "./Notification.vue";
 
-export const W95Notification = withInstall(_Notification);
+export const W95Notification = withInstall(_Notification, "W95Notification");
 export type { W95NotifyItem, W95NotifyType } from "./Notification.vue";
-export type W95NotificationProps = {
-  modelValue?: {
-    id: string | number;
-    title?: string;
-    message: string;
-    type?: "info" | "success" | "warn" | "error";
-    duration?: number;
-  }[];
-  duration?: number;
-  position?: "top-right" | "bottom-right";
-};
+export type W95NotificationProps = InstanceType<typeof W95Notification>["$props"];

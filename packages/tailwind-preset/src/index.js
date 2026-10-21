@@ -20,6 +20,8 @@ export default {
           text: "var(--w95-text)",
           link: "var(--w95-link)",
           desktop: "var(--w95-desktop)",
+          error: "var(--w95-error)",
+          "error-light": "var(--w95-error-light)",
         },
       },
       fontFamily: {

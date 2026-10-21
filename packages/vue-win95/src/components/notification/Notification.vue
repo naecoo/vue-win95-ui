@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, watch } from "vue";
 import { cn } from "../../utils/cn";
 import W95Icon from "../icon/Icon.vue";
+import { useLocale } from "../../locale";
 
 export type W95NotifyType = "info" | "success" | "warn" | "error";
 
@@ -31,6 +32,7 @@ const emit = defineEmits<{
   "update:modelValue": [items: W95NotifyItem[]];
 }>();
 
+const { t } = useLocale();
 const timers = new Map<string | number, ReturnType<typeof setTimeout>>();
 
 function dismiss(id: string | number) {
@@ -82,7 +84,7 @@ const rootClasses = computed(() =>
       v-if="modelValue.length"
       :class="rootClasses"
       role="region"
-      aria-label="Notifications"
+      :aria-label="t('notifications.label')"
     >
       <div
         v-for="item in modelValue"

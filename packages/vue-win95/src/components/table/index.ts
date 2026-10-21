@@ -1,23 +1,6 @@
 import { withInstall } from "../../utils/withInstall";
 import _Table from "./Table.vue";
 
-export const W95Table = withInstall(_Table);
+export const W95Table = withInstall(_Table, "W95Table");
 export type { W95TableColumn } from "./Table.vue";
-export type W95TableProps = {
-  columns: {
-    key: string;
-    label: string;
-    width?: string | number;
-    sortable?: boolean;
-  }[];
-  rows?: Record<string, unknown>[];
-  selectedKey?: string | number | null;
-  rowKey?: string;
-  interactive?: boolean;
-  height?: string | number;
-  emptyText?: string;
-  multiple?: boolean;
-  selectedKeys?: (string | number)[];
-  sortBy?: string;
-  sortDir?: "asc" | "desc";
-};
+export type W95TableProps = InstanceType<typeof W95Table>["$props"];

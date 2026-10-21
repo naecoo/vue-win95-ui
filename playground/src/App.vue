@@ -32,7 +32,7 @@ import {
   W95Table,
   W95SpinButton,
   W95DatePicker,
-} from "vue-win95";
+} from "vue-win95-ui";
 
 const name = ref("World");
 const remember = ref(true);

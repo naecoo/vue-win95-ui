@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from "vue";
-import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import OverlayPanel from "../overlay/OverlayPanel.vue";
+import type { Placement } from "../../composables/useFloating";
 
 const props = withDefaults(
   defineProps<{
@@ -17,9 +18,19 @@ const props = withDefaults(
   }
 );
 
-const uid = useId("w95-tip");
+const triggerRef = ref<HTMLElement | null>(null);
 const open = ref(false);
 let timer: ReturnType<typeof setTimeout> | null = null;
+
+const floatingPlacement = computed<Placement>(() =>
+  props.placement === "bottom"
+    ? "bottom"
+    : props.placement === "left"
+      ? "left-start"
+      : props.placement === "right"
+        ? "right-start"
+        : "top"
+);
 
 function show() {
   if (timer) clearTimeout(timer);
@@ -33,48 +44,34 @@ function hide() {
   open.value = false;
 }
 
-function onFocus() {
-  open.value = true;
-}
-
-function onBlur() {
-  hide();
-}
-
 onBeforeUnmount(() => {
   if (timer) clearTimeout(timer);
 });
 
-const tipClasses = computed(() =>
-  cn(
-    "absolute z-[1100] pointer-events-none",
-    "px-1.5 py-0.5 max-w-[240px]",
-    "bg-w95-highlight text-w95-text font-w95 text-w95",
-    "shadow-w95-field border-0",
-    props.placement === "top" && "bottom-full left-1/2 -translate-x-1/2 mb-1",
-    props.placement === "bottom" && "top-full left-1/2 -translate-x-1/2 mt-1",
-    props.placement === "left" && "right-full top-1/2 -translate-y-1/2 mr-1",
-    props.placement === "right" && "left-full top-1/2 -translate-y-1/2 ml-1"
-  )
-);
+const wrapperCls = computed(() => cn("inline-flex", props.class));
 </script>
 
 <template>
   <span
-    :class="cn('relative inline-flex', props.class)"
+    ref="triggerRef"
+    :class="wrapperCls"
     @mouseenter="show"
     @mouseleave="hide"
-    @focusin="onFocus"
-    @focusout="onBlur"
+    @focusin="show"
+    @focusout="hide"
   >
     <slot />
-    <span
-      v-if="open && content"
-      :id="uid"
+    <OverlayPanel
+      :model-value="open && Boolean(content)"
+      :anchor="triggerRef"
+      :placement="floatingPlacement"
       role="tooltip"
-      :class="tipClasses"
+      :dismiss-on-outside="false"
+      :dismiss-on-escape="false"
+      class="pointer-events-none max-w-[240px] px-1.5 py-0.5 bg-w95-highlight shadow-w95-field font-w95 text-w95"
+      @update:model-value="(v: boolean) => (open = v)"
     >
       {{ content }}
-    </span>
+    </OverlayPanel>
   </span>
 </template>

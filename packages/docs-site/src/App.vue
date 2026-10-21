@@ -1,5 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, h, onMounted, watch } from "vue";
+import {
+  W95Desktop,
+  W95Window,
+  W95Taskbar,
+  W95TaskbarItem,
+  provideLocale,
+} from "vue-win95-ui";
 import { lang, toggleLang, t, isZh } from "./i18n";
 import CalculatorApp from "./apps/CalculatorApp.vue";
 import NotepadApp from "./apps/NotepadApp.vue";
@@ -14,7 +21,6 @@ interface WinState {
   title: string;
   x: number;
   y: number;
-  z: number;
   minimized: boolean;
   kind: "doc" | "app";
 }
@@ -38,8 +44,11 @@ function winTitle(id: WinId) {
   return t("pages", id);
 }
 
+// 文档站切换中/英时，库内文案（按钮、日历、分页）跟着切
+provideLocale(computed(() => (lang.value === "zh" ? "zh-CN" : "en")) as never);
+
 const windows = ref<WinState[]>([]);
-const zTop = ref(10);
+const activeId = ref<WinId | null>(null);
 const startOpen = ref(false);
 const now = ref(new Date());
 setInterval(() => {
@@ -103,34 +112,13 @@ async function ensureWin(id: WinId) {
   }
 }
 
-function focus(w: WinState) {
-  w.z = ++zTop.value;
-}
 function close(w: WinState) {
   windows.value = windows.value.filter((x) => x.id !== w.id);
-}
-function minimize(w: WinState) {
-  w.minimized = true;
+  if (activeId.value === w.id) activeId.value = null;
 }
 function restore(w: WinState) {
   w.minimized = false;
-  focus(w);
-}
-
-let drag: { w: WinState; ox: number; oy: number } | null = null;
-function onTitleDown(e: PointerEvent, w: WinState) {
-  focus(w);
-  if ((e.target as HTMLElement).closest("button")) return;
-  drag = { w, ox: e.clientX - w.x, oy: e.clientY - w.y };
-  (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-}
-function onTitleMove(e: PointerEvent) {
-  if (!drag) return;
-  drag.w.x = Math.max(0, e.clientX - drag.ox);
-  drag.w.y = Math.max(0, e.clientY - drag.oy);
-}
-function onTitleUp() {
-  drag = null;
+  activeId.value = w.id;
 }
 
 function openWin(id: WinId) {
@@ -140,7 +128,7 @@ function openWin(id: WinId) {
   if (existing) {
     existing.minimized = false;
     existing.title = winTitle(id);
-    focus(existing);
+    activeId.value = id;
     return;
   }
   const offset = windows.value.length * 24;
@@ -149,10 +137,10 @@ function openWin(id: WinId) {
     title: winTitle(id),
     x: 48 + offset,
     y: 36 + offset,
-    z: ++zTop.value,
     minimized: false,
     kind: id in apps ? "app" : "doc",
   });
+  activeId.value = id;
   void ensureWin(id);
 }
 
@@ -247,10 +235,7 @@ function onDesktopClick(e: MouseEvent) {
 </script>
 
 <template>
-  <div
-    class="w95-scanlines relative w-full h-full overflow-hidden bg-w95-desktop select-none"
-    @pointerdown="onDesktopClick"
-  >
+  <W95Desktop class="w95-scanlines select-none" @pointerdown="onDesktopClick">
     <div class="absolute top-3 left-3 flex flex-col gap-4">
       <button
         v-for="item in desktopItems"
@@ -267,62 +252,36 @@ function onDesktopClick(e: MouseEvent) {
       </button>
     </div>
 
-    <div
+    <W95Window
       v-for="w in windows"
       :key="w.id"
-      v-show="!w.minimized"
-      class="absolute"
-      :style="{ left: w.x + 'px', top: w.y + 'px', zIndex: w.z }"
-      @pointerdown="focus(w)"
+      floating
+      :title="w.title"
+      :active="activeId === w.id"
+      :width="w.kind === 'app' ? 360 : 760"
+      :show-maximize="w.kind === 'doc'"
+      :default-x="w.x"
+      :default-y="w.y"
+      v-model:minimized="w.minimized"
+      @focus="activeId = w.id"
+      @close="close(w)"
     >
       <div
-        class="bg-w95-surface shadow-w95-window p-[3px] font-w95 text-w95"
-        :class="w.kind === 'app' ? 'w-[360px] max-w-[calc(100vw-24px)]' : 'w-[760px] max-w-[calc(100vw-24px)]'"
+        class="m-2 max-h-[62vh] overflow-auto bg-w95-surface"
+        :class="w.kind === 'doc' ? 'p-3 docs-body' : 'p-2'"
       >
-        <div
-          class="bg-gradient-to-r from-w95-blue to-w95-blue-light flex items-center justify-between px-[3px] py-[2px] cursor-move touch-none"
-          @pointerdown="onTitleDown($event, w)"
-          @pointermove="onTitleMove"
-          @pointerup="onTitleUp"
-        >
-          <span class="text-white font-bold mr-4 truncate">{{ w.title }}</span>
-          <div class="flex shrink-0">
-            <button
-              type="button"
-              class="w-4 h-[14px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised w95-title-glyph-min relative cursor-default"
-              aria-label="Minimize"
-              @pointerdown.stop
-              @click.stop="minimize(w)"
-            />
-            <button
-              type="button"
-              class="w-4 h-[14px] min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised w95-title-glyph-close relative cursor-default ml-0.5"
-              aria-label="Close"
-              @pointerdown.stop
-              @click.stop="close(w)"
-            />
-          </div>
-        </div>
-
-        <div
-          class="m-2 max-h-[62vh] overflow-auto bg-w95-surface"
-          :class="w.kind === 'doc' ? 'p-3 docs-body' : 'p-2'"
-          style="box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px #808080, inset 2px 2px #ffffff"
-        >
-          <component :is="modCache[w.id]" v-if="modCache[w.id]" :key="w.id + lang" />
-          <p v-else class="font-w95 text-w95 m-0">{{ t("loading") }}</p>
-        </div>
-
-        <div class="flex gap-px mx-px mb-px">
-          <p class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95">{{ t("ready") }}</p>
-          <p class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95">vue-win95 Docs</p>
-        </div>
+        <component :is="modCache[w.id]" v-if="modCache[w.id]" :key="w.id + lang" />
+        <p v-else class="font-w95 text-w95 m-0">{{ t("loading") }}</p>
       </div>
-    </div>
+      <template #status>
+        <p class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95">{{ t("ready") }}</p>
+        <p class="m-0 px-[3px] py-0.5 flex-1 shadow-w95-status font-w95 text-w95">vue-win95-ui Docs</p>
+      </template>
+    </W95Window>
 
     <div v-if="startOpen" class="absolute bottom-[28px] left-0 z-[2000]">
       <div class="w95-start-panel">
-        <div class="w95-start-banner">vue-win95</div>
+        <div class="w95-start-banner">vue-win95-ui</div>
         <ul class="flex-1 list-none m-0 p-1 font-w95 text-w95 max-h-[50vh] overflow-auto">
           <li class="px-1 pb-1">
             <input
@@ -350,9 +309,7 @@ function onDesktopClick(e: MouseEvent) {
       </div>
     </div>
 
-    <div
-      class="absolute bottom-0 left-0 right-0 h-[28px] bg-w95-surface shadow-w95-raised flex items-center gap-1 px-1 z-[1900] font-w95 text-w95"
-    >
+    <W95Taskbar class="absolute bottom-0 left-0 right-0 h-[28px] gap-1 px-1 z-[1900]">
       <button
         type="button"
         data-start-btn
@@ -372,18 +329,16 @@ function onDesktopClick(e: MouseEvent) {
         {{ isZh ? "EN" : "中" }}
       </button>
       <div class="h-[18px] w-px bg-w95-button-shadow mx-0.5" />
-      <button
+      <W95TaskbarItem
         v-for="w in windows"
         :key="w.id"
-        type="button"
-        class="min-w-[120px] max-w-[180px] h-[22px] px-2 border-0 rounded-none truncate cursor-default"
-        :class="!w.minimized ? 'shadow-w95-sunken bg-w95-face' : 'shadow-w95-raised bg-w95-surface'"
+        :title="w.title"
+        :active="activeId === w.id"
+        :minimized="w.minimized"
         @click="restore(w)"
-      >
-        {{ w.title }}
-      </button>
+      />
       <div class="flex-1" />
       <div class="h-[22px] px-2 flex items-center shadow-w95-status min-w-[70px] justify-center">{{ clock }}</div>
-    </div>
-  </div>
+    </W95Taskbar>
+  </W95Desktop>
 </template>

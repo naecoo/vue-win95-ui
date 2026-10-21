@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { computed, inject, ref, type ComputedRef } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRovingFocus } from "../../composables/useRovingFocus";
 import { cn } from "../../utils/cn";
+import { TabsCtx } from "./context";
 
-interface TabsCtx {
-  uid: string;
-  active: string | number | undefined;
-  select: (id: string | number) => void;
-}
+const props = withDefaults(
+  defineProps<{ class?: string; multirow?: boolean; label?: string }>(),
+  { multirow: false, label: undefined }
+);
 
-const props = withDefaults(defineProps<{ class?: string; multirow?: boolean }>(), { multirow: false });
-const ctx = inject<ComputedRef<TabsCtx> | null>("w95-tabs", null);
+const ctx = TabsCtx.inject();
 const listRef = ref<HTMLElement | null>(null);
 
-const { onKeydown, focusIndex, getItems } = useRovingFocus(listRef, {
+const { onKeydown, getItems, setActiveIndex } = useRovingFocus(listRef, {
   orientation: "horizontal",
   loop: true,
   selector: '[role="tab"]:not([aria-disabled="true"])',
 });
 
-// sync active index when ctx active changes
 const activeIdx = computed(() => {
   if (!ctx) return 0;
   const items = getItems();
@@ -29,12 +27,9 @@ const activeIdx = computed(() => {
   return i >= 0 ? i : 0;
 });
 
-// On mount and tab change, focus selected tab for keyboard
-import { onMounted, watch } from "vue";
-onMounted(() => {
-  setTimeout(() => focusIndex(activeIdx.value), 0);
-});
-watch(activeIdx, (i) => focusIndex(i));
+// 只同步 tabindex，不抢焦点：程序化选中不应把用户光标拽走
+onMounted(() => setActiveIndex(activeIdx.value));
+watch(activeIdx, (i) => setActiveIndex(i));
 
 const listClasses = computed(() =>
   cn(
@@ -51,7 +46,7 @@ const listClasses = computed(() =>
     ref="listRef"
     role="tablist"
     :class="listClasses"
-    :aria-label="ctx?.uid"
+    :aria-label="label"
     @keydown="onKeydown"
   >
     <slot />

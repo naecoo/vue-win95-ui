@@ -2,6 +2,8 @@
 import { computed, nextTick, ref } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import OverlayPanel from "../overlay/OverlayPanel.vue";
+import { useLocale } from "../../locale";
 
 export interface W95ComboOption {
   value: string | number;
@@ -16,6 +18,8 @@ const props = withDefaults(
     label?: string;
     disabled?: boolean;
     loading?: boolean;
+    /** 允许清空当前值 */
+    clearable?: boolean;
     id?: string;
     class?: string;
   }>(),
@@ -25,6 +29,7 @@ const props = withDefaults(
     label: "",
     disabled: false,
     loading: false,
+    clearable: false,
     id: undefined,
   }
 );
@@ -35,9 +40,12 @@ const emit = defineEmits<{
   search: [query: string];
 }>();
 
+const { t } = useLocale();
 const uid = useId("w95-combo");
 const inputId = computed(() => props.id ?? `${uid.value}-input`);
 const listId = `${uid.value}-list`;
+const inputRef = ref<HTMLInputElement | null>(null);
+const wrapperRef = ref<HTMLElement | null>(null);
 const open = ref(false);
 const activeIndex = ref(-1);
 const filter = ref("");
@@ -64,16 +72,23 @@ function openList() {
   nextTick(scrollActive);
 }
 
-function closeList() {
+function closeList(restoreFocus = false) {
   open.value = false;
   filter.value = "";
+  if (restoreFocus) inputRef.value?.focus();
 }
 
 function select(opt: W95ComboOption) {
   if (opt.disabled) return;
   emit("update:modelValue", opt.value);
   emit("change", opt.value);
-  closeList();
+  closeList(true);
+}
+
+function clear() {
+  emit("update:modelValue", null);
+  emit("change", null);
+  closeList(true);
 }
 
 function onInput(e: Event) {
@@ -85,6 +100,13 @@ function onInput(e: Event) {
 
 function onKeydown(e: KeyboardEvent) {
   if (props.disabled) return;
+  if (e.key === "Escape") {
+    if (open.value) {
+      e.preventDefault();
+      closeList(true);
+    }
+    return;
+  }
   if (!open.value && (e.key === "ArrowDown" || e.key === "Enter")) {
     e.preventDefault();
     openList();
@@ -93,10 +115,7 @@ function onKeydown(e: KeyboardEvent) {
   if (!open.value) return;
 
   const list = filtered.value;
-  if (e.key === "Escape") {
-    e.preventDefault();
-    closeList();
-  } else if (e.key === "ArrowDown") {
+  if (e.key === "ArrowDown") {
     e.preventDefault();
     activeIndex.value = Math.min(list.length - 1, activeIndex.value + 1);
     nextTick(scrollActive);
@@ -127,9 +146,8 @@ const inputClasses = computed(() =>
     "box-border border-0 rounded-none w-full",
     "font-w95 text-w95 h-w95-input pl-1 pr-8 py-[3px]",
     "shadow-w95-field bg-w95-highlight text-w95-text",
-    "focus:outline-none",
-    props.disabled && "bg-w95-surface text-w95-shadow",
-    props.class
+    "w95-focus",
+    props.disabled && "bg-w95-surface text-w95-shadow"
   )
 );
 
@@ -139,19 +157,23 @@ const btnClasses =
   "flex items-center justify-center text-w95-text font-w95 text-w95 " +
   "active:shadow-w95-sunken";
 
-const listClasses =
-  "absolute left-0 top-full z-[1000] w-full mt-px max-h-[160px] overflow-auto " +
-  "bg-w95-highlight shadow-w95-field list-none m-0 p-0 font-w95 text-w95";
+const listClasses = "p-0 max-h-[160px] overflow-auto shadow-w95-field";
+
+const activeOption = computed(() => {
+  const label = filtered.value[activeIndex.value]?.label;
+  return open.value && label ? `${label}` : "";
+});
 </script>
 
 <template>
-  <div class="inline-flex items-center font-w95 text-w95 gap-w95-md">
+  <div :class="cn('inline-flex items-center font-w95 text-w95 gap-w95-md', props.class)">
     <label v-if="label" :for="inputId" class="select-none text-w95-text">
       {{ label }}
     </label>
-    <div class="relative w-[180px]">
+    <span ref="wrapperRef" class="relative inline-block w-[180px]">
       <input
         :id="inputId"
+        ref="inputRef"
         type="text"
         role="combobox"
         :class="inputClasses"
@@ -159,62 +181,84 @@ const listClasses =
         :disabled="disabled"
         :aria-expanded="open"
         :aria-controls="listId"
-        :aria-autocomplete="'list'"
+        aria-autocomplete="list"
         :aria-busy="loading || undefined"
-        :aria-activedescendant="open ? `${listId}-opt-${activeIndex}` : undefined"
+        :aria-activedescendant="open && activeIndex >= 0 ? `${listId}-opt-${activeIndex}` : undefined"
         autocomplete="off"
         @input="onInput"
         @focus="openList"
         @keydown="onKeydown"
       />
-      <button
-        type="button"
-        :class="btnClasses"
-        tabindex="-1"
-        aria-label="Toggle list"
-        :disabled="disabled"
-        @click="open ? closeList() : openList()"
-      >
-        ▾
-      </button>
-      <ul
-        v-if="open"
-        :id="listId"
+      <span class="absolute right-0 top-0 flex h-w95-input items-center">
+        <button
+          v-if="clearable && modelValue !== null && !disabled"
+          type="button"
+          class="h-w95-input w-5 min-w-0 p-0 border-0 bg-w95-surface shadow-w95-raised cursor-default text-w95-text"
+          :aria-label="t('combobox.clear')"
+          tabindex="-1"
+          @click="clear"
+        >
+          ×
+        </button>
+        <button
+          type="button"
+          :class="btnClasses"
+          class="relative"
+          tabindex="-1"
+          :aria-label="t('combobox.toggle')"
+          :aria-expanded="open"
+          :disabled="disabled"
+          @click="open ? closeList(true) : openList()"
+        >
+          ▾
+        </button>
+      </span>
+
+      <OverlayPanel
+        :model-value="open"
+        :anchor="wrapperRef"
+        placement="bottom-start"
+        match-width
+        :offset="1"
         role="listbox"
+        :label="label || 'Options'"
         :class="listClasses"
-        :aria-label="label || 'Options'"
+        @update:model-value="(v: boolean) => (v ? openList() : closeList())"
       >
-        <li v-if="loading" class="px-1.5 py-1 text-w95-shadow" role="presentation">
-          Loading…
-        </li>
-        <li
-          v-for="(opt, i) in filtered"
-          :id="`${listId}-opt-${i}`"
-          :key="String(opt.value)"
-          role="option"
-          :aria-selected="opt.value === modelValue"
-          :aria-disabled="opt.disabled || undefined"
-          :class="
-            cn(
-              'px-1.5 py-0.5 cursor-default list-none',
-              i === activeIndex
-                ? 'bg-w95-blue text-w95-highlight'
-                : 'text-w95-text',
-              opt.disabled && 'text-w95-shadow pointer-events-none'
-            )
-          "
-          @mousedown.prevent="select(opt)"
-        >
-          {{ opt.label }}
-        </li>
-        <li
-          v-if="!loading && filtered.length === 0"
-          class="px-1.5 py-0.5 text-w95-shadow list-none"
-          role="presentation"
-        >
-          No matches
-        </li>
-      </ul>
-    </div>
+        <ul :id="listId" class="list-none m-0 p-0">
+          <li v-if="loading" class="px-1.5 py-1 text-w95-shadow" role="presentation">
+            {{ t("combobox.loading") }}
+          </li>
+          <li
+            v-for="(opt, i) in filtered"
+            :id="`${listId}-opt-${i}`"
+            :key="String(opt.value)"
+            role="option"
+            :aria-selected="opt.value === modelValue"
+            :aria-disabled="opt.disabled || undefined"
+            :class="
+              cn(
+                'px-1.5 py-0.5 cursor-default list-none',
+                i === activeIndex ? 'bg-w95-blue text-w95-highlight' : 'text-w95-text',
+                opt.disabled && 'text-w95-shadow pointer-events-none'
+              )
+            "
+            @pointerdown.prevent
+            @click="select(opt)"
+            @mouseenter="activeIndex = i"
+          >
+            {{ opt.label }}
+          </li>
+          <li
+            v-if="!loading && filtered.length === 0"
+            class="px-1.5 py-0.5 text-w95-shadow list-none"
+            role="presentation"
+          >
+            {{ t("combobox.empty") }}
+          </li>
+        </ul>
+        <span class="sr-only" aria-live="polite">{{ activeOption }}</span>
+      </OverlayPanel>
+    </span>
   </div>
 </template>

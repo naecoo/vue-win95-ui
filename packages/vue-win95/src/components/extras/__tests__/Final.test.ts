@@ -6,8 +6,8 @@ import MenuItem from "../../menu/MenuItem.vue";
 import Upload from "../../upload/Upload.vue";
 import ResizablePanel from "../../window/ResizablePanel.vue";
 import ComboBox from "../../combobox/ComboBox.vue";
-import { useZIndex, nextZIndex } from "../../../composables/useZIndex";
-import { useResize } from "../../../composables/useResize";
+import { nextZIndex, resetZIndex } from "../../../composables/useZIndex";
+import { $, $$, cleanupOverlays } from "../../../test-utils/dom";
 
 describe("W95MenuSubmenu", () => {
   it("expands submenu with aria", async () => {
@@ -24,8 +24,12 @@ describe("W95MenuSubmenu", () => {
     );
     const btn = wrapper.find("button");
     expect(btn.attributes("aria-haspopup")).toBe("menu");
+    expect(btn.attributes("aria-expanded")).toBe("false");
     await btn.trigger("click");
-    expect(wrapper.findAll('[role="menuitem"]')).toHaveLength(2);
+    await new Promise((r) => setTimeout(r, 30));
+    expect(btn.attributes("aria-expanded")).toBe("true");
+    // 子菜单被 Teleport 到 body，断言查 document
+    expect(document.querySelectorAll('[role="menu"] [role="menuitem"]')).toHaveLength(1);
   });
 });
 
@@ -74,24 +78,19 @@ describe("ComboBox loading + search", () => {
       attachTo: document.body,
     });
     await wrapper.find("input").trigger("focus");
-    expect(wrapper.text()).toContain("Loading");
+    await wrapper.vm.$nextTick();
+    expect(document.body.textContent).toContain("Loading");
     await wrapper.find("input").setValue("a");
     expect(wrapper.emitted("search")?.[0]).toEqual(["a"]);
     wrapper.unmount();
   });
 });
 
-describe("useZIndex / useResize", () => {
-  it("increments z-index", () => {
-    const { next, top } = useZIndex(10);
-    const a = next();
-    const b = next();
+describe("useZIndex", () => {
+  it("hands out increasing layers", () => {
+    resetZIndex();
+    const a = nextZIndex();
+    const b = nextZIndex();
     expect(b).toBe(a + 1);
-    expect(top()).toBe(b);
-  });
-
-  it("clamps resize width", () => {
-    const box = useResize({ width: 200, height: 100 }, { minW: 150, maxW: 250 });
-    expect(box.width.value).toBe(200);
   });
 });

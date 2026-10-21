@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useId } from "../../composables/useId";
 import { cn } from "../../utils/cn";
+import { useLocale } from "../../locale";
 
 export interface W95UploadFile {
   name: string;
@@ -23,7 +24,7 @@ const props = withDefaults(
     accept: undefined,
     multiple: false,
     disabled: false,
-    label: "Choose File…",
+    label: undefined,
   }
 );
 
@@ -32,6 +33,7 @@ const emit = defineEmits<{
   change: [files: W95UploadFile[]];
 }>();
 
+const { t } = useLocale();
 const inputId = useId("w95-upload");
 const inputRef = ref<HTMLInputElement | null>(null);
 
@@ -43,8 +45,12 @@ function onPick(e: Event) {
     size: file.size,
     file,
   }));
-  emit("update:modelValue", props.multiple ? [...props.modelValue, ...files] : files);
-  emit("change", props.multiple ? [...props.modelValue, ...files] : files);
+  const next = props.multiple ? [...props.modelValue, ...files] : files;
+  emit("update:modelValue", next);
+  emit("change", next);
+  // 清空选择，否则再次选同一个文件不会触发 change
+  const input = e.target as HTMLInputElement;
+  input.value = "";
 }
 
 function remove(index: number) {
@@ -82,7 +88,7 @@ const btnCls = computed(() =>
       :disabled="disabled"
       @click="inputRef?.click()"
     >
-      {{ label }}
+      {{ label ?? t("upload.choose") }}
     </button>
     <ul v-if="modelValue.length" class="mt-1.5 list-none p-0 m-0">
       <li
@@ -94,7 +100,7 @@ const btnCls = computed(() =>
         <button
           type="button"
           class="w95-focus bg-w95-surface shadow-w95-raised border-0 min-w-[22px] h-[18px] cursor-default text-w95-text"
-          :aria-label="`Remove ${f.name}`"
+          :aria-label="t('upload.remove', { name: f.name })"
           @click="remove(i)"
         >
           ×

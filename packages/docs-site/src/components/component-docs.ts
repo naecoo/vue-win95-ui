@@ -330,6 +330,7 @@ export const docs: ComponentDoc[] = [
       { name: "loading", desc: t("加载中，用于远程搜索", "Loading state for remote search"), type: "boolean", def: "false" },
       { name: "label", desc: t("标签文字", "Label"), type: "string", def: "''" },
       { name: "disabled", desc: t("禁用", "Disabled"), type: "boolean", def: "false" },
+      { name: "clearable", desc: t("显示清空按钮", "Show a clear button"), type: "boolean", def: "false" },
     ],
     events: [
       { name: "update:modelValue", desc: t("选中某项", "Option selected"), params: "value" },
@@ -376,6 +377,9 @@ export const docs: ComponentDoc[] = [
       { name: "min", desc: t("最早可选日期", "Earliest allowed date"), type: "string|null", def: "null" },
       { name: "max", desc: t("最晚可选日期", "Latest allowed date"), type: "string|null", def: "null" },
       { name: "label", desc: t("标签文字", "Label"), type: "string", def: "''" },
+      { name: "disabled", desc: t("禁用", "Disabled"), type: "boolean", def: "false" },
+      { name: "placeholder", desc: t("占位文案", "Placeholder"), type: "string", def: "''" },
+      { name: "firstDayOfWeek", desc: t("每周首日：0=周日 1=周一", "First weekday: 0=Sun 1=Mon"), type: "0 | 1", def: "0" },
     ],
     events: [
       { name: "update:modelValue", desc: t("选中日期", "Date selected"), params: "string|null" },
@@ -400,6 +404,18 @@ export const docs: ComponentDoc[] = [
       { name: "showMaximize", desc: t("显示最大化按钮", "Show maximize"), type: "boolean", def: "true" },
       { name: "showClose", desc: t("显示关闭按钮", "Show close"), type: "boolean", def: "true" },
       { name: "width", desc: t("窗口宽度", "Window width"), type: "number|string", def: "—" },
+      { name: "floating", desc: t("浮在桌面上：可拖动、可堆叠", "Float on the desktop: draggable and stackable"), type: "boolean", def: "false" },
+      { name: "draggable", desc: t("允许拖动标题栏", "Allow dragging the title bar"), type: "boolean", def: "true" },
+      { name: "height", desc: t("高度", "Height"), type: "string | number", def: "—" },
+      { name: "minWidth", desc: t("拖动时最小宽度", "Minimum width while dragging"), type: "number", def: "180" },
+      { name: "minHeight", desc: t("拖动时最小高度", "Minimum height while dragging"), type: "number", def: "80" },
+      { name: "defaultX", desc: t("初始 x（非受控）", "Initial x (uncontrolled)"), type: "number", def: "48" },
+      { name: "defaultY", desc: t("初始 y（非受控）", "Initial y (uncontrolled)"), type: "number", def: "48" },
+      { name: "x", desc: t("受控 x 位置", "Controlled x"), type: "number", def: "—" },
+      { name: "y", desc: t("受控 y 位置", "Controlled y"), type: "number", def: "—" },
+      { name: "z", desc: t("受控层级；不传时窗口自己分配", "Controlled layer; allocated internally when omitted"), type: "number", def: "—" },
+      { name: "minimized", desc: t("受控最小化状态（配合任务栏）", "Controlled minimized state (for taskbars)"), type: "boolean", def: "—" },
+      { name: "maximized", desc: t("受控最大化状态", "Controlled maximized state"), type: "boolean", def: "—" },
     ],
     events: [
       { name: "minimize", desc: t("点击最小化", "Minimize clicked"), params: "—" },
@@ -428,6 +444,10 @@ export const docs: ComponentDoc[] = [
       { name: "width", desc: t("覆盖宽度", "Width override"), type: "number|string", def: "size 对应值" },
       { name: "showClose", desc: t("标题栏关闭按钮", "Show close button"), type: "boolean", def: "true" },
       { name: "closeOnOverlay", desc: t("点击遮罩关闭", "Close on overlay click"), type: "boolean", def: "true" },
+      { name: "role", desc: t("dialog 或 alertdialog", "dialog or alertdialog"), type: "'dialog' | 'alertdialog'", def: "'dialog'" },
+      { name: "okText", desc: t("确认按钮文案，默认取 locale", "OK label, defaults to locale"), type: "string", def: "—" },
+      { name: "cancelText", desc: t("取消按钮文案，默认取 locale", "Cancel label, defaults to locale"), type: "string", def: "—" },
+      { name: "hideFooter", desc: t("隐藏默认按钮区", "Hide the default footer"), type: "boolean", def: "false" },
     ],
     events: [
       { name: "update:modelValue", desc: t("开关变化", "Open toggled"), params: "boolean" },
@@ -648,9 +668,9 @@ export const docs: ComponentDoc[] = [
     demos: [
       { title: t("菜单栏", "Menu bar"), code: `<W95MenuBar>\n  <W95MenuItem>File</W95MenuItem>\n  <W95MenuItem>Edit</W95MenuItem>\n  <W95MenuSubmenu label="Export">\n    <W95MenuItem>CSV</W95MenuItem>\n  </W95MenuSubmenu>\n</W95MenuBar>` },
     ],
-    props: [],
+    props: [{ name: "label", desc: t("菜单栏可访问名", "Accessible name"), type: "string", def: "locale" }],
     events: [],
-    slots: [{ name: "default", desc: t("MenuItem / MenuSubmenu", "Menu items / submenus") }],
+    slots: [{ name: "default", desc: t("MenuEntry / MenuSubmenu", "Menu entries / submenus") }],
     a11y: t("role=menubar + roving tabindex。", "role=menubar with roving tabindex."),
   },
   {
@@ -720,7 +740,12 @@ export const docs: ComponentDoc[] = [
     demos: [
       { title: t("树形结构", "Tree"), code: `<W95Tree v-model="sel">\n  <W95TreeItem value="css" label="CSS" has-children>\n    <W95TreeItem value="sel" label="Selectors" />\n    <W95TreeItem value="spec" label="Specificity" />\n  </W95TreeItem>\n  <W95TreeItem value="js" label="JavaScript" />\n</W95Tree>` },
     ],
-    props: [{ name: "modelValue", desc: t("选中节点 value", "Selected node value"), type: "string|number|null", def: "null" }],
+    props: [
+      { name: "modelValue", desc: t("选中节点 value", "Selected node value"), type: "string|number|null", def: "null" },
+      { name: "items", desc: t("数据驱动模式：直接给节点数组", "Data-driven nodes"), type: "TreeNode[]", def: "—" },
+      { name: "expanded", desc: t("默认展开的节点值", "Initially expanded node values"), type: "(string | number)[]", def: "[]" },
+      { name: "label", desc: t("树可访问名", "Accessible name"), type: "string", def: "locale" },
+    ],
     events: [{ name: "update:modelValue", desc: t("选中变化", "Selection changed"), params: "value" }],
     slots: [{ name: "default", desc: t("TreeItem 列表", "Tree items") }],
     a11y: t("tree/treeitem；typeahead、←→ 展开。", "tree pattern; typeahead and expand keys."),
@@ -739,6 +764,7 @@ export const docs: ComponentDoc[] = [
       { name: "label", desc: t("节点文字", "Node label"), type: "string", def: "''" },
       { name: "hasChildren", desc: t("可展开子节点", "Has children"), type: "boolean", def: "false" },
       { name: "disabled", desc: t("禁用节点", "Disabled node"), type: "boolean", def: "false" },
+      { name: "children", desc: t("数据驱动模式下的子节点", "Child nodes in data-driven mode"), type: "TreeNode[]", def: "—" },
     ],
     events: [],
     slots: [{ name: "default", desc: t("子 TreeItem", "Child tree items") }],
@@ -756,6 +782,7 @@ export const docs: ComponentDoc[] = [
     props: [
       { name: "items", desc: t("节点列表 {label,href?,click?}", "Trail items"), type: "{label,href?,click?}[]", def: "[]" },
       { name: "separator", desc: t("分隔符", "Separator"), type: "string", def: "'>'" },
+      { name: "label", desc: t("导航可访问名", "Accessible name"), type: "string", def: "locale" },
     ],
     events: [],
     slots: [],
@@ -774,6 +801,10 @@ export const docs: ComponentDoc[] = [
       { name: "modelValue", desc: t("当前页码", "Current page"), type: "number", def: "1" },
       { name: "total", desc: t("总条数", "Total items"), type: "number", def: "0" },
       { name: "pageSize", desc: t("每页条数", "Items per page"), type: "number", def: "10" },
+      { name: "siblingCount", desc: t("当前页左右各显示多少页码", "Page buttons on each side"), type: "number", def: "1" },
+      { name: "showTotal", desc: t("显示总数", "Show the total count"), type: "boolean", def: "false" },
+      { name: "disabled", desc: t("禁用分页", "Disable pagination"), type: "boolean", def: "false" },
+      { name: "label", desc: t("分页可访问名", "Accessible name"), type: "string", def: "locale" },
     ],
     events: [{ name: "update:modelValue", desc: t("页码变化", "Page changed"), params: "number" }],
     slots: [],
@@ -789,11 +820,15 @@ export const docs: ComponentDoc[] = [
       { title: t("分栏", "Split panes"), code: `<div class="flex h-[160px]">\n  <aside>Sidebar</aside>\n  <W95Splitter vertical :min="80" :max="280" />\n  <main>Content</main>\n</div>` },
     ],
     props: [
+      { name: "modelValue", desc: t("受控尺寸；不传时组件自己维护", "Controlled size; internal when omitted"), type: "number", def: "—" },
       { name: "vertical", desc: t("垂直分隔（左右拖动）", "Vertical divider (drag left/right)"), type: "boolean", def: "false" },
       { name: "min", desc: t("最小尺寸", "Min size"), type: "number", def: "80" },
       { name: "max", desc: t("最大尺寸", "Max size"), type: "number", def: "600" },
     ],
-    events: [{ name: "resize", desc: t("尺寸变化", "Size changed"), params: "number" }],
+    events: [
+      { name: "update:modelValue", desc: t("尺寸变化（v-model）", "Size changed (v-model)"), params: "number" },
+      { name: "resize", desc: t("尺寸变化", "Size changed"), params: "number" },
+    ],
     slots: [],
     a11y: t("separator + 方向键调节。", "separator with arrow-key resize."),
   },
@@ -810,6 +845,7 @@ export const docs: ComponentDoc[] = [
       { name: "modelValue", desc: t("是否打开", "Open state"), type: "boolean", def: "false" },
       { name: "x", desc: t("横坐标", "X position"), type: "number", def: "0" },
       { name: "y", desc: t("纵坐标", "Y position"), type: "number", def: "0" },
+      { name: "label", desc: t("菜单可访问名", "Accessible name"), type: "string", def: "'Context menu'" },
     ],
     events: [{ name: "update:modelValue", desc: t("开关变化", "Open toggled"), params: "boolean" }],
     slots: [{ name: "default", desc: t("菜单项", "Menu items") }],
@@ -919,6 +955,9 @@ export const docs: ComponentDoc[] = [
       { name: "emptyText", desc: t("空数据文案", "Empty text"), type: "string", def: "'No data'" },
       { name: "interactive", desc: t("允许点击选中", "Allow selection"), type: "boolean", def: "true" },
       { name: "height", desc: t("滚动区高度", "Scroll height"), type: "number|string", def: "—" },
+      { name: "loading", desc: t("加载态，替代空态", "Loading state instead of rows"), type: "boolean", def: "false" },
+      { name: "loadingText", desc: t("加载文案", "Loading text"), type: "string", def: "locale" },
+      { name: "label", desc: t("表格可访问名", "Accessible name"), type: "string", def: "locale" },
     ],
     events: [
       { name: "update:selectedKey", desc: t("选中变化", "Selection changed"), params: "key|null" },
@@ -947,6 +986,168 @@ export const docs: ComponentDoc[] = [
     events: [],
     slots: [],
     a11y: t("role=progressbar + valuenow/min/max。", "role=progressbar with ARIA values."),
+  },
+  {
+    name: "W95Textarea",
+    group: "form",
+    title: t("Textarea 多行输入", "Textarea"),
+    desc: t("多行文本输入，带 Win95 内凹边框与表单字段联动。", "Multi-line input with the Win95 sunken field border and form wiring."),
+    when: { zh: ["备注、说明等长文本","表单里的多行字段"], en: ["Notes and long text","Multi-line form fields"] },
+    demos: [
+      { title: t("基础", "Basic"), code: "<W95Textarea v-model=\"text\" label=\"Notes\" :rows=\"4\" />", live: {"comp":"W95Textarea","props":{"rows":3,"label":"Notes","modelValue":"Hello"}} },
+    ],
+    props: [
+        { name: "modelValue", desc: t("文本内容", "Text value"), type: "string", def: "''" },
+        { name: "label", desc: t("标签文案", "Label"), type: "string", def: "''" },
+        { name: "rows", desc: t("可见行数", "Visible rows"), type: "number", def: "4" },
+        { name: "placeholder", desc: t("占位文案", "Placeholder"), type: "string", def: "''" },
+        { name: "disabled", desc: t("禁用", "Disabled"), type: "boolean", def: "false" },
+        { name: "readonly", desc: t("只读", "Read-only"), type: "boolean", def: "false" },
+        { name: "invalid", desc: t("标记校验错误", "Marks a validation error"), type: "boolean", def: "false" },
+      { name: "describedBy", desc: t("说明文本 id", "Id of descriptive text"), type: "string", def: "—" },
+    ],
+    events: [
+      { name: "update:modelValue", desc: t("输入时同步", "Emitted on input"), params: "string" },
+      { name: "change", desc: t("输入时同步", "Emitted on input"), params: "string" },
+    ],
+    slots: [
+    ],
+    a11y: t("原生 textarea，配合 FormItem 自动接上 aria-invalid / aria-describedby。", "Native textarea; FormItem wires aria-invalid and aria-describedby."),
+  },
+  {
+    name: "W95Form",
+    group: "form",
+    title: t("Form 表单", "Form"),
+    desc: t("表单容器，统一标签宽度并接管 submit。", "Form container with unified label width and submit handling."),
+    when: { zh: ["多个字段的提交表单"], en: ["Forms with several fields"] },
+    demos: [
+      { title: t("标签宽度", "Label width"), code: "<W95Form :label-width=\"96\" @submit=\"save\">…</W95Form>" },
+    ],
+    props: [
+        { name: "labelWidth", desc: t("标签统一宽度", "Unified label width"), type: "string | number", def: "80" },
+        { name: "disabled", desc: t("整体禁用（透传上下文）", "Disabled context"), type: "boolean", def: "false" },
+    ],
+    events: [
+      { name: "submit", desc: t("提交（已阻止默认行为）", "Submit with default prevented"), params: "Event" },
+    ],
+    slots: [
+      { name: "default", desc: t("表单项", "Form items") },
+    ],
+  },
+  {
+    name: "W95FormItem",
+    group: "form",
+    title: t("FormItem 表单项", "Form Item"),
+    desc: t("标签 + 控件 + 错误/提示，自动把 aria 关联到内部控件。", "Label, control and error/hint, wiring ARIA to the inner control."),
+    when: { zh: ["需要标签与错误提示的表单字段"], en: ["Fields that need a label and error text"] },
+    demos: [
+      { title: t("错误态", "Error state"), code: "<W95FormItem label=\"Name\" required error=\"Required\">\n  <W95Input v-model=\"name\" />\n</W95FormItem>" },
+    ],
+    props: [
+        { name: "label", desc: t("标签", "Label"), type: "string", def: "''" },
+        { name: "error", desc: t("错误文案；有值时控件 aria-invalid=true", "Error text; sets aria-invalid"), type: "string", def: "—" },
+        { name: "hint", desc: t("提示文案", "Hint text"), type: "string", def: "—" },
+        { name: "required", desc: t("必填标记", "Required marker"), type: "boolean", def: "false" },
+        { name: "for", desc: t("指定控件 id（不传则自动生成）", "Control id; generated when omitted"), type: "string", def: "—" },
+    ],
+    events: [
+    ],
+    slots: [
+      { name: "default", desc: t("表单控件；插槽参数含 id / invalid / described-by", "Control slot props: id, invalid, described-by") },
+    ],
+    a11y: t("标签 for 指向控件，错误/提示通过 aria-describedby 关联。", "The label targets the control; error/hint are linked via aria-describedby."),
+  },
+  {
+    name: "W95MenuEntry",
+    group: "nav",
+    title: t("MenuEntry 顶层菜单", "Menu Entry"),
+    desc: t("菜单栏里的顶层项，点开自己的下拉；同一时间只展开一个，划过其它项直接切换。", "Top-level menu item with its own dropdown; only one open at a time and hovering switches."),
+    when: { zh: ["窗口菜单栏 File / Edit"], en: ["Window menu bars: File / Edit"] },
+    demos: [
+      { title: t("菜单栏", "Menu bar"), code: "<W95MenuBar>\n  <W95MenuEntry label=\"File\"><W95MenuItem>New</W95MenuItem></W95MenuEntry>\n</W95MenuBar>" },
+    ],
+    props: [
+        { name: "label", desc: t("显示文案", "Label"), type: "string", def: "''" },
+        { name: "disabled", desc: t("禁用", "Disabled"), type: "boolean", def: "false" },
+        { name: "accessKey", desc: t("Alt 访问键", "Alt access key"), type: "string", def: "—" },
+    ],
+    events: [
+    ],
+    slots: [
+      { name: "default", desc: t("菜单项", "Menu items") },
+    ],
+  },
+  {
+    name: "W95Desktop",
+    group: "container",
+    title: t("Desktop 桌面", "Desktop"),
+    desc: t("青绿桌面容器，给浮动窗口提供定位与裁切边界。", "Teal desktop that positions and clips floating windows."),
+    when: { zh: ["做桌面式应用 / 多窗口布局"], en: ["Desktop-style apps and multi-window layouts"] },
+    demos: [
+      { title: t("桌面 + 窗口", "Desktop with windows"), code: "<W95Desktop>\n  <W95Window floating title=\"Notepad\">…</W95Window>\n</W95Desktop>" },
+    ],
+    props: [
+        { name: "background", desc: t("自定义背景", "Custom background"), type: "string", def: "—" },
+    ],
+    events: [
+    ],
+    slots: [
+      { name: "default", desc: t("桌面内容与窗口", "Desktop content and windows") },
+    ],
+  },
+  {
+    name: "W95Taskbar",
+    group: "container",
+    title: t("Taskbar 任务栏", "Taskbar"),
+    desc: t("底部任务栏容器，通常与 W95TaskbarItem 组合。", "Bottom taskbar container, usually combined with W95TaskbarItem."),
+    when: { zh: ["桌面底部任务栏"], en: ["Desktop taskbar"] },
+    demos: [
+      { title: t("任务栏", "Taskbar"), code: "<W95Taskbar>\n  <W95TaskbarItem title=\"Notepad\" active />\n</W95Taskbar>" },
+    ],
+    props: [
+    ],
+    events: [
+    ],
+    slots: [
+      { name: "default", desc: t("开始按钮、窗口按钮、时钟", "Start button, window buttons, clock") },
+    ],
+  },
+  {
+    name: "W95TaskbarItem",
+    group: "container",
+    title: t("TaskbarItem 窗口按钮", "Taskbar Item"),
+    desc: t("任务栏上的窗口按钮，凹陷表示当前活动窗口。", "Window button in the taskbar; sunken means active."),
+    when: { zh: ["在任务栏切换最小化/活动窗口"], en: ["Switching windows from the taskbar"] },
+    demos: [
+      { title: t("状态", "States"), code: "<W95TaskbarItem title=\"Notepad\" active />\n<W95TaskbarItem title=\"Minesweeper\" minimized />" },
+    ],
+    props: [
+        { name: "title", desc: t("窗口标题", "Window title"), type: "string", def: "''" },
+        { name: "active", desc: t("是否为活动窗口", "Is the active window"), type: "boolean", def: "false" },
+        { name: "minimized", desc: t("是否最小化", "Is minimized"), type: "boolean", def: "false" },
+    ],
+    events: [
+      { name: "click", desc: t("点击切换窗口", "Click to switch window"), params: "—" },
+    ],
+    slots: [
+    ],
+  },
+  {
+    name: "W95MessageBox",
+    group: "overlay",
+    title: t("MessageBox 消息框", "Message Box"),
+    desc: t("命令式弹窗：alert / confirm / show，返回 Promise&lt;boolean&gt;。", "Imperative dialogs: alert / confirm / show, resolving to a boolean."),
+    when: { zh: ["需要 await 的确认框","离开页面前的二次确认"], en: ["Confirmations you want to await","Beforeunload-style prompts"] },
+    demos: [
+      { title: t("用法", "Usage"), code: "import { W95Alert, W95Confirm } from \"vue-win95-ui\";\nawait W95Confirm(\"Delete this file?\");" },
+    ],
+    props: [
+    ],
+    events: [
+    ],
+    slots: [
+    ],
+    a11y: t("使用 role=alertdialog + aria-modal，关闭后焦点回到原处。", "Uses role=alertdialog with aria-modal and restores focus."),
   },
 ];
 
