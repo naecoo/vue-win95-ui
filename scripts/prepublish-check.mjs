@@ -121,6 +121,24 @@ if (existsSync(dist("styles.css"))) {
   );
 }
 
+// —— 3b. 产物里不该混入测试辅助代码 ——
+function walk(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = resolve(dir, entry.name);
+    return entry.isDirectory() ? walk(full) : [full];
+  });
+}
+if (existsSync(resolve(libDir, "dist"))) {
+  const strays = walk(resolve(libDir, "dist")).filter((f) =>
+    /(__tests__|\/test-utils\/|\.test\.d\.ts$)/.test(f)
+  );
+  check(
+    strays.length === 0,
+    "dist carries no test helpers",
+    strays.map((f) => f.replace(libDir + "/", "")).join(", ")
+  );
+}
+
 // —— 4. 版本与变更记录一致 ——
 check(libPkg.license === "MIT", "package.json license = MIT");
 check(
